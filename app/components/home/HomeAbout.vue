@@ -41,7 +41,10 @@ defineProps<{ content: HomeAboutContent }>()
         :delay="150"
         class="about__visual"
       >
-        <HomeEditorialVisual aspect="3 / 4" />
+        <HomeEditorialVisual
+          aspect="3 / 4"
+          treatment="photography"
+        />
       </MotionReveal>
     </BaseContainer>
   </section>

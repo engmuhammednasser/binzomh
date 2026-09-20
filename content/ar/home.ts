@@ -77,6 +77,7 @@ export const homeContent: HomeContent = {
 
   partnership: {
     status: 'draft',
+    eyebrow: 'الشراكة',
     heading: 'هل تبحث عن شريك لنمو علامتك في السوق السعودي؟',
     cta: { label: 'كن شريكًا مع بنزوما', to: '/contact' },
   },

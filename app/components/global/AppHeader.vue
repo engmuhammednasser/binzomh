@@ -4,14 +4,7 @@ const localePath = useLocalePath()
 const mobileOpen = ref(false)
 const toggleButton = ref<HTMLButtonElement | null>(null)
 
-const navItems = computed(() => [
-  { label: t('nav.home'), to: '/' },
-  { label: t('nav.about'), to: '/about' },
-  { label: t('nav.brands'), to: '/brands' },
-  { label: t('nav.capabilities'), to: '/capabilities' },
-  { label: t('nav.network'), to: '/network' },
-  { label: t('nav.contact'), to: '/contact' },
-])
+const navItems = useNavItems()
 
 function closeMobile() {
   const wasOpen = mobileOpen.value
@@ -30,7 +23,10 @@ function closeMobile() {
         class="app-header__brand"
         @click="closeMobile"
       >
-        <BaseLogo variant="dark" />
+        <BaseLogo
+          variant="dark"
+          size="2.5rem"
+        />
       </NuxtLink>
 
       <nav
@@ -49,6 +45,13 @@ function closeMobile() {
 
       <div class="app-header__actions">
         <LanguageSwitcher class="app-header__language" />
+        <BaseButton
+          :to="'/contact'"
+          variant="primary"
+          class="app-header__cta"
+        >
+          {{ t('nav.partnerCta') }}
+        </BaseButton>
         <button
           ref="toggleButton"
           type="button"
@@ -80,36 +83,57 @@ function closeMobile() {
   inset-block-start: 0;
   z-index: 50;
   background: var(--color-bg);
-  border-block-end: 1px solid var(--color-border);
+  box-shadow: 0 1px 0 var(--color-border), var(--shadow-sm);
 }
 
 .app-header__inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
-  padding-block: var(--space-4);
+  gap: var(--space-5);
+  padding-block: clamp(var(--space-4), 1.4vw, var(--space-5));
 }
 
 .app-header__nav {
   display: none;
   align-items: center;
-  gap: var(--space-6);
+  gap: clamp(var(--space-6), 3vw, var(--space-7));
 }
 
 .app-header__link {
+  position: relative;
+  padding-block: var(--space-2);
   font-size: var(--font-size-small);
+  font-weight: 500;
   text-decoration: none;
 }
 
-.app-header__link:hover {
-  text-decoration: underline;
+.app-header__link::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: inline-start;
+  transition: transform var(--motion-duration-fast) var(--motion-ease);
+}
+
+.app-header__link:hover::after {
+  transform: scaleX(1);
 }
 
 .app-header__actions {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-5);
+}
+
+.app-header__cta {
+  display: none;
+  padding-block: var(--space-2);
+  font-size: var(--font-size-small);
 }
 
 .app-header__toggle {
@@ -154,6 +178,12 @@ function closeMobile() {
 
   .app-header__toggle {
     display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-header__cta {
+    display: inline-flex;
   }
 }
 </style>

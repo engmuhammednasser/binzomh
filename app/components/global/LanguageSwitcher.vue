@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { LOCALE_META } from '~~/utils/locale-meta'
 
+withDefaults(defineProps<{ onDark?: boolean }>(), { onDark: false })
+
 const { t, locale } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
 
@@ -14,7 +16,10 @@ const options = computed(() =>
 </script>
 
 <template>
-  <div class="language-switcher">
+  <div
+    class="language-switcher"
+    :class="{ 'language-switcher--on-dark': onDark }"
+  >
     <template
       v-for="option in options"
       :key="option.code"
@@ -44,22 +49,39 @@ const options = computed(() =>
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  padding: var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
 }
 
 .language-switcher__link {
   font-size: var(--font-size-small);
+  font-weight: 500;
   text-decoration: none;
-  padding-inline: var(--space-2);
+  padding-inline: var(--space-3);
   padding-block: var(--space-1);
   border-radius: var(--radius-sm);
+  transition: background-color var(--motion-duration-fast) var(--motion-ease);
 }
 
 .language-switcher__link:hover {
-  text-decoration: underline;
+  background: var(--color-bg-alt);
 }
 
 .language-switcher__link--disabled {
   color: var(--color-text-subtle);
   cursor: not-allowed;
+}
+
+.language-switcher--on-dark {
+  border-color: var(--color-text-on-dark-muted);
+}
+
+.language-switcher--on-dark .language-switcher__link:hover {
+  background: rgb(255 255 255 / 0.08);
+}
+
+.language-switcher--on-dark .language-switcher__link--disabled {
+  color: var(--color-text-on-dark-muted);
 }
 </style>

@@ -81,6 +81,7 @@ export interface HomeNetworkContent extends ContentBase {
 }
 
 export interface HomePartnershipContent extends ContentBase {
+  eyebrow?: string
   heading: string
   cta: CtaLink
 }

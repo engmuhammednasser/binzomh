@@ -1,9 +1,11 @@
 <script setup lang="ts">
 interface Props {
   variant?: 'dark' | 'light'
+  /** CSS length for the rendered block-size. Defaults to the original 2rem. */
+  size?: string
 }
 
-const props = withDefaults(defineProps<Props>(), { variant: 'dark' })
+const props = withDefaults(defineProps<Props>(), { variant: 'dark', size: '2rem' })
 const siteName = useSiteName()
 
 // The two source files are not the same aspect ratio (1252x329 vs.
@@ -25,6 +27,7 @@ const source = computed(() => sources[props.variant])
     :alt="siteName"
     class="base-logo"
     :class="`base-logo--${props.variant}`"
+    :style="{ blockSize: size }"
     decoding="async"
   >
 </template>

@@ -74,6 +74,7 @@ export const homeContent: HomeContent = {
 
   partnership: {
     status: 'draft',
+    eyebrow: 'Partnership',
     heading: 'Looking to grow your brand in Saudi Arabia?',
     cta: { label: 'Partner With Binzomah', to: '/contact' },
   },

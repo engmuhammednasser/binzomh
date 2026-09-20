@@ -32,9 +32,13 @@ const localePath = useLocalePath()
               :to="localePath(`/brands/${brand.slug}`)"
               class="brands__link"
             >
-              <span class="text-label text-muted brands__index">{{ String(index + 1).padStart(2, '0') }}</span>
+              <span class="brands__index">{{ String(index + 1).padStart(2, '0') }}</span>
               <span class="brands__name">{{ brand.name }}</span>
               <span class="text-small text-muted brands__meta">{{ $t('brand.view') }}</span>
+              <span
+                class="brands__arrow"
+                aria-hidden="true"
+              />
             </NuxtLink>
           </MotionReveal>
         </li>
@@ -81,11 +85,18 @@ const localePath = useLocalePath()
 
 .brands__link {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: var(--space-5);
-  padding-block: var(--space-6);
+  padding-block: var(--space-7);
+  padding-inline: var(--space-3);
+  margin-inline: calc(-1 * var(--space-3));
+  border-radius: var(--radius-sm);
   text-decoration: none;
-  transition: color var(--motion-duration-fast) var(--motion-ease);
+  transition: background-color var(--motion-duration-base) var(--motion-ease);
+}
+
+.brands__link:hover {
+  background: var(--color-bg);
 }
 
 .brands__link:hover .brands__name {
@@ -94,6 +105,10 @@ const localePath = useLocalePath()
 
 .brands__index {
   flex: 0 0 auto;
+  inline-size: 2.5rem;
+  font-size: var(--font-size-h4);
+  font-weight: 600;
+  color: var(--color-text-subtle);
 }
 
 .brands__name {
@@ -114,6 +129,21 @@ const localePath = useLocalePath()
   flex: 0 0 auto;
 }
 
+.brands__arrow {
+  flex: 0 0 auto;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-block-start: 2px solid var(--color-text);
+  border-inline-end: 2px solid var(--color-text);
+  transform: rotate(45deg);
+  opacity: 0;
+  transition: opacity var(--motion-duration-base) var(--motion-ease);
+}
+
+.brands__link:hover .brands__arrow {
+  opacity: 1;
+}
+
 .brands__disclaimer {
   margin-block: var(--space-6) var(--space-4);
   max-inline-size: 34rem;
@@ -124,7 +154,8 @@ const localePath = useLocalePath()
    row is already a link, so the label is a nice-to-have, not essential —
    drop it rather than crowd the brand name. */
 @media (max-width: 480px) {
-  .brands__meta {
+  .brands__meta,
+  .brands__arrow {
     display: none;
   }
 }

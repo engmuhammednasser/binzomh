@@ -62,8 +62,8 @@ onMounted(() => {
             :class="{ 'is-active': activeIndex === index }"
           >
             <MotionReveal :delay="index * 90">
-              <span class="text-label capability-row__number">{{ item.number }}</span>
-              <h3 class="text-h3 capability-row__title">
+              <span class="capability-row__number">{{ item.number }}</span>
+              <h3 class="text-h2 capability-row__title">
                 {{ item.title }}
               </h3>
               <p class="text-body-lg text-muted capability-row__description">
@@ -127,17 +127,16 @@ onMounted(() => {
 }
 
 .capabilities__rows {
-  flex: 1 1 56%;
+  flex: 1 1 50%;
   display: flex;
   flex-direction: column;
 }
 
 .capability-row {
   position: relative;
-  padding-block: var(--space-7);
-  padding-inline-start: var(--space-5);
+  padding-block: var(--space-8);
+  padding-inline-start: var(--space-6);
   border-block-start: 1px solid var(--color-border);
-  transition: opacity var(--motion-duration-base) var(--motion-ease);
 }
 
 .capability-row:first-child {
@@ -147,9 +146,9 @@ onMounted(() => {
 .capability-row::before {
   content: '';
   position: absolute;
-  inset-block: var(--space-7) 0;
+  inset-block: var(--space-8) 0;
   inset-inline-start: 0;
-  inline-size: 2px;
+  inline-size: 3px;
   background: var(--color-border);
   transition: background var(--motion-duration-base) var(--motion-ease);
 }
@@ -159,7 +158,12 @@ onMounted(() => {
 }
 
 .capability-row__number {
-  color: var(--color-text-subtle);
+  display: block;
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-border-strong);
+  transition: color var(--motion-duration-base) var(--motion-ease);
 }
 
 .capability-row.is-active .capability-row__number {
@@ -167,7 +171,12 @@ onMounted(() => {
 }
 
 .capability-row__title {
-  margin-block: var(--space-2) var(--space-3);
+  margin-block: var(--space-3);
+  transition: color var(--motion-duration-base) var(--motion-ease);
+}
+
+.capability-row.is-active .capability-row__title {
+  color: var(--color-text);
 }
 
 .capability-row__description {
@@ -179,7 +188,7 @@ onMounted(() => {
 }
 
 .capabilities__visual {
-  flex: 1 1 40%;
+  flex: 1 1 46%;
   position: sticky;
   inset-block-start: calc(var(--space-8) + var(--space-2));
   align-self: flex-start;
