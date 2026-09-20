@@ -45,7 +45,9 @@ ZDivider slant direction.
 
 ## SEO
 
-usePageSeo() (in app/composables/) calls useLocaleHead with
-addSeoAttributes true on every page, which emits the hreflang alternate
-links and the current locales own canonical URL. Arabic pages are never
-canonicalized to English.
+usePageSeo() (in app/composables/) calls useLocaleHead with its default
+SEO options on every page. i18n resolves localized canonical/hreflang/OG
+paths, then usePageSeo applies runtimeConfig.public.siteUrl as their
+origin. Arabic pages are never canonicalized to English. The production
+origin is https://binzomah.net; NUXT_PUBLIC_SITE_URL overrides it for local
+and staging deployments (see deployment-assumptions.md).

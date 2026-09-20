@@ -161,17 +161,19 @@ html[dir="rtl"] .text-label {
    Motion — restrained by default, and off entirely when requested.
    ========================================================================== */
 
+/* Visible by default — SSR output, no-JS, and a failed/slow client bundle
+   all show content immediately. Only after MotionReveal mounts and
+   confirms it's actually going to animate does it opt IN to the hidden
+   pre-animation state via .is-pending; see MotionReveal.vue. */
 .reveal {
-  opacity: 0;
-  transform: translateY(12px);
   transition:
     opacity var(--motion-duration-slow) var(--motion-ease),
     transform var(--motion-duration-slow) var(--motion-ease);
 }
 
-.reveal.is-visible {
-  opacity: 1;
-  transform: none;
+.reveal.is-pending {
+  opacity: 0;
+  transform: translateY(12px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -184,14 +186,15 @@ html[dir="rtl"] .text-label {
     scroll-behavior: auto !important;
   }
 
-  .reveal {
+  .reveal.is-pending {
     opacity: 1;
     transform: none;
   }
 }
 
-/* No horizontal scroll anywhere in the foundation. */
+/* Clip horizontal overflow without creating a scroll container that would
+   prevent the header and capabilities visual from sticking to the viewport. */
 html,
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
 }

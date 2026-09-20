@@ -1,13 +1,13 @@
 <script setup lang="ts">
 const { t } = useI18n()
-const appConfig = useAppConfig()
 const localePath = useLocalePath()
+const siteName = useSiteName()
 const year = new Date().getFullYear()
 </script>
 
 <template>
   <footer class="app-footer">
-    <ZDivider />
+    <MotionZDivider />
     <div class="app-footer__surface surface-inverse">
       <BaseContainer class="app-footer__inner">
         <NuxtLink
@@ -20,7 +20,7 @@ const year = new Date().getFullYear()
           {{ t('footer.tagline') }}
         </p>
         <p class="text-small app-footer__tagline">
-          © {{ year }} {{ appConfig.site.name }}. {{ t('footer.rights') }}
+          © {{ year }} {{ siteName }}. {{ t('footer.rights') }}
         </p>
       </BaseContainer>
     </div>

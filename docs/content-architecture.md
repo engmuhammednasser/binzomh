@@ -8,7 +8,7 @@ application, and typed against types/content.ts.
 content/
   en/        one file per page, English copy
   ar/        one file per page, Arabic copy, same shape as its EN pair
-  brands/    empty until a brand is approved, see brands/README.md
+  brands/    draft design roster permitted; production gates in brands/README.md
 
 Each pages EN and AR files export the same-named constant with the same
 shape (for example content/en/home.ts and content/ar/home.ts both export
@@ -28,8 +28,14 @@ Every content object carries a status:
 This mirrors the editorial states already tracked in the source projects
 docs/content/BILINGUAL-CONTENT-MATRIX.md and
 docs/content/ASSET-AND-APPROVAL-REGISTER.md, at
-C:\xampp\htdocs\binzomh. Do not flip a draft or blocked entry to approved
-here without a corresponding dated approval in that register.
+C:\xampp\htdocs\binzomh. Subsequent owner decisions are dated and recorded
+locally in [N02 content decisions](unresolved-content-approvals.md). Use
+that record for the current, explicitly scoped design permissions and
+approval statuses. Do not promote an entire content object to approved
+because one field has been approved: the Arabic working display names
+are approved project copy, while the surrounding pages may remain draft.
+Contact details are source-confirmed and pending current company
+confirmation; they are not missing.
 
 ## Adding a new pages content
 
@@ -41,6 +47,7 @@ here without a corresponding dated approval in that register.
 
 ## Adding a brand
 
-Not authorized yet. See content/brands/README.md for the exact
-preconditions: confirmed roster, relationship terms, approved description,
-production logo file.
+N02 draft design entries are authorized for Embryolisse, Zoā, and RVB LAB,
+using neutral text placeholders and no contractual relationship claims.
+See content/brands/README.md for the production preconditions: confirmed
+roster, relationship terms, approved description, and production logo file.

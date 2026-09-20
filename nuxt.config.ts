@@ -1,7 +1,17 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+const productionOrigin = 'https://binzomah.net'
+
 export default defineNuxtConfig({
 
   modules: ['@nuxtjs/i18n', '@nuxt/eslint'],
+
+  $development: {
+    runtimeConfig: {
+      public: {
+        siteUrl: 'http://localhost:3000',
+      },
+    },
+  },
   devtools: { enabled: true },
 
   app: {
@@ -11,18 +21,35 @@ export default defineNuxtConfig({
   },
 
   css: ['~/assets/css/main.css'],
+
+  runtimeConfig: {
+    public: {
+      siteUrl: productionOrigin,
+    },
+  },
   compatibilityDate: '2025-07-15',
 
   nitro: {
     prerender: {
-      crawlLinks: true,
-      routes: ['/', '/en', '/ar'],
+      crawlLinks: false,
     },
   },
 
   typescript: {
     strict: true,
     typeCheck: false,
+  },
+
+  hooks: {
+    'nitro:config'(config) {
+      // Only static generation freezes pages/SEO to the build-time origin.
+      // Server builds must read NUXT_PUBLIC_SITE_URL on each deployment.
+      if (config.static) {
+        config.prerender ||= {}
+        config.prerender.crawlLinks = true
+        config.prerender.routes = ['/', '/en', '/ar', '/sitemap.xml', '/robots.txt']
+      }
+    },
   },
 
   eslint: {
@@ -35,12 +62,9 @@ export default defineNuxtConfig({
   },
 
   i18n: {
-    // Placeholder production domain, assumed from the project's own
-    // contact-email domain (binzomah.net) — not yet confirmed by the
-    // company. Required for absolute canonical/hreflang URLs; update this
-    // (or set NUXT_PUBLIC_SITE_URL) once the real domain is confirmed. See
-    // docs/deployment-assumptions.md.
-    baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://www.binzomah.net',
+    // i18n resolves the localized SEO paths; usePageSeo applies the runtime
+    // siteUrl origin to its link/og:url tags without mutating shared config.
+    baseUrl: productionOrigin,
     locales: [
       { code: 'en', language: 'en-US', dir: 'ltr', name: 'English', file: 'en.json' },
       { code: 'ar', language: 'ar-SA', dir: 'rtl', name: 'العربية', file: 'ar.json' },

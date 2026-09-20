@@ -13,6 +13,7 @@ const emit = defineEmits<{ close: [] }>()
 
 const localePath = useLocalePath()
 const route = useRoute()
+const dialog = ref<HTMLElement | null>(null)
 const panel = ref<HTMLElement | null>(null)
 
 watch(
@@ -30,8 +31,37 @@ watch(
   },
 )
 
+function getFocusable(): HTMLElement[] {
+  if (!dialog.value) return []
+  return Array.from(
+    dialog.value.querySelectorAll<HTMLElement>('a[href], button, [tabindex]:not([tabindex="-1"])'),
+  )
+}
+
+// Traps Tab/Shift+Tab inside the dialog so focus (and therefore this
+// Escape handler, which relies on the event bubbling up from a focused
+// descendant) never leaves it while open.
 function onKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape') emit('close')
+  if (event.key === 'Escape') {
+    emit('close')
+    return
+  }
+
+  if (event.key !== 'Tab') return
+
+  const focusable = getFocusable()
+  const first = focusable[0]
+  const last = focusable[focusable.length - 1]
+  if (!first || !last) return
+
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault()
+    last.focus()
+  }
+  else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault()
+    first.focus()
+  }
 }
 </script>
 
@@ -39,6 +69,7 @@ function onKeydown(event: KeyboardEvent) {
   <Teleport to="body">
     <div
       v-if="open"
+      ref="dialog"
       class="mobile-nav"
       role="dialog"
       aria-modal="true"

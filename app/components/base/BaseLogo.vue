@@ -4,7 +4,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), { variant: 'dark' })
-const appConfig = useAppConfig()
+const siteName = useSiteName()
 
 // The two source files are not the same aspect ratio (1252x329 vs.
 // 1254x323) — each variant's real dimensions are used rather than sharing
@@ -22,7 +22,7 @@ const source = computed(() => sources[props.variant])
     :src="source.src"
     :width="source.width"
     :height="source.height"
-    :alt="appConfig.site.name"
+    :alt="siteName"
     class="base-logo"
     :class="`base-logo--${props.variant}`"
     decoding="async"

@@ -32,11 +32,72 @@ export interface ContentBase {
   note?: string
 }
 
-export interface HomeContent extends ContentBase {
-  title: string
-  intro: string
-  primaryCta?: CtaLink
+export interface HomeHeroContent extends ContentBase {
+  eyebrow: string
+  headline: string
+  description: string
+  primaryCta: CtaLink
   secondaryCta?: CtaLink
+}
+
+export interface HomeBrandsContent extends ContentBase {
+  eyebrow: string
+  heading: string
+  intro: string
+  /** Rendered as visible fine print — the roster/relationship caveat. */
+  disclaimer: string
+  cta?: CtaLink
+}
+
+export interface HomeAboutContent extends ContentBase {
+  eyebrow: string
+  heading: string
+  body: string
+  /** Short focus tags (distribution, beauty & health care, ...). */
+  points: string[]
+  cta?: CtaLink
+}
+
+export interface HomeCapabilityItem {
+  number: string
+  title: string
+  description: string
+}
+
+export interface HomeCapabilitiesContent extends ContentBase {
+  eyebrow: string
+  heading: string
+  intro: string
+  items: HomeCapabilityItem[]
+  cta?: CtaLink
+}
+
+export interface HomeNetworkContent extends ContentBase {
+  eyebrow: string
+  heading: string
+  intro: string
+  channels: string[]
+  cta?: CtaLink
+}
+
+export interface HomePartnershipContent extends ContentBase {
+  heading: string
+  cta: CtaLink
+}
+
+/**
+ * H06 (metrics) is intentionally not modeled here — every candidate figure
+ * is status: blocked for public display (see
+ * docs/unresolved-content-approvals.md item 5), so N02 omits the section
+ * entirely rather than typing a field nothing may legitimately fill in.
+ */
+export interface HomeContent extends ContentBase {
+  hero: HomeHeroContent
+  brands: HomeBrandsContent
+  about: HomeAboutContent
+  capabilities: HomeCapabilitiesContent
+  network: HomeNetworkContent
+  partnership: HomePartnershipContent
 }
 
 export interface AboutContent extends ContentBase {

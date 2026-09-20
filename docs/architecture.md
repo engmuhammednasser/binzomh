@@ -37,12 +37,28 @@ foundation's needs, so Pinia was not added.
 Informational pages are static-friendly. "npm run generate" prerenders the
 site; Nitro's crawler follows the header/footer navigation from the seeded
 /, /en, /ar routes to reach every other page in both locales. "npm run
-dev" and "npm run build" use the default Nuxt/Nitro server for development
-and for any future dynamic route, such as a contact API.
+dev" and "npm run build" use the default Nuxt/Nitro server. Server builds
+do not prerender these pages, so deployment-time NUXT_PUBLIC_SITE_URL
+overrides and the root locale redirect remain effective. Static generation
+also emits sitemap.xml and robots.txt using the generation-time origin.
+See docs/deployment-assumptions.md for both deployment modes.
+
+## Canonical origin
+
+The owner-confirmed production origin is https://binzomah.net. All emitted
+first-party SEO URLs use runtimeConfig.public.siteUrl, overridable with
+NUXT_PUBLIC_SITE_URL. usePageSeo keeps i18n's localized paths and applies
+that origin to canonical, hreflang, and Open Graph URL tags. Shared
+absoluteSiteUrl/useSiteUrl helpers serve sitemap, robots, WebSite structured
+data, and future absolute URL consumers. No URL is derived from email or
+the incoming Host header.
+
+Verify server overrides after a build with `npm run test:site-origin`.
 
 ## Deferred by design
 
 See docs/unresolved-content-approvals.md for content gaps, and the final
-handover message for the full list of N02+ work: homepage sections, brand
-detail data, the contact backend, GSAP, imagery, structured data, and
-sitemap.xml.
+handover message for the full list of later work: approved brand detail
+data, the contact backend, animation-library decisions, production imagery,
+and richer structured data. A sitemap, robots endpoint, and minimal WebSite
+structured data are now implemented using the configured origin.

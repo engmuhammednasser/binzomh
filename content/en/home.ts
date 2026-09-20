@@ -2,9 +2,79 @@ import type { HomeContent } from '~~/types/content'
 
 export const homeContent: HomeContent = {
   status: 'draft',
-  title: 'Binzomah Cosmetics',
-  intro:
-    'Beauty Care and Health Care distribution in Saudi Arabia. This is a foundation preview — the full homepage is pending stakeholder review.',
-  primaryCta: { label: 'Contact Us', to: '/contact' },
-  note: 'N01 placeholder only. Final sections (brands teaser, about teaser, capabilities, network, metrics, partnership CTA) are scoped for a later phase once approved copy exists — see docs/unresolved-content-approvals.md.',
+  note: 'N02 homepage visual experience. Sections use owner-approved design placeholders per docs/unresolved-content-approvals.md — brand relationship terms, metrics, founding chronology, and contact details all stay out, since each remains blocked or unconfirmed.',
+
+  hero: {
+    status: 'draft',
+    eyebrow: 'Beauty Care & Health Care Distribution',
+    headline: 'Connecting Beauty and Health Care Brands with Saudi Arabia.',
+    description:
+      'Binzomah distributes Beauty Care and Health Care products to pharmacies, hospitals, wholesalers, and retailers across the Kingdom.',
+    primaryCta: { label: 'Explore Our Brands', to: '/brands' },
+    secondaryCta: { label: 'Partner With Us', to: '/contact' },
+  },
+
+  brands: {
+    status: 'draft',
+    eyebrow: 'Our Brands',
+    heading: 'A Curated Beauty & Health Portfolio',
+    intro:
+      'A working portfolio of beauty and health care brands distributed by Binzomah in Saudi Arabia.',
+    disclaimer: 'Brand roster and portfolio details are being finalized with each principal.',
+    cta: { label: 'Explore Our Brands', to: '/brands' },
+    note: 'Names reflect a draft design roster per the 2026-09-20 project decision (item 2) — no exclusivity implied, no production logos used.',
+  },
+
+  about: {
+    status: 'draft',
+    eyebrow: 'About Us',
+    heading: 'Distribution Built for Beauty and Health Care',
+    body:
+      'Binzomah is a privately held distributor of Beauty Care and Health Care products, operating from Riyadh and working closely with global principals and local customers across the Kingdom.',
+    points: ['Distribution', 'Beauty & Health Care', 'Saudi Market', 'Riyadh Operations'],
+    cta: { label: 'Learn More About Us', to: '/about' },
+    note: 'Founding chronology (1970 / 2015 / 2021) intentionally omitted as a homepage statistic — see item 4.',
+  },
+
+  capabilities: {
+    status: 'draft',
+    eyebrow: 'Our Capabilities',
+    heading: 'How We Operate',
+    intro:
+      'From brand partnerships to sales, distribution, and warehousing, Binzomah connects global principals to the Saudi market.',
+    items: [
+      {
+        number: '01',
+        title: 'Brand Partnerships',
+        description: 'Onboarding world-class global brands and building long-term relationships with principals.',
+      },
+      {
+        number: '02',
+        title: 'Sales & Distribution',
+        description: 'Reaching pharmacies, hospitals, wholesalers, and retailers across the Kingdom.',
+      },
+      {
+        number: '03',
+        title: 'Warehousing & Logistics',
+        description: 'Operating temperature-controlled storage with structured stock rotation.',
+      },
+    ],
+    cta: { label: 'Discover Our Capabilities', to: '/capabilities' },
+  },
+
+  network: {
+    status: 'draft',
+    eyebrow: 'Our Network',
+    heading: 'Reaching Every Channel',
+    intro: 'The Binzomah distribution network reaches five key channels across Saudi Arabia.',
+    channels: ['Pharmacies', 'E-Commerce', 'Hospitals', 'Wholesale', 'Cosmetics Stores'],
+    cta: { label: 'Explore Our Network', to: '/network' },
+    note: 'These are distribution channels reached, not Binzomah-owned locations — see item 5 on unpublished metrics.',
+  },
+
+  partnership: {
+    status: 'draft',
+    heading: 'Looking to grow your brand in Saudi Arabia?',
+    cta: { label: 'Partner With Binzomah', to: '/contact' },
+  },
 }

@@ -1,21 +1,29 @@
-# Brand content — intentionally empty
+# Brand content — design permission and production gates
 
-No brand content files exist here yet. The source register marks the
-current three-brand roster (Embryolisse, Zoā, RVB LAB) as `BLOCKED`: their
-relationship terms, approved descriptions, and production logo files are
-all unconfirmed, and the only logo artwork found is a non-production
-extraction from a presentation deck. See
-`C:\xampp\htdocs\binzomh\docs\content\ASSET-AND-APPROVAL-REGISTER.md`.
+The owner's 2026-09-20 decisions authorize **Embryolisse**, **Zoā**, and
+**RVB LAB** as the working N02 design roster. Evidence is the current
+company profile; roster status remains **DRAFT / PENDING COMPANY
+CONFIRMATION**. See the [owner decision record](../../docs/unresolved-content-approvals.md).
 
-Do not add a brand file here until:
+N02 may use draft brand content with neutral text placeholders carrying
+these names. Do not fabricate or redraw logos. PowerPoint-extracted logos
+remain reference-only; production logo use is **BLOCKED**.
+
+Do not describe any brand relationship as “exclusive distributor,”
+“exclusive partner,” “official distributor,” or similar contractual
+language. The profile names do not establish contractual exclusivity.
+
+Before promoting brand content to production, confirm that:
 
 1. the roster is confirmed as current,
 2. relationship terms are confirmed (never assume exclusivity),
 3. an approved short description exists, and
 4. an official, production-quality logo file has been supplied.
 
-When a brand is approved, add `content/brands/<slug>.ts` exporting a
+For brand content, use `content/brands/<slug>.ts` exporting a
 `BrandContent` (see `types/content.ts`), paired for English and Arabic in
 the same file (brand-facing fields like `name` are typically shared across
 locales; only prose fields need EN/AR pairs — extend the type if a field
-needs full localization).
+needs full localization). Keep design entries `draft`, leave the logo
+unset until approved, and do not interpret design permission as approval
+to publish production brand content.

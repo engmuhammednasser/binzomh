@@ -1,35 +1,26 @@
 <script setup lang="ts">
 import { homeContent as homeEn } from '~~/content/en/home'
 import { homeContent as homeAr } from '~~/content/ar/home'
+import { homeBrandCandidates } from '~~/content/brands'
 
 const content = usePairedContent(homeEn, homeAr)
-usePageSeo(() => content.value.title, () => content.value.intro)
-// The home title already is the brand name — skip the global "· Binzomah
-// Cosmetics" suffix here so it doesn't repeat.
-useHead({ titleTemplate: '%s' })
+
+// H06 (metrics) is intentionally not rendered — every candidate figure is
+// blocked for public display; see docs/unresolved-content-approvals.md
+// item 5 and types/content.ts's note on HomeContent.
+usePageSeo(() => content.value.hero.headline, () => content.value.hero.description)
 </script>
 
 <template>
   <div class="page-home">
-    <BaseContainer class="stack-section">
-      <MotionReveal>
-        <p class="text-label text-muted">
-          {{ $t('nav.home') }}
-        </p>
-        <h1 class="text-display">
-          {{ content.title }}
-        </h1>
-        <p class="text-body-lg text-muted">
-          {{ content.intro }}
-        </p>
-        <BaseButton
-          v-if="content.primaryCta"
-          :to="content.primaryCta.to"
-          variant="primary"
-        >
-          {{ content.primaryCta.label }}
-        </BaseButton>
-      </MotionReveal>
-    </BaseContainer>
+    <HomeHero :content="content.hero" />
+    <HomeBrands
+      :content="content.brands"
+      :brands="homeBrandCandidates"
+    />
+    <HomeAbout :content="content.about" />
+    <HomeCapabilities :content="content.capabilities" />
+    <HomeNetwork :content="content.network" />
+    <HomePartnershipCta :content="content.partnership" />
   </div>
 </template>

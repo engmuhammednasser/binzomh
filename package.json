@@ -9,7 +9,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "typecheck": "nuxt typecheck",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test:site-origin": "node --test tests/site-origin.test.mjs"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.17.0",

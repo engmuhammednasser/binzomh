@@ -4,8 +4,9 @@ import type { MaybeRefOrGetter } from 'vue'
  * SEO foundation for a single page: title/description, canonical + hreflang
  * link tags (via the i18n module's locale head), and basic Open Graph tags.
  * `<html lang>`/`dir` are set once, globally, in app.vue — this composable
- * only adds what's specific to the current page. Structured data and a
- * generated sitemap are deferred to a later phase — see docs/architecture.md.
+ * only adds what's specific to the current page. All absolute URLs follow
+ * runtimeConfig.public.siteUrl. i18n owns the localized paths; this
+ * composable applies the runtime origin to its canonical/hreflang/OG tags.
  *
  * Accepts refs/getters (not plain strings) so title/description stay correct
  * if the locale switches without the page component remounting.
@@ -15,7 +16,12 @@ export function usePageSeo(
   description: MaybeRefOrGetter<string>,
 ) {
   const { locale } = useI18n()
-  const appConfig = useAppConfig()
+  const siteName = useSiteName()
+  const siteUrl = useSiteUrl()
+  const withSiteOrigin = (url: string) => {
+    const { pathname, search, hash } = new URL(url)
+    return siteUrl(`${pathname}${search}${hash}`)
+  }
 
   useSeoMeta({
     title: () => toValue(title),
@@ -24,12 +30,17 @@ export function usePageSeo(
     ogDescription: () => toValue(description),
     ogType: 'website',
     ogLocale: () => (locale.value === 'ar' ? 'ar_SA' : 'en_US'),
-    ogSiteName: appConfig.site.name,
+    ogSiteName: () => siteName.value,
   })
 
   const localeHead = useLocaleHead()
   useHead({
-    link: computed(() => localeHead.value.link),
-    meta: computed(() => localeHead.value.meta),
+    link: computed(() => localeHead.value.link.map(link => ({
+      ...link,
+      href: withSiteOrigin(link.href),
+    }))),
+    meta: computed(() => localeHead.value.meta.map(meta => meta.property === 'og:url'
+      ? { ...meta, content: withSiteOrigin(String(meta.content)) }
+      : meta)),
   })
 }
