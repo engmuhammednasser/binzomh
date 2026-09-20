@@ -74,14 +74,16 @@ const siteName = useSiteName()
   padding-block-end: var(--space-section);
 }
 
+/* Full-width composition: text first, then the supplied brand visual
+   spanning the entire Hero section — not a side-by-side split. */
 .hero__inner {
   display: flex;
-  align-items: center;
-  gap: clamp(var(--space-6), 5vw, var(--space-9));
+  flex-direction: column;
+  gap: clamp(var(--space-6), 5vw, var(--space-8));
 }
 
 .hero__text {
-  flex: 1 1 56%;
+  max-inline-size: 42rem;
 }
 
 .hero__eyebrow {
@@ -116,8 +118,7 @@ const siteName = useSiteName()
 }
 
 .hero__visual {
-  flex: 1 1 38%;
-  align-self: center;
+  inline-size: 100%;
 }
 
 .hero__image {
@@ -130,32 +131,5 @@ const siteName = useSiteName()
 
 .hero__visual.is-pending .hero__image {
   transform: scale(1.05);
-}
-
-@media (max-width: 1023px) {
-  .hero__inner {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .hero__visual {
-    /* Reset the row-axis flex-basis — in a column flow it would otherwise
-       apply to height, not width. */
-    flex: none;
-    order: -1;
-    inline-size: 100%;
-    max-inline-size: 22rem;
-    margin-inline: auto;
-    margin-block-end: var(--space-6);
-  }
-}
-
-/* A restrained editorial overlap on generous screens only — the visual
-   panel sits slightly above the text baseline instead of a plain 50/50
-   split. */
-@media (min-width: 1280px) {
-  .hero__visual {
-    margin-block-start: calc(var(--space-8) * -1);
-  }
 }
 </style>
