@@ -2,6 +2,8 @@
 import type { HomeHeroContent } from '~~/types/content'
 
 defineProps<{ content: HomeHeroContent }>()
+
+const siteName = useSiteName()
 </script>
 
 <template>
@@ -52,7 +54,15 @@ defineProps<{ content: HomeHeroContent }>()
         :delay="180"
         class="hero__visual"
       >
-        <HomeEditorialVisual aspect="4 / 5" />
+        <img
+          src="/images/home/hero.png"
+          width="1672"
+          height="941"
+          :alt="siteName"
+          class="hero__image"
+          fetchpriority="high"
+          decoding="async"
+        >
       </MotionReveal>
     </BaseContainer>
   </section>
@@ -110,11 +120,15 @@ defineProps<{ content: HomeHeroContent }>()
   align-self: center;
 }
 
-.hero__visual :deep(.editorial-visual) {
+.hero__image {
+  inline-size: 100%;
+  aspect-ratio: 1672 / 941;
+  object-fit: cover;
+  border-radius: var(--radius-md);
   transition: transform var(--motion-duration-slow) var(--motion-ease);
 }
 
-.hero__visual.is-pending :deep(.editorial-visual) {
+.hero__visual.is-pending .hero__image {
   transform: scale(1.05);
 }
 

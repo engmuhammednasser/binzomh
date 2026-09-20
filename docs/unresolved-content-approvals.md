@@ -37,13 +37,22 @@ separate requirements; see [brand content rules](../content/brands/README.md).
 
 ## 3. Imagery
 
-Final hero, warehouse, and channel photography: **NOT APPROVED**.
+**Hero visual: SUPPLIED AND APPROVED (2026-09-20)** — the owner provided
+`public/images/home/hero.png`, a designed brand visual (metallic
+"Z"-ribbon geometry with the binZomah Cosmetics lockup), and directed its
+use in the homepage Hero on both `/en` and `/ar`. This is a supplied
+creative asset, not photography of a real facility/product, so it does
+not need the "not a real facility" caveat below — but it is still the
+only image approved for public use on the site; do not reuse it as a
+stand-in for warehouse, product, or channel imagery.
 
-Use intentional, high-quality design placeholders in N02. Define each
-placeholder's aspect ratio and content purpose in the design. Do not
-present random stock photography as Binzomah facilities. PowerPoint
-imagery is visual reference only unless later explicitly approved for
-public use.
+Warehouse and channel photography: **NOT APPROVED**.
+
+Use intentional, high-quality design placeholders where final approved
+imagery is unavailable. Define each placeholder's aspect ratio and
+content purpose in the design. Do not present random stock photography as
+Binzomah facilities. PowerPoint imagery is visual reference only unless
+later explicitly approved for public use.
 
 ## 4. Company chronology
 
