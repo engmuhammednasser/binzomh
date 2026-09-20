@@ -1,0 +1,197 @@
+@import "./tokens.css";
+@import "./reset.css";
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+html {
+  font-family: var(--font-family-base);
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+html[dir="rtl"] {
+  font-family: var(--font-family-arabic);
+}
+
+body {
+  font-size: var(--font-size-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: var(--line-height-heading);
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+html[dir="rtl"] h1,
+html[dir="rtl"] h2,
+html[dir="rtl"] h3,
+html[dir="rtl"] h4 {
+  line-height: var(--line-height-heading-ar);
+  font-weight: 700;
+}
+
+p {
+  max-inline-size: 38rem;
+}
+
+/* English-only letter-spacing on labels/small caps-style text. Arabic never
+   receives Latin letter-spacing rules — see docs/design-tokens.md. */
+html[dir="ltr"] .text-label {
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+}
+
+html[dir="rtl"] .text-label {
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* ==========================================================================
+   Type scale utilities
+   ========================================================================== */
+
+.text-display {
+  font-size: var(--font-size-display);
+}
+
+.text-h1 {
+  font-size: var(--font-size-h1);
+}
+
+.text-h2 {
+  font-size: var(--font-size-h2);
+}
+
+.text-h3 {
+  font-size: var(--font-size-h3);
+}
+
+.text-h4 {
+  font-size: var(--font-size-h4);
+}
+
+.text-body-lg {
+  font-size: var(--font-size-body-lg);
+}
+
+.text-small {
+  font-size: var(--font-size-small);
+}
+
+.text-label {
+  font-size: var(--font-size-label);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Layout primitives
+   ========================================================================== */
+
+.container {
+  inline-size: 100%;
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.container--content {
+  max-inline-size: var(--container-content-max);
+}
+
+.stack-section {
+  padding-block: var(--space-section);
+}
+
+.surface-alt {
+  background: var(--color-bg-alt);
+}
+
+.surface-inverse {
+  background: var(--color-bg-inverse);
+  color: var(--color-text-on-dark);
+}
+
+/* ==========================================================================
+   Accessibility
+   ========================================================================== */
+
+.skip-link {
+  position: absolute;
+  inset-inline-start: var(--space-4);
+  inset-block-start: -3rem;
+  z-index: 100;
+  background: var(--color-bg-inverse);
+  color: var(--color-text-on-dark);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  transition: inset-block-start var(--motion-duration-fast) var(--motion-ease);
+}
+
+.skip-link:focus-visible {
+  inset-block-start: var(--space-4);
+}
+
+.visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus-halo);
+  box-shadow: 0 0 0 4px var(--color-focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+/* ==========================================================================
+   Motion — restrained by default, and off entirely when requested.
+   ========================================================================== */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity var(--motion-duration-slow) var(--motion-ease),
+    transform var(--motion-duration-slow) var(--motion-ease);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* No horizontal scroll anywhere in the foundation. */
+html,
+body {
+  overflow-x: hidden;
+}

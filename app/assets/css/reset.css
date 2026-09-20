@@ -1,0 +1,61 @@
+/* Minimal modern reset. Logical properties throughout so the whole
+   reset works unchanged under dir="rtl". */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  line-height: var(--line-height-body);
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-inline-size: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: currentColor;
+}
+
+ul,
+ol {
+  padding-inline-start: 1.25em;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+#__nuxt {
+  isolation: isolate;
+}

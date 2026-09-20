@@ -1,0 +1,32 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "brands": "Our Brands",
+    "capabilities": "Our Capabilities",
+    "network": "Our Network",
+    "contact": "Contact Us",
+    "skipToContent": "Skip to content",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "mainNavigation": "Main navigation"
+  },
+  "language": {
+    "switchTo": "Switch to {language}",
+    "english": "English",
+    "arabic": "العربية",
+    "notAvailable": "Not available in {language} yet"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "tagline": "Beauty Care & Health Care distribution in Saudi Arabia."
+  },
+  "common": {
+    "comingSoon": "Content for this page is being prepared and reviewed."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page you're looking for doesn't exist or has moved.",
+    "backHome": "Back to home"
+  }
+}
