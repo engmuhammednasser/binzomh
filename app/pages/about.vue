@@ -3,24 +3,46 @@ import { aboutContent as aboutEn } from '~~/content/en/about'
 import { aboutContent as aboutAr } from '~~/content/ar/about'
 
 const content = usePairedContent(aboutEn, aboutAr)
-usePageSeo(() => content.value.title, () => content.value.intro)
+usePageSeo(() => content.value.hero.heading, () => content.value.hero.intro)
 </script>
 
 <template>
-  <BaseContainer
-    content
-    class="stack-section"
-  >
-    <MotionReveal>
-      <h1 class="text-h1">
-        {{ content.title }}
-      </h1>
-      <p class="text-body-lg text-muted">
-        {{ content.intro }}
-      </p>
-      <p class="text-small text-muted">
-        {{ $t('common.comingSoon') }}
-      </p>
-    </MotionReveal>
-  </BaseContainer>
+  <div class="page-about">
+    <AboutHero :content="content.hero" />
+    <AboutOverview :content="content.overview" />
+    <AboutStory :content="content.story" />
+    <AboutVisionMission :content="content.visionMission" />
+    <AboutStrategies :content="content.strategies" />
+    <AboutLeadership :content="content.leadership" />
+
+    <section
+      v-if="content.cta"
+      class="about-closing"
+    >
+      <BaseContainer
+        content
+        class="about-closing__inner"
+      >
+        <MotionReveal>
+          <BaseButton
+            :to="content.cta.to"
+            variant="secondary"
+          >
+            {{ content.cta.label }}
+          </BaseButton>
+        </MotionReveal>
+      </BaseContainer>
+    </section>
+  </div>
 </template>
+
+<style scoped>
+.about-closing {
+  padding-block-end: var(--space-section);
+}
+
+.about-closing__inner {
+  display: flex;
+  justify-content: center;
+}
+</style>

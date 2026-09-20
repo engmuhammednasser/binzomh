@@ -100,14 +100,104 @@ export interface HomeContent extends ContentBase {
   partnership: HomePartnershipContent
 }
 
-export interface AboutContent extends ContentBase {
-  title: string
+export interface AboutHeroContent extends ContentBase {
+  eyebrow: string
+  heading: string
   intro: string
 }
 
-export interface CapabilitiesContent extends ContentBase {
-  title: string
+export interface AboutOverviewContent extends ContentBase {
+  eyebrow: string
+  heading: string
+  body: string
+}
+
+export interface AboutTimelineEntry {
+  year: string
+  description: string
+}
+
+/**
+ * The chronology remains company-confirmation-required (see
+ * docs/unresolved-content-approvals.md item 4) — `timeline` presents the
+ * documented sequence only, never rolled up into a resolved "Founded in…"
+ * claim. `disclaimer` is visible fine print, not an internal note.
+ */
+export interface AboutStoryContent extends ContentBase {
+  eyebrow: string
+  heading: string
   intro: string
+  timeline: AboutTimelineEntry[]
+  disclaimer: string
+}
+
+export interface AboutVisionMissionContent extends ContentBase {
+  eyebrow: string
+  heading: string
+  visionLabel: string
+  vision: string
+  missionLabel: string
+  mission: string
+}
+
+export interface AboutStrategyItem {
+  number: string
+  title: string
+  description: string
+}
+
+export interface AboutStrategiesContent extends ContentBase {
+  eyebrow: string
+  heading: string
+  items: AboutStrategyItem[]
+}
+
+/**
+ * Chairman/team content stays structural only — `body` must never carry an
+ * invented name, photo, or biography. The source register tracks this as
+ * PENDING an explicit IA decision (feature on About? a future Leadership
+ * page? omit?) — see docs/unresolved-content-approvals.md and the source
+ * sitemap's "Newly discovered content" section.
+ */
+export interface AboutLeadershipContent extends ContentBase {
+  eyebrow: string
+  heading: string
+  body: string
+}
+
+export interface AboutContent extends ContentBase {
+  hero: AboutHeroContent
+  overview: AboutOverviewContent
+  story: AboutStoryContent
+  visionMission: AboutVisionMissionContent
+  strategies: AboutStrategiesContent
+  leadership: AboutLeadershipContent
+  cta?: CtaLink
+}
+
+export interface CapabilitiesHeroContent extends ContentBase {
+  eyebrow: string
+  heading: string
+  intro: string
+}
+
+export interface CapabilitiesSectionItem extends ContentBase {
+  number: string
+  title: string
+  summary: string
+  body: string
+  cta?: CtaLink
+}
+
+export interface CapabilitiesClosingContent extends ContentBase {
+  heading: string
+  cta: CtaLink
+}
+
+export interface CapabilitiesContent extends ContentBase {
+  hero: CapabilitiesHeroContent
+  sections: CapabilitiesSectionItem[]
+  closing: CapabilitiesClosingContent
 }
 
 export interface NetworkContent extends ContentBase {
