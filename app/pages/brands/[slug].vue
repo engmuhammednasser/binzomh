@@ -1,23 +1,28 @@
 <script setup lang="ts">
-// No brand roster is approved yet (see content/brands/README.md), so every
-// slug currently renders the same "not yet available" state rather than
-// fabricating brand content.
-const { t } = useI18n()
-usePageSeo(() => t('nav.brands'), () => t('common.comingSoon'))
+import { findBrand } from '~~/content/brands'
+import { presentBrand } from '~~/content/brands/presentation'
+import { brandsContent as brandsEn } from '~~/content/en/brands'
+import { brandsContent as brandsAr } from '~~/content/ar/brands'
+
+// A different slug must run lookup/404 handling again during client navigation.
+definePageMeta({ key: route => route.path })
+
+const route = useRoute()
+const brand = findBrand(String(route.params.slug))
+if (!brand) throw createError({ statusCode: 404, statusMessage: 'Brand not found', fatal: import.meta.client })
+
+const { locale } = useI18n()
+const content = usePairedContent(brandsEn, brandsAr)
+const presentation = computed(() => presentBrand(brand, locale.value === 'ar' ? 'ar' : 'en'))
+usePageSeo(
+  () => brand.name,
+  () => content.value.detail.description.replace('{brand}', brand.name),
+)
 </script>
 
 <template>
-  <BaseContainer
-    content
-    class="stack-section"
-  >
-    <MotionReveal>
-      <h1 class="text-h1">
-        {{ t('nav.brands') }}
-      </h1>
-      <p class="text-body-lg text-muted">
-        {{ t('common.comingSoon') }}
-      </p>
-    </MotionReveal>
-  </BaseContainer>
+  <BrandsDetail
+    :brand="presentation"
+    :content="content"
+  />
 </template>

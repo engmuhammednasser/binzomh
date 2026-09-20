@@ -1,6 +1,6 @@
-import type { BrandContent } from '~~/types/content'
+import type { BrandProfile } from '~~/types/brands'
 
-export const zoaBrand: BrandContent = {
+export const zoaBrand: BrandProfile = {
   status: 'draft',
   slug: 'zoa',
   name: 'Zoā',

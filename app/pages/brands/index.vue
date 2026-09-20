@@ -1,20 +1,15 @@
 <script setup lang="ts">
-const { t } = useI18n()
-usePageSeo(() => t('nav.brands'), () => t('common.comingSoon'))
+import { brandProfiles } from '~~/content/brands'
+import { brandsContent as brandsEn } from '~~/content/en/brands'
+import { brandsContent as brandsAr } from '~~/content/ar/brands'
+
+const content = usePairedContent(brandsEn, brandsAr)
+usePageSeo(() => content.value.title, () => content.value.description)
 </script>
 
 <template>
-  <BaseContainer
-    content
-    class="stack-section"
-  >
-    <MotionReveal>
-      <h1 class="text-h1">
-        {{ t('nav.brands') }}
-      </h1>
-      <p class="text-body-lg text-muted">
-        {{ t('common.comingSoon') }}
-      </p>
-    </MotionReveal>
-  </BaseContainer>
+  <BrandsPortfolio
+    :brands="brandProfiles"
+    :content="content"
+  />
 </template>

@@ -1,8 +1,8 @@
-import type { BrandContent } from '~~/types/content'
+import type { BrandProfile } from '~~/types/brands'
 
 // Draft N02 design entry only — see content/brands/README.md. No logo,
 // introduction, relationship, or official link is approved yet.
-export const embryolisseBrand: BrandContent = {
+export const embryolisseBrand: BrandProfile = {
   status: 'draft',
   slug: 'embryolisse',
   name: 'Embryolisse',

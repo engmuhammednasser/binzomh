@@ -1,10 +1,15 @@
 import type { BrandContent } from '~~/types/content'
-import { embryolisseBrand } from './embryolisse'
-import { zoaBrand } from './zoa'
-import { rvbLabBrand } from './rvb-lab'
+import type { BrandProfile } from '~~/types/brands'
+import { embryolisseBrand } from './embryolisse.ts'
+import { zoaBrand } from './zoa.ts'
+import { rvbLabBrand } from './rvb-lab.ts'
 
-// Single source of truth for the N02 working brand roster, consumed by the
-// homepage brand-portfolio section. Production Brand Detail pages are out
-// of scope for N02 (brands/[slug].vue still renders its generic
-// placeholder for every slug) — this list only feeds the teaser.
-export const homeBrandCandidates: BrandContent[] = [embryolisseBrand, zoaBrand, rvbLabBrand]
+// One design roster drives listing, detail routes, sitemap, and the N02 teaser.
+export const brandProfiles: BrandProfile[] = [embryolisseBrand, zoaBrand, rvbLabBrand]
+
+export function findBrand(slug: string) {
+  return brandProfiles.find(brand => brand.slug === slug)
+}
+
+// Preserve the homepage's existing contract without exposing optional claims.
+export const homeBrandCandidates: BrandContent[] = brandProfiles.map(({ slug, name, status }) => ({ slug, name, status }))

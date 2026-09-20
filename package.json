@@ -10,7 +10,8 @@
     "postinstall": "nuxt prepare",
     "typecheck": "nuxt typecheck",
     "lint": "eslint .",
-    "test:site-origin": "node --test tests/site-origin.test.mjs"
+    "test:site-origin": "node --test tests/site-origin.test.mjs",
+    "test:n03": "node --test tests/brand-content.test.mjs tests/n03-routes.test.mjs"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.17.0",

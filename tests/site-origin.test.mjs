@@ -1,9 +1,6 @@
 import assert from 'node:assert/strict'
-import { spawn } from 'node:child_process'
-import { once } from 'node:events'
-import { createServer } from 'node:net'
-import process from 'node:process'
 import test from 'node:test'
+import { startServer } from './helpers/server.mjs'
 import { absoluteSiteUrl } from '../shared/utils/site-url.ts'
 
 test('absolute site URLs preserve the configured origin and reject external paths', () => {
@@ -16,54 +13,6 @@ test('absolute site URLs preserve the configured origin and reject external path
     assert.throws(() => absoluteSiteUrl('https://binzomah.net', path))
   }
 })
-
-async function startServer(origin) {
-  const reservation = createServer()
-  reservation.listen(0, '127.0.0.1')
-  await once(reservation, 'listening')
-  const { port } = reservation.address()
-  await new Promise(resolve => reservation.close(resolve))
-  const env = { ...process.env, NITRO_HOST: '127.0.0.1', NITRO_PORT: String(port) }
-  delete env.NUXT_PUBLIC_SITE_URL
-  delete env.NITRO_UNIX_SOCKET
-  if (origin) env.NUXT_PUBLIC_SITE_URL = origin
-  const child = spawn(process.execPath, ['.output/server/index.mjs'], { env, stdio: ['ignore', 'pipe', 'pipe'] })
-  let output = ''
-  try {
-    await new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => reject(new Error(`Server startup timed out: ${output}`)), 15000)
-      child.once('error', (error) => {
-        clearTimeout(timeout)
-        reject(error)
-      })
-      child.once('exit', (code) => {
-        clearTimeout(timeout)
-        reject(new Error(`Server exited (${code}): ${output}`))
-      })
-      child.stderr.on('data', chunk => output += chunk)
-      child.stdout.on('data', (chunk) => {
-        output += chunk
-        if (output.includes('Listening on')) {
-          clearTimeout(timeout)
-          resolve()
-        }
-      })
-    })
-  }
-  catch (error) {
-    child.kill()
-    throw error
-  }
-  return {
-    base: `http://127.0.0.1:${port}`,
-    async stop() {
-      if (child.exitCode !== null) return
-      const closed = once(child, 'exit')
-      child.kill()
-      await closed
-    },
-  }
-}
 
 // Build once first. Every case reuses the same output to catch origins baked
 // into HTML during build, as well as startup-only environment overrides.
@@ -91,7 +40,7 @@ for (const override of [undefined, 'http://localhost:3000', 'https://staging.bin
       }
       const sitemap = await (await fetch(`${server.base}/sitemap.xml`)).text()
       const locations = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1])
-      assert.equal(locations.length, 12)
+      assert.equal(locations.length, 18)
       for (const location of locations) assert.equal(new URL(location).origin, origin)
       for (const match of sitemap.matchAll(/href="(.*?)"/g)) assert.equal(new URL(match[1]).origin, origin)
       assert.match(sitemap, /\/ar\/contact<\/loc>/)

@@ -1,6 +1,6 @@
-import type { BrandContent } from '~~/types/content'
+import type { BrandProfile } from '~~/types/brands'
 
-export const rvbLabBrand: BrandContent = {
+export const rvbLabBrand: BrandProfile = {
   status: 'draft',
   slug: 'rvb-lab',
   name: 'RVB LAB',
