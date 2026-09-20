@@ -74,16 +74,27 @@ const siteName = useSiteName()
   padding-block-end: var(--space-section);
 }
 
-/* Full-width composition: text first, then the supplied brand visual
-   spanning the entire Hero section — not a side-by-side split. */
+/* Text-left / image-right, 50/50 — and deliberately fixed in that
+   physical arrangement in both languages, not mirrored under RTL like
+   the rest of the site. The image carries a baked-in Latin wordmark that
+   doesn't itself flip for Arabic, so keeping its position fixed avoids
+   the brand mark jumping sides when the visitor switches languages.
+   Forcing direction: ltr here (reset back to rtl for the Arabic text
+   itself, below) is what pins the column order regardless of html dir. */
 .hero__inner {
   display: flex;
-  flex-direction: column;
-  gap: clamp(var(--space-6), 5vw, var(--space-8));
+  align-items: center;
+  gap: clamp(var(--space-6), 5vw, var(--space-9));
+  direction: ltr;
 }
 
 .hero__text {
-  max-inline-size: 42rem;
+  flex: 1 1 50%;
+  direction: ltr;
+}
+
+html[dir="rtl"] .hero__text {
+  direction: rtl;
 }
 
 .hero__eyebrow {
@@ -118,7 +129,7 @@ const siteName = useSiteName()
 }
 
 .hero__visual {
-  inline-size: 100%;
+  flex: 1 1 50%;
 }
 
 .hero__image {
@@ -131,5 +142,20 @@ const siteName = useSiteName()
 
 .hero__visual.is-pending .hero__image {
   transform: scale(1.05);
+}
+
+/* Below this, the two columns stack — "fixed right/left" is a desktop
+   concept only; once stacked there's no left/right to fix. */
+@media (max-width: 1023px) {
+  .hero__inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero__text,
+  .hero__visual {
+    flex: none;
+    inline-size: 100%;
+  }
 }
 </style>
