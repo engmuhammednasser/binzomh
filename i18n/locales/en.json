@@ -20,7 +20,10 @@
   },
   "footer": {
     "rights": "All rights reserved.",
-    "tagline": "Beauty Care & Health Care distribution in Saudi Arabia."
+    "tagline": "Beauty Care & Health Care distribution in Saudi Arabia.",
+    "explore": "Explore",
+    "location": "Our Location",
+    "addressPending": "Draft — pending confirmation"
   },
   "common": {
     "comingSoon": "Content for this page is being prepared and reviewed."
