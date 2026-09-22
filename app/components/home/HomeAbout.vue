@@ -41,10 +41,42 @@ defineProps<{ content: HomeAboutContent }>()
         :delay="150"
         class="about__visual"
       >
-        <HomeEditorialVisual
-          aspect="3 / 4"
-          treatment="photography"
-        />
+        <!--
+          Real corporate photography, replacing the "photography" treatment
+          placeholder EditorialVisual used to render here (see the note in
+          EditorialVisual.vue — this was the one slot it named explicitly).
+          Decorative: alt="" / aria-hidden, matching the placeholder's own
+          accessibility treatment, since the heading and body copy right
+          next to it already carry the section's meaning in real, visible
+          text. AVIF/WebP + PNG fallback, 480w/960w generated from the
+          supplied 1122x1402 source (public/images/home/about.png) — never
+          upscaled. loading="lazy" (not eager like the Hero image) since
+          this section sits below the fold.
+        -->
+        <div class="about__visual-frame">
+          <picture>
+            <source
+              type="image/avif"
+              :srcset="'/images/home/about-480.avif 480w, /images/home/about-960.avif 960w'"
+              sizes="(max-width: 1023px) 22rem, 480px"
+            >
+            <source
+              type="image/webp"
+              :srcset="'/images/home/about-480.webp 480w, /images/home/about-960.webp 960w'"
+              sizes="(max-width: 1023px) 22rem, 480px"
+            >
+            <img
+              src="/images/home/about.png"
+              width="1122"
+              height="1402"
+              alt=""
+              aria-hidden="true"
+              class="about__image"
+              loading="lazy"
+              decoding="async"
+            >
+          </picture>
+        </div>
       </MotionReveal>
     </BaseContainer>
   </section>
@@ -92,6 +124,27 @@ defineProps<{ content: HomeAboutContent }>()
 
 .about__visual {
   flex: 1 1 40%;
+}
+
+/* Same frame language as the Hero visual: a hairline edge and a soft
+   lifted shadow, not a filled card. object-fit: contain plus the source's
+   own 1122:1402 ratio keep the full shot visible with no cropping. */
+.about__visual-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1122 / 1402;
+  border-radius: var(--radius-md);
+  border: 1px solid rgb(17 17 17 / 0.06);
+  box-shadow: 0 24px 48px -28px rgb(17 17 17 / 0.28);
+}
+
+.about__image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+  background: var(--color-bg-raised);
+  border-radius: var(--radius-md);
 }
 
 /* Editorial asymmetry: the visual sits offset from the text baseline
