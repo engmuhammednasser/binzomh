@@ -7,6 +7,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), { variant: 'dark', size: '2rem' })
 const siteName = useSiteName()
+const assetUrl = useAssetUrl()
 
 // The two source files are not the same aspect ratio (1252x329 vs.
 // 1254x323) — each variant's real dimensions are used rather than sharing
@@ -21,7 +22,7 @@ const source = computed(() => sources[props.variant])
 
 <template>
   <img
-    :src="source.src"
+    :src="assetUrl(source.src)"
     :width="source.width"
     :height="source.height"
     :alt="siteName"

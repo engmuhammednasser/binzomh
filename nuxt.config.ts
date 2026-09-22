@@ -1,6 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 const productionOrigin = 'https://binzomah.net'
 
+// Read directly rather than via nuxt's resolved app.baseURL — nuxt.config.ts
+// runs before that's settled, and this is the same source Nuxt itself
+// reads to populate it. Used below for the favicon href, which — unlike a
+// static template src="..." — is NOT automatically base-path-prefixed by
+// Nuxt's build tooling (declarative head config is a different code path
+// from the Vite/Vue asset-URL transform); see shared/utils/asset-url.ts
+// for the same issue on the component side.
+const appBaseURL = process.env.NUXT_APP_BASE_URL || '/'
+const withBase = (path: string) => `${appBaseURL.replace(/\/$/, '')}${path}`
+
 export default defineNuxtConfig({
 
   modules: ['@nuxtjs/i18n', '@nuxt/eslint'],
@@ -15,8 +25,14 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   app: {
+    baseURL: appBaseURL,
     head: {
       titleTemplate: '%s · Binzomah Cosmetics',
+      // Explicit rather than relying on the browser's implicit /favicon.ico
+      // lookup: that request always goes to the origin root and ignores
+      // app.baseURL, so it 404s under any non-root base path (e.g. a
+      // GitHub Pages project site at /reponame/).
+      link: [{ rel: 'icon', type: 'image/x-icon', href: withBase('/favicon.ico') }],
     },
   },
 
@@ -47,7 +63,20 @@ export default defineNuxtConfig({
       if (config.static) {
         config.prerender ||= {}
         config.prerender.crawlLinks = true
+
+        // Prerender seeds must carry the app's base path (NUXT_APP_BASE_URL,
+        // e.g. "/binzomh/" for a GitHub Pages project site). Without this,
+        // every seed 404s against the base-path-aware app, and Nitro's own
+        // 404 handler (nitropack/dist/core/index.mjs) silently turns each
+        // one into a 302-redirect stub ("Redirecting...") pointing at the
+        // correctly-prefixed URL — nothing actually gets rendered, and since
+        // the crawler has no real HTML to extract further links from, the
+        // whole site collapses to those few stub files. Confirmed by
+        // reproducing with and without a base path: unprefixed seeds only
+        // fail once a non-root base path is set.
+        const base = (config.baseURL || '/').replace(/\/$/, '')
         config.prerender.routes = ['/', '/en', '/ar', '/sitemap.xml', '/robots.txt']
+          .map(route => `${base}${route}`)
       }
     },
   },

@@ -2,6 +2,9 @@
 import type { HomeAboutContent } from '~~/types/content'
 
 defineProps<{ content: HomeAboutContent }>()
+// Dynamic srcset bypasses Nuxt's build-time base-path prefixing (same
+// reason as HomeHero.vue) — apply it explicitly. See shared/utils/asset-url.ts.
+const assetUrl = useAssetUrl()
 </script>
 
 <template>
@@ -57,12 +60,12 @@ defineProps<{ content: HomeAboutContent }>()
           <picture>
             <source
               type="image/avif"
-              :srcset="'/images/home/about-480.avif 480w, /images/home/about-960.avif 960w'"
+              :srcset="`${assetUrl('/images/home/about-480.avif')} 480w, ${assetUrl('/images/home/about-960.avif')} 960w`"
               sizes="(max-width: 1023px) 22rem, 480px"
             >
             <source
               type="image/webp"
-              :srcset="'/images/home/about-480.webp 480w, /images/home/about-960.webp 960w'"
+              :srcset="`${assetUrl('/images/home/about-480.webp')} 480w, ${assetUrl('/images/home/about-960.webp')} 960w`"
               sizes="(max-width: 1023px) 22rem, 480px"
             >
             <img

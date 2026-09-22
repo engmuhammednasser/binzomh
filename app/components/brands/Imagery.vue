@@ -2,6 +2,7 @@
 import type { BrandImage } from '~~/types/brands'
 
 defineProps<{ image?: BrandImage, label: string, missing: string }>()
+const assetUrl = useAssetUrl()
 </script>
 
 <template>
@@ -10,7 +11,7 @@ defineProps<{ image?: BrandImage, label: string, missing: string }>()
     class="brand-imagery"
   >
     <img
-      :src="image.src"
+      :src="assetUrl(image.src)"
       :alt="image.alt"
       :width="image.width"
       :height="image.height"

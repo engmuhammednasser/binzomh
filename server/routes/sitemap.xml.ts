@@ -1,11 +1,16 @@
 import { absoluteSiteUrl } from '../../shared/utils/site-url'
+import { assetUrl } from '../../shared/utils/asset-url'
 import { brandProfiles } from '../../content/brands'
 
 export default defineEventHandler((event) => {
   const config = useRuntimeConfig(event)
   const paths = ['', '/about', '/brands', '/capabilities', '/network', '/contact', ...brandProfiles.map(brand => `/brands/${brand.slug}`)]
   const escapeXml = (value: string) => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
-  const url = (path: string) => escapeXml(absoluteSiteUrl(config.public.siteUrl, path))
+  // path is joined under app.baseURL (see shared/utils/asset-url.ts) before
+  // becoming absolute — these URLs are hand-built here, not routed through
+  // Vue Router/NuxtLink, so they need that applied explicitly to stay
+  // correct under a non-root base path (e.g. a GitHub Pages project site).
+  const url = (path: string) => escapeXml(absoluteSiteUrl(config.public.siteUrl, assetUrl(config.app.baseURL, path)))
   const entries = ['en', 'ar'].flatMap(locale => paths.map((path) => {
     const alternates = ['en', 'ar'].map(code => `<xhtml:link rel="alternate" hreflang="${code}" href="${url(`/${code}${path}`)}"/>`).join('')
     return `<url><loc>${url(`/${locale}${path}`)}</loc>${alternates}<xhtml:link rel="alternate" hreflang="x-default" href="${url(`/en${path}`)}"/></url>`

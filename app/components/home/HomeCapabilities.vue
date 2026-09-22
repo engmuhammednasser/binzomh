@@ -4,6 +4,11 @@ import type { HomeCapabilitiesContent } from '~~/types/content'
 
 defineProps<{ content: HomeCapabilitiesContent }>()
 
+// These photo paths are dynamic (template-literal-built per row index), so
+// they bypass Nuxt's build-time static-asset-URL transform entirely and
+// need explicit base-path resolution — see shared/utils/asset-url.ts.
+const assetUrl = useAssetUrl()
+
 const activeIndex = ref(0)
 const rowEls = ref<HTMLElement[]>([])
 const prefersReduced = usePrefersReducedMotion()
@@ -154,16 +159,16 @@ watch(prefersReduced, syncAutoplay)
             >
               <source
                 type="image/avif"
-                :srcset="`/images/home/capabilities-${n}-480.avif 480w, /images/home/capabilities-${n}-960.avif 960w`"
+                :srcset="`${assetUrl(`/images/home/capabilities-${n}-480.avif`)} 480w, ${assetUrl(`/images/home/capabilities-${n}-960.avif`)} 960w`"
                 sizes="(max-width: 1023px) 22rem, 500px"
               >
               <source
                 type="image/webp"
-                :srcset="`/images/home/capabilities-${n}-480.webp 480w, /images/home/capabilities-${n}-960.webp 960w`"
+                :srcset="`${assetUrl(`/images/home/capabilities-${n}-480.webp`)} 480w, ${assetUrl(`/images/home/capabilities-${n}-960.webp`)} 960w`"
                 sizes="(max-width: 1023px) 22rem, 500px"
               >
               <img
-                :src="`/images/home/capabilities-${n}.png`"
+                :src="assetUrl(`/images/home/capabilities-${n}.png`)"
                 width="1122"
                 height="1402"
                 alt=""

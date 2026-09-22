@@ -4,6 +4,11 @@ import type { HomeHeroContent } from '~~/types/content'
 defineProps<{ content: HomeHeroContent }>()
 
 const siteName = useSiteName()
+// Bound (not static) srcset below already sidesteps a different Vue-compiler
+// bug (see the template comment) — but any dynamic src/srcset also bypasses
+// Nuxt's build-time base-path prefixing, so these paths need it applied
+// explicitly. See shared/utils/asset-url.ts.
+const assetUrl = useAssetUrl()
 </script>
 
 <template>
@@ -83,12 +88,12 @@ const siteName = useSiteName()
             -->
             <source
               type="image/avif"
-              :srcset="'/images/home/hero-960.avif 960w, /images/home/hero-1440.avif 1440w'"
+              :srcset="`${assetUrl('/images/home/hero-960.avif')} 960w, ${assetUrl('/images/home/hero-1440.avif')} 1440w`"
               sizes="(max-width: 767px) calc(100vw - 2.5rem), (max-width: 1023px) calc(100vw - 3.25rem), 648px"
             >
             <source
               type="image/webp"
-              :srcset="'/images/home/hero-960.webp 960w, /images/home/hero-1440.webp 1440w'"
+              :srcset="`${assetUrl('/images/home/hero-960.webp')} 960w, ${assetUrl('/images/home/hero-1440.webp')} 1440w`"
               sizes="(max-width: 767px) calc(100vw - 2.5rem), (max-width: 1023px) calc(100vw - 3.25rem), 648px"
             >
             <img
