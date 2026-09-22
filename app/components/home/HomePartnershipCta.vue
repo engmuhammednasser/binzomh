@@ -67,8 +67,16 @@ html[dir="rtl"] .partnership__accent {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 75% 100%);
 }
 
+/* text-display (see the class on the <h2> above) is the site's largest
+   type-scale step — clamp(2.75rem, 2rem + 3.5vw, 5.5rem), the same
+   unscaled token the Home Hero heading used before it got a local
+   override there. This section never got that pass: with nothing else
+   in the row to balance it (no image, just the CTA button, and a wide
+   flex row with room to spare), the heading was reading oversized the
+   same way. Scoped override here, same approach as the Hero's. */
 .partnership__heading {
   max-inline-size: 32rem;
+  font-size: clamp(2rem, 1.5rem + 2vw, 3.5rem);
 }
 
 .partnership__action {
