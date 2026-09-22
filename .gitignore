@@ -22,3 +22,11 @@ logs
 .env
 .env.*
 !.env.example
+
+# Raw company-profile source and its full asset extraction — internal
+# reference material only. Approved production assets are copied out to
+# public/logos/ individually per docs/unresolved-content-approvals.md;
+# this stays out of git rather than shipping unapproved logos, team
+# photos and blocked metrics to the repo.
+Binzomah Company Profile v2.pptx
+profile company/

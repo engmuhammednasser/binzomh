@@ -4,6 +4,7 @@ import type { HomeBrandsContent, BrandContent } from '~~/types/content'
 defineProps<{ content: HomeBrandsContent, brands: BrandContent[] }>()
 
 const localePath = useLocalePath()
+const assetUrl = useAssetUrl()
 </script>
 
 <template>
@@ -32,13 +33,20 @@ const localePath = useLocalePath()
               :to="localePath(`/brands/${brand.slug}`)"
               class="brands__link"
             >
-              <span class="brands__index">{{ String(index + 1).padStart(2, '0') }}</span>
-              <span class="brands__name">{{ brand.name }}</span>
-              <span class="text-small text-muted brands__meta">{{ $t('brand.view') }}</span>
+              <img
+                v-if="brand.logo"
+                :src="assetUrl(brand.logo.src)"
+                :width="brand.logo.width"
+                :height="brand.logo.height"
+                :alt="brand.name"
+                class="brands__logo-img"
+                decoding="async"
+                loading="lazy"
+              >
               <span
-                class="brands__arrow"
-                aria-hidden="true"
-              />
+                v-else
+                class="brands__name-fallback"
+              >{{ brand.name }}</span>
             </NuxtLink>
           </MotionReveal>
         </li>
@@ -51,7 +59,7 @@ const localePath = useLocalePath()
         <BaseButton
           v-if="content.cta"
           :to="content.cta.to"
-          variant="text"
+          variant="secondary"
         >
           {{ content.cta.label }}
         </BaseButton>
@@ -76,72 +84,53 @@ const localePath = useLocalePath()
 .brands__list {
   list-style: none;
   padding: 0;
-  border-block-start: 1px solid var(--color-border);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
 }
 
 .brands__row {
-  border-block-end: 1px solid var(--color-border);
+  min-inline-size: 0;
 }
 
+/* Brand logo files (public/logos/brands/) carry their own flattened,
+   opaque background per source deck and differ wildly in aspect ratio
+   (630x630 to 1365x667) — a card with object-fit: contain normalizes both
+   instead of stretching or cropping the artwork, and gives the artwork
+   more room to read clearly than a text-row layout would. The three cards
+   share one grid row and stretch to fill the container width evenly. See
+   docs/unresolved-content-approvals.md item 1 for the scoped approval. */
 .brands__link {
   display: flex;
   align-items: center;
-  gap: var(--space-5);
-  padding-block: var(--space-7);
-  padding-inline: var(--space-3);
-  margin-inline: calc(-1 * var(--space-3));
-  border-radius: var(--radius-sm);
-  text-decoration: none;
-  transition: background-color var(--motion-duration-base) var(--motion-ease);
+  justify-content: center;
+  inline-size: 100%;
+  block-size: 12rem;
+  padding: var(--space-6);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--motion-duration-base) var(--motion-ease), box-shadow var(--motion-duration-base) var(--motion-ease);
 }
 
 .brands__link:hover {
-  background: var(--color-bg);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-sm);
 }
 
-.brands__link:hover .brands__name {
-  color: var(--color-text-muted);
+.brands__logo-img {
+  max-inline-size: 100%;
+  max-block-size: 100%;
+  object-fit: contain;
 }
 
-.brands__index {
-  flex: 0 0 auto;
-  inline-size: 2.5rem;
+/* Fallback for a future roster entry that ships before its own logo
+   clears approval — see the optional BrandLogo field in types/brands.ts. */
+.brands__name-fallback {
   font-size: var(--font-size-h4);
   font-weight: 600;
-  color: var(--color-text-subtle);
-}
-
-.brands__name {
-  flex: 1 1 auto;
-  /* A lower floor than --font-size-h1: brand names are single unbreakable
-     words (e.g. "Embryolisse") in a flex row with fixed-width siblings —
-     the shared h1 clamp's minimum was still wide enough to overflow a
-     320px viewport. */
-  font-size: clamp(1.375rem, 1rem + 4.5vw, var(--font-size-h1));
-  font-weight: 600;
-  line-height: 1.15;
-  min-inline-size: 0;
-  overflow-wrap: anywhere;
-  transition: color var(--motion-duration-fast) var(--motion-ease);
-}
-
-.brands__meta {
-  flex: 0 0 auto;
-}
-
-.brands__arrow {
-  flex: 0 0 auto;
-  inline-size: 0.5rem;
-  block-size: 0.5rem;
-  border-block-start: 2px solid var(--color-text);
-  border-inline-end: 2px solid var(--color-text);
-  transform: rotate(45deg);
-  opacity: 0;
-  transition: opacity var(--motion-duration-base) var(--motion-ease);
-}
-
-.brands__link:hover .brands__arrow {
-  opacity: 1;
+  color: var(--color-text);
+  text-align: center;
 }
 
 .brands__disclaimer {
@@ -149,14 +138,14 @@ const localePath = useLocalePath()
   max-inline-size: 34rem;
 }
 
-/* The Arabic "عرض العلامة التجارية" meta label is long enough, alongside
-   the index column, to squeeze the name column at 320-390px. The whole
-   row is already a link, so the label is a nice-to-have, not essential —
-   drop it rather than crowd the brand name. */
-@media (max-width: 480px) {
-  .brands__meta,
-  .brands__arrow {
-    display: none;
+@media (max-width: 640px) {
+  .brands__list {
+    gap: var(--space-3);
+  }
+
+  .brands__link {
+    block-size: 6rem;
+    padding: var(--space-3);
   }
 }
 </style>

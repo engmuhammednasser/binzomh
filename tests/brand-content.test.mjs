@@ -69,8 +69,12 @@ test('EN/AR page copy and channel anchors have matching structures', () => {
   assert.deepEqual(shape(networkAr), shape(networkEn))
   assert.deepEqual(networkEn.channels.map(channel => channel.id), ['pharmacies', 'e-commerce', 'hospitals', 'wholesale', 'cosmetics-stores'])
   assert.deepEqual(networkAr.channels.map(channel => channel.id), networkEn.channels.map(channel => channel.id))
-  assert.deepEqual(networkEn.partners.names, [])
-  assert.deepEqual(networkAr.partners.names, [])
+  assert.equal(networkEn.partners.names.length, 25)
+  assert.deepEqual(networkAr.partners.names.map(partner => partner.name), networkEn.partners.names.map(partner => partner.name))
+  for (const partner of networkEn.partners.names) {
+    assert.equal(partner.status, 'approved', partner.name)
+    assert.match(partner.logo.src, /^\/logos\/partners\//, partner.name)
+  }
   for (const brand of brandProfiles) {
     for (const locale of ['en', 'ar']) {
       const view = presentBrand(brand, locale)

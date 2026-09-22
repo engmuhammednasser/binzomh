@@ -14,12 +14,20 @@ or legal names.
 
 ## 1. Brand logos
 
-Production use: **BLOCKED**.
+Production use: **APPROVED (2026-09-22)** for the three working-roster
+logos — Embryolisse, Zoā, RVB LAB — on the homepage brand teaser.
 
-PowerPoint-extracted logos are reference-only and must not be published as
-production assets. For N02, use neutral text placeholders carrying the
-names **Embryolisse**, **Zoā**, and **RVB LAB**. Do not fabricate, redraw,
-or imitate their logos.
+The owner confirmed the PowerPoint-extracted files as the official current
+logos and directed their production use. Files were copied byte-for-byte
+from the reference library (`profile company/01-logos/brands/`) into
+`public/logos/brands/` with no cropping, recoloring, or background
+removal — each source file carries its own flattened (non-transparent)
+background, framed by the homepage teaser's logo tile rather than edited.
+This approval covers only these three files for this placement; it does
+not extend to the ~28 other partner/customer logos in the reference
+library, nor to other pages, without a separate, scoped approval. Do not
+fabricate, redraw, or imitate any logo not covered by an approval like
+this one.
 
 ## 2. Brand roster and relationships
 
@@ -42,9 +50,19 @@ separate requirements; see [brand content rules](../content/brands/README.md).
 "Z"-ribbon geometry with the binZomah Cosmetics lockup), and directed its
 use in the homepage Hero on both `/en` and `/ar`. This is a supplied
 creative asset, not photography of a real facility/product, so it does
-not need the "not a real facility" caveat below — but it is still the
-only image approved for public use on the site; do not reuse it as a
-stand-in for warehouse, product, or channel imagery.
+not need the "not a real facility" caveat below.
+
+**About and Capabilities photography: SUPPLIED AND APPROVED (2026-09-22)**
+— the owner separately supplied `public/images/home/about.png` (real
+corporate photography, replacing the About teaser's placeholder) and
+`public/images/home/capabilities-1/2/3.png` (one photo per capability
+area, replacing the Capabilities teaser's placeholders), committed the
+same day. This entry was missed at commit time; recorded here after the
+fact from the owner's prior direction to use them on the homepage. Both
+sets are approved for the homepage teasers and, as of 2026-09-22, are
+also reused on the `/capabilities` page's own Hero and three sections
+(same photos, same approval — no new imagery). Not yet extended to the
+`/about` page's own Hero/Overview, which still show the placeholder.
 
 Warehouse and channel photography: **NOT APPROVED**.
 
@@ -129,6 +147,37 @@ Do not describe either as a registered legal or trademark name without
 formal company documentation. Legal-name verification does not block N02.
 This approval applies to the display-name fields, not to whole pages or
 unrelated draft content.
+
+## 9. Channel partner / customer logos
+
+Production use: **APPROVED (2026-09-22)** for 25 named entries, on the
+`/network` page's "Clients & partners" section, **and** (approved the same
+day, extending scope) as an 8-logo curated preview in the homepage's
+Network teaser section (`content/en/home.ts` / `content/ar/home.ts`
+`network.logos`) — a subset of the same 25, not new assets.
+
+The owner approved display of the identifiable client/partner logos from
+the company profile's channel slides (pharmacies, e-commerce, hospitals,
+wholesale, cosmetics stores) — see `content/en/network.ts` and
+`content/ar/network.ts` for the exact roster. Files were copied
+byte-for-byte from the reference library
+(`profile company/01-logos/partners-and-customers/`) into
+`public/logos/partners/` with no cropping, recoloring or background
+removal.
+
+Explicitly **excluded** from this approval, and still **BLOCKED**:
+
+- The 3 unidentified generic marks in the same reference folders
+  (`wholesale-mark-01`, `wholesale-mark-02`, `cosmetics-store-mark-12`) —
+  no confirmed company name exists for these.
+- Any use of these logos, or any other partner/customer logo in the
+  reference library, on a page other than `/network` and the homepage
+  Network teaser, without a separate, scoped approval.
+- Any relationship language beyond reproducing the company profile's own
+  listing (see the "Brand roster and relationships" caution in item 2,
+  which applies equally here) — logo presence does not establish or claim
+  a current, verified commercial relationship. The displayed copy
+  (`partners.note` in both locale files) states this explicitly.
 
 ## Other continuing N01 assumptions
 

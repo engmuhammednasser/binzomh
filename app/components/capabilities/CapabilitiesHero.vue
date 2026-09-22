@@ -2,6 +2,8 @@
 import type { CapabilitiesHeroContent } from '~~/types/content'
 
 defineProps<{ content: CapabilitiesHeroContent }>()
+
+const assetUrl = useAssetUrl()
 </script>
 
 <template>
@@ -29,7 +31,30 @@ defineProps<{ content: CapabilitiesHeroContent }>()
         :delay="150"
         class="cap-hero__visual"
       >
-        <HomeEditorialVisual aspect="4 / 3" />
+        <div class="cap-hero__visual-frame">
+          <picture>
+            <source
+              type="image/avif"
+              :srcset="`${assetUrl('/images/home/capabilities-1-480.avif')} 480w, ${assetUrl('/images/home/capabilities-1-960.avif')} 960w`"
+              sizes="(max-width: 1023px) 20rem, 34vw"
+            >
+            <source
+              type="image/webp"
+              :srcset="`${assetUrl('/images/home/capabilities-1-480.webp')} 480w, ${assetUrl('/images/home/capabilities-1-960.webp')} 960w`"
+              sizes="(max-width: 1023px) 20rem, 34vw"
+            >
+            <img
+              :src="assetUrl('/images/home/capabilities-1.png')"
+              width="1122"
+              height="1402"
+              alt=""
+              aria-hidden="true"
+              class="cap-hero__visual-image"
+              loading="lazy"
+              decoding="async"
+            >
+          </picture>
+        </div>
       </MotionReveal>
     </BaseContainer>
   </section>
@@ -61,6 +86,27 @@ defineProps<{ content: CapabilitiesHeroContent }>()
 
 .cap-hero__visual {
   flex: 1 1 34%;
+}
+
+/* Same frame language as the homepage Capabilities/About visuals: a
+   hairline edge and a soft lifted shadow, sized to the source photo's own
+   1122:1402 ratio. Reuses the lead "Brand Partnerships" photo since the
+   hero doesn't map to one of the three capability items. */
+.cap-hero__visual-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1122 / 1402;
+  border-radius: var(--radius-md);
+  border: 1px solid rgb(17 17 17 / 0.06);
+  box-shadow: 0 24px 48px -28px rgb(17 17 17 / 0.28);
+}
+
+.cap-hero__visual-image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+  background: var(--color-bg-raised);
 }
 
 @media (max-width: 1023px) {

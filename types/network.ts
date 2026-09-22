@@ -1,4 +1,4 @@
-import type { ContentStatus, CtaLink, NetworkContent } from './content'
+import type { ContentStatus, CtaLink, NetworkContent, PartnerLogo } from './content'
 
 export interface NetworkChannel {
   id: string
@@ -18,8 +18,11 @@ export interface NetworkPageContent extends NetworkContent {
     body: string
     pendingLabel: string
     pendingBody: string
-    /** Display only names explicitly cleared for public use. No implied endorsements. */
-    names: { name: string, status: ContentStatus }[]
+    /** Shown under the logo grid only when at least one entry is approved. */
+    note?: string
+    /** Display only entries explicitly cleared for public use. No implied
+     *  endorsement beyond reproducing the company profile's own listing. */
+    names: { name: string, status: ContentStatus, logo?: PartnerLogo }[]
   }
   enquiry: { heading: string, body: string, cta: CtaLink }
 }

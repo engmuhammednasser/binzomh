@@ -12,4 +12,4 @@ export function findBrand(slug: string) {
 }
 
 // Preserve the homepage's existing contract without exposing optional claims.
-export const homeBrandCandidates: BrandContent[] = brandProfiles.map(({ slug, name, status }) => ({ slug, name, status }))
+export const homeBrandCandidates: BrandContent[] = brandProfiles.map(({ slug, name, status, logo }) => ({ slug, name, status, logo }))

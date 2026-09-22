@@ -6,8 +6,14 @@ company profile; roster status remains **DRAFT / PENDING COMPANY
 CONFIRMATION**. See the [owner decision record](../../docs/unresolved-content-approvals.md).
 
 N02 may use draft brand content with neutral text placeholders carrying
-these names. Do not fabricate or redraw logos. PowerPoint-extracted logos
-remain reference-only; production logo use is **BLOCKED**.
+these names. Do not fabricate or redraw logos.
+
+Logo production use for these three brands is **APPROVED (2026-09-22)**,
+scoped to the homepage brand teaser — see
+[owner decision record](../../docs/unresolved-content-approvals.md) item 1.
+All other PowerPoint-extracted logos (partner/customer logos, other
+brands) remain reference-only; production use of any logo outside this
+scoped approval is still **BLOCKED**.
 
 Do not describe any brand relationship as “exclusive distributor,”
 “exclusive partner,” “official distributor,” or similar contractual

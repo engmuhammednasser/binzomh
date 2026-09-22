@@ -3,6 +3,7 @@ import type { NetworkPageContent } from '~~/types/network'
 
 const props = defineProps<{ content: NetworkPageContent }>()
 const approvedPartners = computed(() => props.content.partners.names.filter(partner => partner.status === 'approved' && partner.name.trim()))
+const assetUrl = useAssetUrl()
 </script>
 
 <template>
@@ -64,8 +65,8 @@ const approvedPartners = computed(() => props.content.partners.names.filter(part
     </section>
 
     <section class="network-partners surface-alt">
-      <BaseContainer class="network-partners__grid">
-        <div>
+      <BaseContainer>
+        <div class="network-partners__head">
           <h2 class="text-h2">
             {{ content.partners.heading }}
           </h2>
@@ -73,18 +74,35 @@ const approvedPartners = computed(() => props.content.partners.names.filter(part
             {{ content.partners.body }}
           </p>
         </div>
-        <ul
-          v-if="approvedPartners.length"
-          class="network-partners__names"
-        >
-          <li
-            v-for="partner in approvedPartners"
-            :key="partner.name"
-            class="text-h3"
+        <template v-if="approvedPartners.length">
+          <ul class="network-partners__logos">
+            <li
+              v-for="partner in approvedPartners"
+              :key="partner.name"
+              class="network-partners__logo"
+            >
+              <img
+                v-if="partner.logo"
+                :src="assetUrl(partner.logo.src)"
+                :width="partner.logo.width"
+                :height="partner.logo.height"
+                :alt="partner.name"
+                decoding="async"
+                loading="lazy"
+              >
+              <span
+                v-else
+                class="text-small"
+              >{{ partner.name }}</span>
+            </li>
+          </ul>
+          <p
+            v-if="content.partners.note"
+            class="text-small text-muted network-partners__note"
           >
-            {{ partner.name }}
-          </li>
-        </ul>
+            {{ content.partners.note }}
+          </p>
+        </template>
         <div
           v-else
           class="network-partners__pending"
@@ -169,12 +187,16 @@ const approvedPartners = computed(() => props.content.partners.names.filter(part
   padding-block: var(--space-section);
 }
 
-.network-reach__grid,
-.network-partners__grid {
+.network-reach__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: start;
   gap: var(--space-9);
+}
+
+.network-partners__head {
+  max-inline-size: 34rem;
+  margin-block-end: var(--space-7);
 }
 
 .network-reach__note {
@@ -196,12 +218,47 @@ const approvedPartners = computed(() => props.content.partners.names.filter(part
   margin-block-start: 0;
 }
 
-.network-partners__names {
-  padding-inline-start: var(--space-5);
+/* Source logos (public/logos/partners/) are already transparent PNGs at
+   modest native resolution (~130-200px) — a dense grayscale-to-color wall
+   suits both the file quality and a large roster better than the singular,
+   larger cards used for the three principal brand logos. See
+   docs/unresolved-content-approvals.md item 9 for the scoped approval. */
+.network-partners__logos {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  gap: var(--space-4);
 }
 
-.network-partners__names li + li {
-  margin-block-start: var(--space-4);
+.network-partners__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  block-size: 5.5rem;
+  padding: var(--space-3);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.network-partners__logo img {
+  max-inline-size: 100%;
+  max-block-size: 100%;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: 0.7;
+  transition: filter var(--motion-duration-base) var(--motion-ease), opacity var(--motion-duration-base) var(--motion-ease);
+}
+
+.network-partners__logo:hover img {
+  filter: grayscale(0);
+  opacity: 1;
+}
+
+.network-partners__note {
+  margin-block-start: var(--space-6);
+  max-inline-size: 34rem;
 }
 
 .network-enquiry p {
@@ -210,8 +267,7 @@ const approvedPartners = computed(() => props.content.partners.names.filter(part
 
 @media (max-width: 767px) {
   .network-hero__grid,
-  .network-reach__grid,
-  .network-partners__grid {
+  .network-reach__grid {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-7);
   }

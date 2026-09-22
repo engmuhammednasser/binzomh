@@ -68,8 +68,19 @@ export const homeContent: HomeContent = {
     heading: 'Reaching Every Channel',
     intro: 'The Binzomah distribution network reaches five key channels across Saudi Arabia.',
     channels: ['Pharmacies', 'E-Commerce', 'Hospitals', 'Wholesale', 'Cosmetics Stores'],
+    logosLabel: 'A sample of the partners across these channels.',
+    logos: [
+      { name: 'Nahdi', logo: { src: '/logos/partners/nahdi.png', width: 160, height: 160 } },
+      { name: 'Al-Dawaa', logo: { src: '/logos/partners/al-dawaa.png', width: 184, height: 184 } },
+      { name: 'Boutiqaat', logo: { src: '/logos/partners/boutiqaat.png', width: 164, height: 163 } },
+      { name: 'Ounass', logo: { src: '/logos/partners/ounass.png', width: 150, height: 148 } },
+      { name: 'Dr. Sulaiman Al Habib', logo: { src: '/logos/partners/dr-sulaiman-al-habib.png', width: 171, height: 168 } },
+      { name: 'Wared Co.', logo: { src: '/logos/partners/wared-co.png', width: 168, height: 169 } },
+      { name: 'Gold Apple', logo: { src: '/logos/partners/gold-apple.png', width: 150, height: 150 } },
+      { name: 'Dunia Al-Osra', logo: { src: '/logos/partners/dunia-alosra.png', width: 150, height: 148 } },
+    ],
     cta: { label: 'Explore Our Network', to: '/network' },
-    note: 'These are distribution channels reached, not Binzomah-owned locations — see item 5 on unpublished metrics.',
+    note: 'These are distribution channels reached, not Binzomah-owned locations — see item 5 on unpublished metrics. Logos are a curated homepage preview of the /network "Clients & partners" roster — see item 9.',
   },
 
   partnership: {

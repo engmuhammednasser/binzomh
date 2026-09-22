@@ -73,8 +73,10 @@ for (const origin of ['https://binzomah.net', 'https://preview.binzomah.example'
               assert.ok(html.includes(`href="#${channel.id}"`))
             }
             assert.ok(html.includes(network.reach.note))
-            assert.ok(html.includes(network.partners.pendingBody))
-            assert.ok(!html.includes('class="network-partners__names"'))
+            assert.ok(!html.includes(network.partners.pendingBody))
+            assert.ok(html.includes('class="network-partners__logos"'))
+            assert.ok(html.includes(network.partners.note))
+            for (const partner of network.partners.names) assert.ok(html.includes(escapeHtml(partner.name)), partner.name)
             assert.ok(!/70\+|3000\+|100\+|50%/.test(html))
           }
         }

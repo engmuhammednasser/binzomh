@@ -77,6 +77,10 @@ export interface HomeNetworkContent extends ContentBase {
   heading: string
   intro: string
   channels: string[]
+  logosLabel?: string
+  /** A curated preview only — the full roster lives on /network. See
+   *  docs/unresolved-content-approvals.md item 9. */
+  logos?: { name: string, logo: PartnerLogo }[]
   cta?: CtaLink
 }
 
@@ -215,13 +219,25 @@ export interface ContactContent extends ContentBase {
   email?: string
 }
 
+export interface BrandLogo {
+  /** Approved production asset — never a presentation-deck extraction. */
+  src: `/logos/brands/${string}`
+  width: number
+  height: number
+}
+
 export interface BrandContent extends ContentBase {
   slug: string
   name: string
   introduction?: string
   relationship?: string
-  /** Path under /logos, only ever an approved production asset — never a
-   *  presentation-deck extraction. */
-  logo?: string
+  logo?: BrandLogo
   officialUrl?: string
+}
+
+export interface PartnerLogo {
+  /** Approved production asset — never a presentation-deck extraction. */
+  src: `/logos/partners/${string}`
+  width: number
+  height: number
 }

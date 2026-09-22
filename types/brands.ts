@@ -1,4 +1,4 @@
-import type { ContentBase, ContentStatus, CtaLink, LocaleCode } from './content'
+import type { BrandLogo, ContentBase, ContentStatus, CtaLink, LocaleCode } from './content'
 
 /** Approval belongs to this field, not to the roster entry or its neighbours. */
 export interface BrandField<T> {
@@ -23,6 +23,10 @@ export interface BrandProfile extends ContentBase {
   slug: string
   /** The design-approved name is shared across locales; it is not a logo. */
   name: string
+  /** Approved production logo — docs/unresolved-content-approvals.md item 1
+   *  (approved 2026-09-22). Optional so a future roster entry can ship
+   *  before its own logo clears approval. */
+  logo?: BrandLogo
   introduction?: BrandField<string>
   relationship?: BrandField<string>
   image?: BrandField<BrandImage>

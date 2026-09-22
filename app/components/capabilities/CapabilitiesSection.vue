@@ -2,6 +2,8 @@
 import type { CapabilitiesSectionItem } from '~~/types/content'
 
 defineProps<{ item: CapabilitiesSectionItem, index: number }>()
+
+const assetUrl = useAssetUrl()
 </script>
 
 <template>
@@ -16,10 +18,30 @@ defineProps<{ item: CapabilitiesSectionItem, index: number }>()
             class="text-display cap-section__number"
             aria-hidden="true"
           >{{ item.number }}</span>
-          <HomeEditorialVisual
-            :variant="index"
-            aspect="4 / 3"
-          />
+          <div class="cap-section__visual-frame">
+            <picture>
+              <source
+                type="image/avif"
+                :srcset="`${assetUrl(`/images/home/capabilities-${index + 1}-480.avif`)} 480w, ${assetUrl(`/images/home/capabilities-${index + 1}-960.avif`)} 960w`"
+                sizes="(max-width: 1023px) 22rem, 42vw"
+              >
+              <source
+                type="image/webp"
+                :srcset="`${assetUrl(`/images/home/capabilities-${index + 1}-480.webp`)} 480w, ${assetUrl(`/images/home/capabilities-${index + 1}-960.webp`)} 960w`"
+                sizes="(max-width: 1023px) 22rem, 42vw"
+              >
+              <img
+                :src="assetUrl(`/images/home/capabilities-${index + 1}.png`)"
+                width="1122"
+                height="1402"
+                alt=""
+                aria-hidden="true"
+                class="cap-section__visual-image"
+                loading="lazy"
+                decoding="async"
+              >
+            </picture>
+          </div>
         </div>
       </MotionReveal>
 
@@ -76,6 +98,27 @@ defineProps<{ item: CapabilitiesSectionItem, index: number }>()
   margin-block-end: var(--space-4);
   color: var(--color-border-strong);
   line-height: 1;
+}
+
+/* Same frame language as the homepage Capabilities teaser: a hairline
+   edge and a soft lifted shadow, sized to the source photos' own
+   1122:1402 ratio. Reuses public/images/home/capabilities-1/2/3, the same
+   approved photos already shown for these three items on the homepage. */
+.cap-section__visual-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1122 / 1402;
+  border-radius: var(--radius-md);
+  border: 1px solid rgb(17 17 17 / 0.06);
+  box-shadow: 0 24px 48px -28px rgb(17 17 17 / 0.28);
+}
+
+.cap-section__visual-image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+  background: var(--color-bg-raised);
 }
 
 .cap-section__text {
