@@ -1,0 +1,67 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deployment at a time; let an in-flight run finish rather than
+# cancelling it mid-upload.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Generate static site
+        env:
+          # Bare origin only (no path) — the project's own absoluteSiteUrl()
+          # helper (shared/utils/site-url.ts) rejects an origin with a path
+          # segment. The GitHub Pages sub-path is applied separately via
+          # NUXT_APP_BASE_URL below, and both are combined correctly by
+          # shared/utils/asset-url.ts wherever a URL is built by hand
+          # instead of through Vue Router / NuxtLink.
+          NUXT_PUBLIC_SITE_URL: https://${{ github.repository_owner }}.github.io
+          NUXT_PUBLIC_I18N_BASE_URL: https://${{ github.repository_owner }}.github.io
+          # GitHub Pages project sites (as opposed to a <user>.github.io
+          # user/org site) are served from /<repo-name>/, not the domain
+          # root — this must match the actual repository name.
+          NUXT_APP_BASE_URL: /${{ github.event.repository.name }}/
+          # Not required on Linux runners (this works around a Windows-only
+          # file-rename race hit during local testing), but the site is
+          # tiny — ~55 prerendered routes in ~2s — so serializing costs
+          # nothing and removes any doubt.
+          NITRO_PRERENDER_CONCURRENCY: 1
+        run: npm run generate
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./.output/public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
