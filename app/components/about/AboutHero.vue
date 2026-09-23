@@ -48,7 +48,7 @@ defineProps<{ content: AboutHeroContent }>()
         -->
         <div class="about-hero__visual-frame media-frame">
           <img
-            src="/images/about/hero.png"
+            src="/images/about/hero.jpeg"
             width="1448"
             height="1086"
             alt=""

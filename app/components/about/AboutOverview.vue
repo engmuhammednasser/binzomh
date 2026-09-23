@@ -23,7 +23,7 @@ defineProps<{ content: AboutOverviewContent }>()
         -->
         <div class="overview__visual-frame media-frame">
           <img
-            src="/images/about/overview.png"
+            src="/images/about/overview.jpeg"
             width="1086"
             height="1448"
             alt=""

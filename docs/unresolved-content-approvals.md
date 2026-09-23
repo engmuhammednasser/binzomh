@@ -97,12 +97,17 @@ coverage figures accompany them. Files were renamed from the owner's
 section-named originals to match the project's asset conventions; the bytes
 are unchanged. No EditorialVisual placeholder remains anywhere on `/about`.
 
-Pending for all four page visuals and the eight portraits: **AVIF/WebP
-derivatives have not been generated** — this project has no image tooling,
-so the originals ship as supplied. That is roughly 9 MB across the About
-page, about 2.1 MB of it the eagerly-loaded Hero PNG. Generating
-derivatives (or supplying JPEGs) is by a wide margin the largest
-performance item on this page.
+**Delivery format (2026-09-23):** the four supplied page visuals were
+re-encoded from PNG to JPEG at quality 85 for delivery, taking the page's
+imagery from about 8.4 MB to about 0.9 MB. Photographic content in a
+lossless format was the whole cost — the pixels, dimensions and framing are
+unchanged, and no crop, recolour or retouch was applied. Both encodes were
+compared before the PNGs were removed.
+
+The encode used the JPEG encoder built into Windows (System.Drawing), not a
+new dependency; the project still has no image toolchain, so AVIF/WebP
+derivatives and multiple widths remain ungenerated. The seven team
+portraits were already JPEGs and are untouched.
 
 Warehouse and channel photography: **NOT APPROVED**.
 

@@ -39,7 +39,7 @@ defineProps<{ content: AboutLocationContent }>()
       >
         <div class="location__card media-frame">
           <img
-            src="/images/about/location.png"
+            src="/images/about/location.jpeg"
             width="1536"
             height="1024"
             alt=""

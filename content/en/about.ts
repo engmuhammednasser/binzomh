@@ -120,7 +120,7 @@ export const aboutContent: AboutContent = {
         slug: 'rashid-bin-zomah',
         name: 'Dr. Rashid bin Zomah',
         role: 'Chairman',
-        photo: '/images/about/chairman.png',
+        photo: '/images/about/chairman.jpeg',
         width: 1122,
         height: 1402,
       },
