@@ -18,7 +18,7 @@ const assetUrl = useAssetUrl()
             class="text-display cap-section__number"
             aria-hidden="true"
           >{{ item.number }}</span>
-          <div class="cap-section__visual-frame">
+          <div class="cap-section__visual-frame media-frame">
             <picture>
               <source
                 type="image/avif"

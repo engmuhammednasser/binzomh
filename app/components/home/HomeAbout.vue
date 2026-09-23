@@ -56,7 +56,7 @@ const assetUrl = useAssetUrl()
           upscaled. loading="lazy" (not eager like the Hero image) since
           this section sits below the fold.
         -->
-        <div class="about__visual-frame">
+        <div class="about__visual-frame media-frame">
           <picture>
             <source
               type="image/avif"

@@ -123,6 +123,48 @@ html[dir="rtl"] .text-label {
   color: var(--color-text-on-dark);
 }
 
+/*
+  Brand media frame. Two diagonally opposite corners cut on the same angle,
+  extending to real photography the die-cut language the brand's own panels
+  already use (see the geometric treatment in EditorialVisual.vue), so
+  photos and brand graphics read as one system rather than two.
+
+  Only the clip lives here — each frame keeps its own radius, background and
+  sizing. Elements that set `overflow: hidden` for a `object-fit` crop keep
+  doing so; the clip applies on top of it.
+
+  --media-cut is the leg length of each cut. Override it locally wherever
+  the frame is much smaller than an editorial photo: on a 200px portrait
+  card the default would eat a visible share of the face.
+*/
+.media-frame {
+  --media-cut: clamp(1.25rem, 3vw, 2.75rem);
+
+  clip-path: polygon(
+    var(--media-cut) 0,
+    100% 0,
+    100% calc(100% - var(--media-cut)),
+    calc(100% - var(--media-cut)) 100%,
+    0 100%,
+    0 var(--media-cut)
+  );
+}
+
+/* Mirrored under RTL, following the same convention EditorialVisual's own
+   die-cut uses: the cut stays on the same side relative to reading
+   direction, so the detail sits where the eye leaves the frame in either
+   locale. */
+html[dir="rtl"] .media-frame {
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--media-cut)) 0,
+    100% var(--media-cut),
+    100% 100%,
+    var(--media-cut) 100%,
+    0 calc(100% - var(--media-cut))
+  );
+}
+
 /* ==========================================================================
    Accessibility
    ========================================================================== */

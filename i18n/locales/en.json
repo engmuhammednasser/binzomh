@@ -7,6 +7,7 @@
     "network": "Our Network",
     "contact": "Contact Us",
     "skipToContent": "Skip to content",
+    "backToTop": "Back to top",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "mainNavigation": "Main navigation",
@@ -22,14 +23,27 @@
     "rights": "All rights reserved.",
     "tagline": "Beauty Care & Health Care distribution in Saudi Arabia.",
     "explore": "Explore",
-    "location": "Our Location",
-    "addressPending": "Draft — pending confirmation"
+    "contact": "Contact",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "addressLabel": "Address",
+    "hoursLabel": "Working hours",
+    "followUs": "Follow Us",
+    "followOn": "Follow us on {platform}"
   },
   "common": {
     "comingSoon": "Content for this page is being prepared and reviewed."
   },
   "brand": {
     "view": "View Brand"
+  },
+  "team": {
+    "carousel": "Management team",
+    "previous": "Previous team member",
+    "next": "Next team member",
+    "show": "Show {name}, {role}",
+    "pause": "Pause automatic rotation",
+    "play": "Resume automatic rotation"
   },
   "notFound": {
     "title": "Page not found",

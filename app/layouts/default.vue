@@ -17,6 +17,7 @@ const { t } = useI18n()
       <slot />
     </main>
     <AppFooter />
+    <BackToTop />
   </div>
 </template>
 

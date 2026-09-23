@@ -31,7 +31,7 @@ const assetUrl = useAssetUrl()
         :delay="150"
         class="cap-hero__visual"
       >
-        <div class="cap-hero__visual-frame">
+        <div class="cap-hero__visual-frame media-frame">
           <picture>
             <source
               type="image/avif"

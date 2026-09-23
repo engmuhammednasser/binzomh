@@ -74,7 +74,7 @@ const assetUrl = useAssetUrl()
             column settles at in the desktop 43/57 split (see the
             min-width: 1024px rule).
         -->
-        <div class="hero__visual-frame">
+        <div class="hero__visual-frame media-frame">
           <picture>
             <!--
               :srcset (bound) rather than a static srcset attribute: Vue's

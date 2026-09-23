@@ -158,21 +158,71 @@ export interface AboutStrategiesContent extends ContentBase {
 }
 
 /**
- * Chairman/team content stays structural only — `body` must never carry an
- * invented name, photo, or biography. The source register tracks this as
- * PENDING an explicit IA decision (feature on About? a future Leadership
- * page? omit?) — see docs/unresolved-content-approvals.md and the source
- * sitemap's "Newly discovered content" section.
+ * Headquarters and regional positioning. Deliberately carries no coverage
+ * figures: city counts, retail-point counts and every other company metric
+ * stay blocked under docs/unresolved-content-approvals.md item 5.
+ */
+export interface AboutLocationContent extends ContentBase {
+  eyebrow: string
+  heading: string
+  body: string
+  /** Large display label for the HQ city, e.g. "Riyadh". */
+  city: string
+  /** Short qualifier shown under the city, e.g. "Headquarters". */
+  cityLabel: string
+  /** Street address — rendered only while approved; see item 6. */
+  address?: string
+}
+
+/**
+ * A named person shown on the About page. Every field is real, sourced
+ * content — never an invented name, title, quote or portrait.
+ *
+ * `photo` must point at a file copied byte-for-byte from the company
+ * profile's own asset library into public/images/about/. Publication of
+ * these names and portraits was approved by the owner on 2026-09-23 — see
+ * docs/unresolved-content-approvals.md item 10. Do not add a person here
+ * who that approval does not cover.
+ */
+export interface AboutPerson {
+  /** Stable key for list rendering; also the portrait's file stem. */
+  slug: string
+  name: string
+  role: string
+  photo: `/images/about/${string}`
+  width: number
+  height: number
+}
+
+export interface AboutChairmanContent extends ContentBase {
+  label: string
+  person: AboutPerson
+  /** Biography paragraphs, as documented in the company profile. */
+  biography: string[]
+  /** Quote attributed to the chairman in the profile. */
+  quote: string
+}
+
+/**
+ * Chairman and management team. Populated from the company profile under
+ * the owner's 2026-09-23 approval (item 10); before that this section was a
+ * structural placeholder with no name or photo. The old rule still holds
+ * for anyone the approval does not cover — never invent a person. `body`
+ * stays the section's own framing copy, not a biography.
  */
 export interface AboutLeadershipContent extends ContentBase {
   eyebrow: string
   heading: string
   body: string
+  chairman?: AboutChairmanContent
+  teamLabel?: string
+  team?: AboutPerson[]
 }
 
 export interface AboutContent extends ContentBase {
   hero: AboutHeroContent
   overview: AboutOverviewContent
+  location: AboutLocationContent
   story: AboutStoryContent
   visionMission: AboutVisionMissionContent
   strategies: AboutStrategiesContent
@@ -213,10 +263,39 @@ export interface NetworkContent extends ContentBase {
 export interface ContactContent extends ContentBase {
   title: string
   intro: string
-  /** Left undefined until the company confirms current, publishable details. */
+  /**
+   * Public contact details. Each stays undefined until the company confirms
+   * it is current and publishable — see docs/unresolved-content-approvals.md
+   * item 6 for the approval state of each field.
+   */
   address?: string
+  /**
+   * Human-readable display form, e.g. "+966 50 006 4807". The dialable
+   * tel: target is derived from this at render time rather than stored a
+   * second time, so the two can never disagree.
+   */
   phone?: string
   email?: string
+  /** Already-localized working hours line. */
+  hours?: string
+}
+
+/**
+ * Platforms the footer can link to. AppFooter.vue maps every member of
+ * this union to a display name, so adding a platform here without naming
+ * it there is a type error rather than a silently blank link.
+ */
+export type SocialPlatform = 'linkedin' | 'instagram' | 'x' | 'facebook' | 'tiktok' | 'youtube'
+
+export interface SocialLink {
+  platform: SocialPlatform
+  /**
+   * Absolute URL of the official company profile, exactly as supplied by
+   * the company. Never derive one from a handle: per
+   * docs/unresolved-content-approvals.md item 6 the profile's
+   * "@Binzomah Cosmetics" has no identified platform.
+   */
+  url: string
 }
 
 export interface BrandLogo {

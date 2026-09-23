@@ -11,10 +11,27 @@ defineProps<{ content: AboutOverviewContent }>()
         :delay="150"
         class="overview__visual"
       >
-        <HomeEditorialVisual
-          :variant="1"
-          aspect="3 / 4"
-        />
+        <!--
+          Owner-supplied brand visual (2026-09-23), replacing the abstract
+          EditorialVisual placeholder. Conceptual architecture, not a
+          documented Binzomah site, so it carries no facility claim — same
+          footing as the page Hero. Decorative: the heading and body beside
+          it already carry the section's meaning in real text.
+
+          Its 1086x1448 source is exactly the 3/4 the placeholder declared,
+          so the column's proportions are unchanged.
+        -->
+        <div class="overview__visual-frame media-frame">
+          <img
+            src="/images/about/overview.png"
+            width="1086"
+            height="1448"
+            alt=""
+            class="overview__image"
+            loading="lazy"
+            decoding="async"
+          >
+        </div>
       </MotionReveal>
 
       <MotionReveal class="overview__text">
@@ -41,6 +58,18 @@ defineProps<{ content: AboutOverviewContent }>()
 
 .overview__visual {
   flex: 1 1 38%;
+}
+
+.overview__visual-frame {
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-raised);
+}
+
+.overview__image {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
 }
 
 .overview__text {

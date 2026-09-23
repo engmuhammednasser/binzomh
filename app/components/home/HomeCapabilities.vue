@@ -150,7 +150,7 @@ watch(prefersReduced, syncAutoplay)
         </div>
 
         <div class="capabilities__visual">
-          <div class="capabilities__visual-frame">
+          <div class="capabilities__visual-frame media-frame">
             <picture
               v-for="n in VISUAL_COUNT"
               :key="n"

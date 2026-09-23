@@ -2,9 +2,15 @@ import type { AboutContent } from '~~/types/content'
 
 // "بنزوما" / "بنزوما كوزمتكس" are the owner-approved working Arabic
 // display names (docs/unresolved-content-approvals.md item 8).
+//
+// See content/en/about.ts for the sourcing notes on every section; they are
+// not duplicated here. Personal names are transliterated to Arabic, and the
+// portraits are the same approved files (item 10) — the photo/name pairing
+// comes from the slide 9 XML groups, so it must stay identical in both
+// locales. Latin digits, matching the rest of the Arabic content.
 export const aboutContent: AboutContent = {
   status: 'draft',
-  note: 'N03 About experience. Company overview omits the establishment date and the "RMZ Holding Company" / "BINZOMAH Group" legal names — both are contradicted or unconfirmed in source material.',
+  note: 'N03 About experience. The "RMZ Holding Company" / "BINZOMAH Group" legal names stay out — still unconfirmed (item 4). Founding year and the leadership roster are both owner-confirmed as of 2026-09-23; see items 4 and 10.',
 
   hero: {
     status: 'draft',
@@ -21,11 +27,23 @@ export const aboutContent: AboutContent = {
       'بنزوما شركة توزيع مملوكة ملكية خاصة لمنتجات العناية بالجمال والصحة في المملكة العربية السعودية. تعمل الشركة من مستودعات مكيّفة الحرارة في الرياض، بالتعاون الوثيق مع الشركات المصنّعة العالمية والعملاء المحليين في جميع أنحاء المملكة.',
   },
 
+  location: {
+    status: 'draft',
+    eyebrow: 'موقعنا',
+    heading: 'في قلب الخليج',
+    body:
+      'يقع المقر الرئيسي لبنزوما في الرياض، ويتم التوزيع من مستودعات مكيّفة الحرارة داخل المملكة، بما يضع أعمال الشركة على مقربة من أبرز المراكز التجارية السعودية ومن منطقة الخليج الأوسع.',
+    city: 'الرياض',
+    cityLabel: 'المقر الرئيسي',
+    address: 'حي الصحافة، طريق أنس بن مالك، الرياض، المملكة العربية السعودية',
+  },
+
   story: {
     status: 'draft',
     eyebrow: 'قصتنا',
-    heading: 'مسار قيد التوثيق',
-    intro: 'يعكس المسار أدناه المعلومات الواردة في مواد الشركة. لا يزال التأكيد النهائي من الشركة قيد الانتظار.',
+    heading: 'من 1970 إلى بنزوما كوزمتكس',
+    intro:
+      'يتتبع المسار التالي مواد الشركة نفسها: بيت تجاري عائلي تأسس عام 1970، ثم أول دخول إلى قطاع مستحضرات التجميل عام 2015، ثم إعادة بناء العلامة التي أنتجت بنزوما كوزمتكس بصورتها الحالية.',
     timeline: [
       {
         year: '1970',
@@ -37,10 +55,10 @@ export const aboutContent: AboutContent = {
       },
       {
         year: '2021',
-        description: 'تحول شامل للعلامة التجارية: إعادة تسمية إلى بنزوما كوزمتكس وتوجه استراتيجي نحو مستحضرات التجميل الجلدية.',
+        description: 'تحول شامل للعلامة التجارية: إعادة التسمية إلى بنزوما كوزمتكس وتوجه استراتيجي نحو مستحضرات التجميل الجلدية. وفي العام نفسه عُيّن محمود الديب مديرًا عامًا، وانتقل المقر الرئيسي من جدة إلى الرياض.',
       },
     ],
-    disclaimer: 'يُعرض هذا المسار كما ورد في مواد الشركة، ولم يتم التحقق منه أو اعتماده بشكل نهائي بشكل مستقل.',
+    disclaimer: 'يُعرض هذا المسار كما ورد في مواد الشركة.',
   },
 
   visionMission: {
@@ -82,10 +100,41 @@ export const aboutContent: AboutContent = {
   },
 
   leadership: {
-    status: 'blocked',
+    status: 'draft',
     eyebrow: 'القيادة',
-    heading: 'القيادة والفريق',
-    body: 'يجري إعداد ملفات القيادة والفريق، وستتم إضافتها بعد اعتمادها للنشر.',
+    heading: 'الأشخاص وراء بنزوما',
+    body:
+      'يقود بنزوما رئيس مجلس الإدارة وفريق إداري يغطي التوزيع والمالية والتخطيط والمبيعات والتدريب الطبي وإدارة العلامات.',
+
+    chairman: {
+      status: 'draft',
+      label: 'رئيس مجلس الإدارة',
+      person: {
+        slug: 'rashid-bin-zomah',
+        name: 'د. راشد بن زومه',
+        role: 'رئيس مجلس الإدارة',
+        photo: '/images/about/chairman.png',
+        width: 1122,
+        height: 1402,
+      },
+      biography: [
+        'يمثّل د. راشد بن زومه الامتداد الطبيعي لتاريخ تجاري عائلي حافل، بدأ مع جدّه علي محمد بن زومه، واستمر عبر والديه سعد ومحفوظ، ويواصله اليوم الجيل الثالث.',
+        'ويُعدّ من أبرز المستثمرين والروّاد في قطاع المياه المعبأة في المملكة العربية السعودية ودول مجلس التعاون الخليجي.',
+        'وعلى صعيد مسؤولياته المجتمعية، يرأس د. راشد ديوان الشباب والرياضة، الذي يضم رجال أعمال وصنّاع قرار ومستثمرين ورياضيين يعملون على تهيئة الرياضة السعودية لمرحلة الخصخصة وتطوير الاستثمار في مختلف الألعاب. كما انتُخب بالتزكية رئيسًا لنادي جدة لذوي الإعاقة، خلال الجمعية العمومية غير العادية التي عُقدت في مقر هيئة الرياضة بجدة.',
+      ],
+      quote: 'قد يملك صاحب الشركة الأرقام، لكن المالك الحقيقي لقيمتها ونجاحها هم موظفوها.',
+    },
+
+    teamLabel: 'الفريق الإداري',
+    team: [
+      { slug: 'mahmoud-eldeeb', name: 'محمود الديب', role: 'المدير العام', photo: '/images/about/team/mahmoud-eldeeb.jpeg', width: 605, height: 737 },
+      { slug: 'youssef-ghaly', name: 'يوسف غالي', role: 'مدير التوزيع', photo: '/images/about/team/youssef-ghaly.jpeg', width: 605, height: 807 },
+      { slug: 'mohamed-hassan', name: 'محمد حسن', role: 'مدير المالية والمحاسبة', photo: '/images/about/team/mohamed-hassan.jpeg', width: 605, height: 731 },
+      { slug: 'amr-dwidar', name: 'عمرو دويدار', role: 'مدير تخطيط الطلب', photo: '/images/about/team/amr-dwidar.jpeg', width: 605, height: 807 },
+      { slug: 'ramy-khedr', name: 'رامي خضر', role: 'مدير المبيعات', photo: '/images/about/team/ramy-khedr.jpeg', width: 605, height: 807 },
+      { slug: 'samar-lotfy', name: 'سمر لطفي', role: 'مديرة التوعية الطبية والتدريب', photo: '/images/about/team/samar-lotfy.jpeg', width: 605, height: 807 },
+      { slug: 'mariam-fathalla', name: 'مريم فتح الله', role: 'مديرة العلامات التجارية', photo: '/images/about/team/mariam-fathalla.jpeg', width: 605, height: 807 },
+    ],
   },
 
   cta: { label: 'اكتشف قدراتنا', to: '/capabilities' },

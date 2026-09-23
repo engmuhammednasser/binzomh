@@ -5,7 +5,8 @@ defineProps<{ content: AboutStoryContent }>()
 </script>
 
 <template>
-  <section class="story">
+  <!-- surface-alt: see the surface-rhythm comment in app/pages/about.vue -->
+  <section class="story surface-alt">
     <BaseContainer
       content
       class="stack-section"

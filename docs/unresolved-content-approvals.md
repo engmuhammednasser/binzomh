@@ -64,6 +64,46 @@ also reused on the `/capabilities` page's own Hero and three sections
 (same photos, same approval — no new imagery). Not yet extended to the
 `/about` page's own Hero/Overview, which still show the placeholder.
 
+**About page Hero visual: SUPPLIED AND APPROVED (2026-09-23)** — the owner
+supplied `public/images/about/hero.png` (1448x1086) and directed its use in
+the `/about` Hero, replacing the abstract EditorialVisual placeholder. It is
+a conceptual architectural image, not documentation of a Binzomah site, so
+it carries no facility claim and needs no "not a real facility" caveat —
+the same footing as the homepage Hero's supplied brand visual above. It is
+rendered decoratively (`alt=""`), since the heading and intro beside it
+carry the section's meaning in text. The `/about` Overview still shows the
+placeholder.
+
+**Chairman portrait: REPLACED BY THE OWNER (2026-09-23)** — the 540x720
+extraction from profile slide 3 was superseded on disk by a supplied
+1122x1402 studio portrait at the same path. The content files' declared
+`width`/`height` were corrected to match; leaving the old numbers would
+have reserved the wrong box and shifted the layout on load.
+
+**About Overview and Location visuals: SUPPLIED AND APPROVED
+(2026-09-23)** — the owner supplied two further images and directed their
+use on `/about`, replacing the last two EditorialVisual placeholders on the
+page:
+
+- `public/images/about/overview.png` (1086x1448, 3:4) in the Company
+  Overview section.
+- `public/images/about/location.png` (1536x1024, 3:2) in the "At the Heart
+  of the GCC" section, where the city name is now set over it in real text
+  rather than on a plain panel.
+
+Both are conceptual images, not documentation of a Binzomah site, and both
+render decoratively (`alt=""`). Neither is captioned as a facility, and no
+coverage figures accompany them. Files were renamed from the owner's
+section-named originals to match the project's asset conventions; the bytes
+are unchanged. No EditorialVisual placeholder remains anywhere on `/about`.
+
+Pending for all four page visuals and the eight portraits: **AVIF/WebP
+derivatives have not been generated** — this project has no image tooling,
+so the originals ship as supplied. That is roughly 9 MB across the About
+page, about 2.1 MB of it the eagerly-loaded Hero PNG. Generating
+derivatives (or supplying JPEGs) is by a wide margin the largest
+performance item on this page.
+
 Warehouse and channel photography: **NOT APPROVED**.
 
 Use intentional, high-quality design placeholders where final approved
@@ -81,10 +121,18 @@ Working interpretation for planning only:
 - **2021:** rebranding/transformation to Binzomah Cosmetics and a strategic
   shift toward dermo-cosmetics.
 
-This follows the profile timeline, while slide 2 separately describes
-Binzomah Cosmetics as “Established in 2015.” Public-facing founding
-language remains **COMPANY_CONFIRMATION_REQUIRED**. Do not present 1970,
-2015, or 2021 as a prominent homepage statistic.
+Founding language: **RESOLVED (2026-09-23)**. The owner confirmed that the
+earlier year is the founding year and the later year is the rebranding —
+**founded 1970, rebranded to Binzomah Cosmetics in 2021**. Slide 2's
+“Established in 2015” describes the Group's first cosmetics enterprise
+(Cozma Care), not the founding of Binzomah, so the two statements are no
+longer treated as contradictory. The /about timeline may state this
+sequence as documented.
+
+Still open: the **legal entity names** “RMZ Holding Company” and “BINZOMAH
+Group” remain **UNCONFIRMED** and stay out of published copy — the owner's
+decision covered the dates, not the corporate structure. Do not present
+1970, 2015, or 2021 as a prominent homepage statistic.
 
 ## 5. Metrics
 
@@ -104,17 +152,34 @@ numbers. Other metrics, including years in market, remain blocked too.
 
 ## 6. Contact details
 
-Status: **SOURCE-CONFIRMED FROM PROFILE / PENDING CURRENT COMPANY
-CONFIRMATION**. These details are not missing:
+Public display: **APPROVED (2026-09-23)** for the three profile-sourced
+details below, plus working hours supplied by the owner in the same
+decision. This supersedes the earlier "labelled review/demo state only"
+restriction, and the footer's "Draft — pending confirmation" badge on the
+address was removed with it.
 
 - Phone: +966 50 006 4807
 - Email: info@binzomah.net
 - Address: Sahafa District – Anas Ibn Malek Road – Riyadh – Saudi Arabia
+- Working hours: Sunday – Thursday, 9:00 AM – 6:00 PM
 
-N02 may show these only in a clearly labelled review/demo state when
-needed to evaluate layout. They are not approved production contact data.
-Do not create a social URL from `@Binzomah Cosmetics`; its platform is
-unidentified.
+The owner confirmed these are the current, publishable details and
+directed their display in the site footer. Values live in
+`content/en/contact.ts` / `content/ar/contact.ts` and are rendered by
+`app/components/global/AppFooter.vue` (phone as a `tel:` link, email as
+`mailto:`). Working hours have no other source in this project — the
+owner's statement is the record.
+
+Still **BLOCKED**: the `/contact` page's partnership enquiry form, which
+has no approved submission backend. That page stays `status: 'blocked'`.
+
+Social profiles: **NOT AVAILABLE**. The owner confirmed on 2026-09-23 that
+no official profile URLs are ready. Do not create a social URL from
+`@Binzomah Cosmetics`; its platform is unidentified. `content/social.ts`
+is intentionally empty and the footer's "Follow Us" block renders nothing
+until real, company-supplied URLs are added there. Platform glyphs are
+rendered as plain text names, not redrawn marks — see the item 1 caution,
+which applies to third-party platform logos too.
 
 ## 7. Official domain
 
@@ -178,6 +243,42 @@ Explicitly **excluded** from this approval, and still **BLOCKED**:
   which applies equally here) — logo presence does not establish or claim
   a current, verified commercial relationship. The displayed copy
   (`partners.note` in both locale files) states this explicitly.
+
+## 10. Leadership and team
+
+Public display: **APPROVED (2026-09-23)** for the chairman and the seven
+named managers from the company profile, on the `/about` page's Leadership
+section — names, job titles, portraits, and the chairman's biography and
+quote.
+
+The owner directed publication of the people on profile slides 3 (Our
+Chairman) and 9 (Meet The Team). This replaces the section's previous
+status, which was a structural placeholder explicitly forbidden from
+carrying any name, photo, or biography.
+
+Portraits were copied byte-for-byte from the reference library
+(`profile company/02-photos/leadership/` and `.../team/`) into
+`public/images/about/` with no cropping, recoloring, or retouching. The
+grid applies a CSS `object-fit` crop to a shared 3/4 box for alignment —
+a presentational frame, not an edit to the files.
+
+Each portrait is matched to its person from the slide 9 XML groups rather
+than from text order: every card in that slide wraps one image with one
+name and one title, so the pairing is unambiguous and verifiable. The
+source's “HEAD OF FINACNE AND ACCOUNTING” typo is corrected to “Finance”.
+
+Explicitly **excluded** from this approval, and still **BLOCKED**:
+
+- The chairman biography's “owner of RMZ Holding, which owns five
+  companies” — the legal entity names stay unconfirmed under item 4.
+- Any person not named on slides 3 or 9. Never invent a colleague, a title,
+  or a portrait to fill out a grid.
+- Reuse of these portraits on any other page without a separate, scoped
+  approval.
+
+Pending, not blocking: AVIF/WebP derivatives have not been generated for
+these eight files (no image tooling in this project), so the originals ship
+as supplied — about 1.5 MB in total, lazy-loaded below the fold.
 
 ## Other continuing N01 assumptions
 
