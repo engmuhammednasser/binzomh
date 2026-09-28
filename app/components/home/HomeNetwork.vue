@@ -167,10 +167,13 @@ const assetUrl = useAssetUrl()
   -webkit-mask-image: linear-gradient(to right, transparent, black 4rem, black calc(100% - 4rem), transparent);
 }
 
+/* Spacing is a trailing margin on each tile, not a flex gap: with a gap
+   the row is 2n tiles + (2n - 1) gaps, so -50% lands half a gap short of
+   the second copy and the loop hitches at the seam. With margins the two
+   halves are exactly equal. */
 .network__logos-marquee {
   display: flex;
   inline-size: max-content;
-  gap: var(--space-4);
   animation: network-logos-scroll 34s linear infinite;
 }
 
@@ -180,6 +183,23 @@ const assetUrl = useAssetUrl()
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+/* In Arabic the row starts at the right edge and overflows to the left, so
+   moving it left ran it out of the track and left the right side empty
+   until the loop restarted. Moving right instead brings the second copy
+   in behind the first — the same seamless loop, in the reading direction. */
+html[dir="rtl"] .network__logos-marquee {
+  animation-name: network-logos-scroll-rtl;
+}
+
+@keyframes network-logos-scroll-rtl {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(50%);
   }
 }
 
@@ -196,6 +216,7 @@ const assetUrl = useAssetUrl()
   justify-content: center;
   inline-size: 10rem;
   block-size: 7rem;
+  margin-inline-end: var(--space-4);
   padding: var(--space-3);
   background: var(--color-bg);
   border-radius: var(--radius-md);
