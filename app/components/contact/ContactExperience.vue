@@ -16,17 +16,11 @@ const config = useRuntimeConfig()
 const endpoint = computed(() => config.public.contactFormEndpoint as string)
 
 /**
- * With no endpoint configured, a published page shows the note alone — a
- * form that posts into nothing is worse than no form. While developing it
- * renders anyway, disabled, so the layout can still be worked on without
- * an endpoint to hand.
- *
- * import.meta.dev is a build-time constant with the same value on the
- * server and in the browser, so branching on it cannot desynchronise
- * hydration the way a runtime check would.
+ * The form always renders — on the owner's call, so the published page
+ * shows it before an endpoint exists. Without one it is display-only: the
+ * note above it says so, the send button is disabled (which also stops an
+ * Enter-key submit), and submit() cancels the native post regardless.
  */
-const isDev = import.meta.dev
-const showForm = computed(() => Boolean(endpoint.value) || isDev)
 
 // Derived from the single display string in the content file rather than
 // stored twice, so the dialled number can never disagree with the printed
@@ -256,8 +250,8 @@ async function submit(event: Event) {
           {{ content.formBody }}
         </p>
 
-        <!-- Shown whenever there is no endpoint: above the form in
-             development, and in its place on a published page. -->
+        <!-- Shown above the form whenever there is no endpoint, so a
+             disabled send button is never left unexplained. -->
         <p
           v-if="!endpoint"
           class="text-small contact__notice"
@@ -266,7 +260,6 @@ async function submit(event: Event) {
         </p>
 
         <form
-          v-if="showForm"
           class="contact-form"
           :action="endpoint || undefined"
           method="post"
