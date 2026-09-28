@@ -572,7 +572,9 @@ html[dir="rtl"] .contact-form__label {
   font-weight: 400;
   text-transform: none;
   letter-spacing: normal;
-  color: var(--color-text-subtle);
+  /* Muted, not subtle: subtle measured 4.48:1 on white at this size, just
+     under the 4.5:1 AA floor. The weight and case already set it apart. */
+  color: var(--color-text-muted);
 }
 
 /*

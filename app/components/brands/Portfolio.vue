@@ -396,6 +396,12 @@ html[dir='rtl'] .portfolio-roster__card:focus-visible .portfolio-roster__arrow {
   flex-shrink: 0;
 }
 
+/* The primary button shares the inverse surface colour, so a white
+   outline is what makes it read as a button here. */
+.portfolio-enquiry__action :deep(.base-button) {
+  border-color: var(--color-text-on-dark);
+}
+
 /* ---------------------------------------------------------------------
    Breakpoints — the homepage hero's own split and scale
 --------------------------------------------------------------------- */

@@ -7,7 +7,7 @@ defineProps<{ content: CapabilitiesClosingContent }>()
 <template>
   <!--
     Closing on the inverse surface, in the shape the homepage's partnership
-    block established and the brands page follows: the statement at display
+    block established and the brands page follows: the statement at heading
     scale with the action beside it, rather than a centred column on the
     same white the three sections above already sit on.
 
@@ -21,7 +21,7 @@ defineProps<{ content: CapabilitiesClosingContent }>()
           class="cap-closing__accent"
           aria-hidden="true"
         />
-        <h2 class="text-display cap-closing__heading">
+        <h2 class="text-h1 cap-closing__heading">
           {{ content.heading }}
         </h2>
       </MotionReveal>
@@ -71,6 +71,12 @@ defineProps<{ content: CapabilitiesClosingContent }>()
 
 .cap-closing__action {
   flex-shrink: 0;
+}
+
+/* The primary button shares the inverse surface colour, so a white
+   outline is what makes it read as a button here. */
+.cap-closing__action :deep(.base-button) {
+  border-color: var(--color-text-on-dark);
 }
 
 @media (max-width: 767px) {
