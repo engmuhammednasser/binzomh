@@ -262,7 +262,15 @@ export interface NetworkContent extends ContentBase {
 
 export interface ContactContent extends ContentBase {
   title: string
+  eyebrow: string
   intro: string
+  /** Heading over the block of approved contact details. */
+  detailsHeading: string
+  /** Heading and lead-in over the enquiry form. */
+  formHeading: string
+  formBody: string
+  /** Shown in place of the form when no endpoint is configured. */
+  formUnavailable: string
   /**
    * Public contact details. Each stays undefined until the company confirms
    * it is current and publishable — see docs/unresolved-content-approvals.md

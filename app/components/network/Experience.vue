@@ -2,32 +2,58 @@
 import type { NetworkPageContent } from '~~/types/network'
 
 const props = defineProps<{ content: NetworkPageContent }>()
-const approvedPartners = computed(() => props.content.partners.names.filter(partner => partner.status === 'approved' && partner.name.trim()))
+// An entry earns its place with a name or with artwork. Three marks in
+// the company profile's channel slides are real, approved logos that the
+// profile never identifies — they have no name to filter on, so requiring
+// one dropped them silently. See docs/unresolved-content-approvals.md
+// item 9.
+const approvedPartners = computed(() =>
+  props.content.partners.names.filter(partner =>
+    partner.status === 'approved' && (partner.name?.trim() || partner.logo),
+  ),
+)
 const assetUrl = useAssetUrl()
 </script>
 
 <template>
   <div class="network-experience">
-    <div class="surface-inverse">
-      <header class="network-hero">
-        <BaseContainer>
-          <p class="text-label network-hero__eyebrow">
+    <!--
+      Surface rhythm: hero (base) → channels (alt) → reach (base) →
+      partners (alt) → enquiry (inverse). The hero and the channel list
+      used to share one inverse wrapper, which put about 1650px of
+      unbroken charcoal — two viewport heights — at the top of the page
+      before any other surface appeared.
+
+      The hero keeps its two columns: the statement on one side and the
+      in-page jump nav to the five channels on the other. That nav is why
+      this hero needs no photograph to fill its second column.
+    -->
+    <header class="network-hero">
+      <BaseContainer>
+        <MotionReveal :delay="0">
+          <p class="text-label text-muted network-hero__eyebrow">
             {{ content.eyebrow }}
           </p>
-          <div class="network-hero__grid">
-            <div>
+        </MotionReveal>
+        <div class="network-hero__grid">
+          <div>
+            <MotionReveal :delay="90">
               <h1 class="text-display">
                 {{ content.title }}
               </h1>
-              <p class="text-h2 network-hero__intro">
+            </MotionReveal>
+            <MotionReveal :delay="200">
+              <p class="text-body-lg text-muted network-hero__intro">
                 {{ content.intro }}
               </p>
-            </div>
+            </MotionReveal>
+          </div>
+          <MotionReveal :delay="150">
             <nav
               class="network-hero__nav"
               :aria-label="content.channelsLabel"
             >
-              <p class="text-label">
+              <p class="text-label text-muted">
                 {{ content.channelsLabel }}
               </p>
               <a
@@ -39,54 +65,64 @@ const assetUrl = useAssetUrl()
                 <span aria-hidden="true">↓</span>
               </a>
             </nav>
-          </div>
-        </BaseContainer>
-      </header>
-      <NetworkChannels
-        :heading="content.channelsHeading"
-        :channels="content.channels"
-      />
-    </div>
+          </MotionReveal>
+        </div>
+      </BaseContainer>
+    </header>
+
+    <NetworkChannels
+      :heading="content.channelsHeading"
+      :channels="content.channels"
+    />
 
     <section class="network-reach">
       <BaseContainer class="network-reach__grid">
-        <h2 class="text-h1">
-          {{ content.reach.heading }}
-        </h2>
-        <div>
+        <MotionReveal>
+          <h2 class="text-h1">
+            {{ content.reach.heading }}
+          </h2>
+        </MotionReveal>
+        <MotionReveal :delay="120">
           <p class="text-body-lg text-muted">
             {{ content.reach.body }}
           </p>
           <p class="text-small network-reach__note">
             {{ content.reach.note }}
           </p>
-        </div>
+        </MotionReveal>
       </BaseContainer>
     </section>
 
     <section class="network-partners surface-alt">
       <BaseContainer>
-        <div class="network-partners__head">
+        <MotionReveal class="network-partners__head">
           <h2 class="text-h2">
             {{ content.partners.heading }}
           </h2>
           <p class="text-body-lg text-muted">
             {{ content.partners.body }}
           </p>
-        </div>
+        </MotionReveal>
         <template v-if="approvedPartners.length">
           <ul class="network-partners__logos">
             <li
               v-for="partner in approvedPartners"
-              :key="partner.name"
+              :key="partner.logo?.src ?? partner.name"
               class="network-partners__logo"
             >
+              <!--
+                An unnamed mark renders decoratively: alt text has to say
+                something true, and "which company this is" is exactly what
+                nobody has confirmed. A sighted reader may recognise it; a
+                screen reader is told nothing rather than a guess.
+              -->
               <img
                 v-if="partner.logo"
                 :src="assetUrl(partner.logo.src)"
                 :width="partner.logo.width"
                 :height="partner.logo.height"
-                :alt="partner.name"
+                :alt="partner.name ?? ''"
+                :aria-hidden="partner.name ? undefined : 'true'"
                 decoding="async"
                 loading="lazy"
               >
@@ -117,17 +153,27 @@ const assetUrl = useAssetUrl()
       </BaseContainer>
     </section>
 
-    <section class="network-enquiry">
-      <BaseContainer content>
-        <h2 class="text-h1">
-          {{ content.enquiry.heading }}
-        </h2>
-        <p class="text-body-lg text-muted">
-          {{ content.enquiry.body }}
-        </p>
-        <BaseButton :to="content.enquiry.cta.to">
-          {{ content.enquiry.cta.label }}
-        </BaseButton>
+    <section class="network-enquiry surface-inverse">
+      <BaseContainer class="network-enquiry__inner">
+        <MotionReveal class="network-enquiry__text">
+          <h2 class="text-h1 network-enquiry__heading">
+            {{ content.enquiry.heading }}
+          </h2>
+          <p class="text-body-lg network-enquiry__body">
+            {{ content.enquiry.body }}
+          </p>
+        </MotionReveal>
+        <MotionReveal
+          :delay="120"
+          class="network-enquiry__action"
+        >
+          <BaseButton
+            :to="content.enquiry.cta.to"
+            variant="primary"
+          >
+            {{ content.enquiry.cta.label }}
+          </BaseButton>
+        </MotionReveal>
       </BaseContainer>
     </section>
   </div>
@@ -139,7 +185,6 @@ const assetUrl = useAssetUrl()
 }
 
 .network-hero__eyebrow {
-  color: var(--color-text-on-dark-muted);
   margin-block-end: var(--space-5);
 }
 
@@ -150,18 +195,16 @@ const assetUrl = useAssetUrl()
 }
 
 .network-hero__intro {
-  max-inline-size: 22ch;
-  margin-block-start: var(--space-7);
-  color: var(--color-text-on-dark-muted);
+  max-inline-size: 34rem;
+  margin-block-start: var(--space-5);
 }
 
 .network-hero__nav {
   padding-inline-start: var(--space-6);
-  border-inline-start: 1px solid var(--color-border-strong);
+  border-inline-start: 1px solid var(--color-border);
 }
 
 .network-hero__nav p {
-  color: var(--color-text-on-dark-muted);
   margin-block-end: var(--space-5);
 }
 
@@ -172,7 +215,8 @@ const assetUrl = useAssetUrl()
   gap: var(--space-4);
   padding-block: var(--space-4);
   min-block-size: 44px;
-  border-block-end: 1px solid var(--color-border-strong);
+  border-block-end: 1px solid var(--color-border);
+  color: var(--color-text);
   text-decoration: none;
 }
 
@@ -182,9 +226,40 @@ const assetUrl = useAssetUrl()
 }
 
 .network-reach,
-.network-partners,
-.network-enquiry {
+.network-partners {
   padding-block: var(--space-section);
+}
+
+.network-enquiry {
+  padding-block: clamp(var(--space-9), 8vw, var(--space-10));
+}
+
+.network-enquiry__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(var(--space-6), 5vw, var(--space-9));
+}
+
+.network-enquiry__heading {
+  color: var(--color-text-on-dark);
+  max-inline-size: 20ch;
+}
+
+.network-enquiry__body {
+  margin-block-start: var(--space-4);
+  max-inline-size: 34rem;
+  color: var(--color-text-on-dark-muted);
+}
+
+.network-enquiry__action {
+  flex-shrink: 0;
+}
+
+/* The primary button shares the inverse surface colour, so a white
+   outline is what makes it read as a button here. */
+.network-enquiry__action :deep(.base-button) {
+  border-color: var(--color-text-on-dark);
 }
 
 .network-reach__grid {
@@ -261,15 +336,26 @@ const assetUrl = useAssetUrl()
   max-inline-size: 34rem;
 }
 
-.network-enquiry p {
-  margin-block: var(--space-5) var(--space-6);
-}
-
 @media (max-width: 767px) {
   .network-hero__grid,
   .network-reach__grid {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-7);
+  }
+
+  /* The rule that separates the jump nav from the statement is an
+     inline-start border while the two sit side by side; stacked, it has
+     to become a top border or it hangs off the side of nothing. */
+  .network-hero__nav {
+    padding-inline-start: 0;
+    padding-block-start: var(--space-6);
+    border-inline-start: 0;
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .network-enquiry__inner {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 </style>

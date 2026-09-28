@@ -31,6 +31,22 @@
     "followUs": "Follow Us",
     "followOn": "Follow us on {platform}"
   },
+  "contact": {
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "addressLabel": "Address",
+    "hoursLabel": "Working hours",
+    "name": "Your name",
+    "company": "Company",
+    "senderEmail": "Email address",
+    "message": "How can we help?",
+    "optional": "optional",
+    "send": "Send enquiry",
+    "sending": "Sending…",
+    "success": "Thank you — your enquiry has been sent. We will be in touch.",
+    "error": "Your enquiry could not be sent. Please email us directly at {email}.",
+    "botField": "Leave this field empty"
+  },
   "common": {
     "comingSoon": "Content for this page is being prepared and reviewed."
   },

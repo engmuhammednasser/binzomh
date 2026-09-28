@@ -41,6 +41,15 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       siteUrl: productionOrigin,
+      // Where the contact form posts, set per environment via
+      // NUXT_PUBLIC_CONTACT_FORM_ENDPOINT. Public by nature — it is the
+      // URL a browser posts to, not a credential, so nothing secret is
+      // exposed by it being here.
+      //
+      // Empty by default on purpose: with no endpoint the contact page
+      // renders its direct phone and email details and a short note
+      // instead of a form, rather than a form that silently goes nowhere.
+      contactFormEndpoint: '',
     },
   },
   compatibilityDate: '2025-07-15',

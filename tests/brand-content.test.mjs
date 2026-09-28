@@ -69,7 +69,12 @@ test('EN/AR page copy and channel anchors have matching structures', () => {
   assert.deepEqual(shape(networkAr), shape(networkEn))
   assert.deepEqual(networkEn.channels.map(channel => channel.id), ['pharmacies', 'e-commerce', 'hospitals', 'wholesale', 'cosmetics-stores'])
   assert.deepEqual(networkAr.channels.map(channel => channel.id), networkEn.channels.map(channel => channel.id))
-  assert.equal(networkEn.partners.names.length, 25)
+  // All 28 logos from the profile's channel slides, including the three
+  // the profile never names — see docs/unresolved-content-approvals.md
+  // item 9. Those three carry no `name`, which is why the parity check
+  // below compares undefined to undefined rather than text to text.
+  assert.equal(networkEn.partners.names.length, 28)
+  assert.equal(networkEn.partners.names.filter(partner => !partner.name).length, 3)
   assert.deepEqual(networkAr.partners.names.map(partner => partner.name), networkEn.partners.names.map(partner => partner.name))
   for (const partner of networkEn.partners.names) {
     assert.equal(partner.status, 'approved', partner.name)

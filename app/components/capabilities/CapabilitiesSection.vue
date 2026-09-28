@@ -7,41 +7,46 @@ const assetUrl = useAssetUrl()
 </script>
 
 <template>
+  <!--
+    Two independent alternations, which is why they are two conditions
+    rather than one flag:
+
+    - The surface alternates so no two adjacent bands share a background.
+      The hero above sits on the base surface, so the first section takes
+      the alt one, and the closing below lands on the inverse.
+    - The layout side alternates on the opposite phase, so the zig-zag
+      does not line up with the colour change and flatten back into a
+      single rhythm.
+  -->
   <section
     class="cap-section"
-    :class="{ 'is-alt': index % 2 === 1 }"
+    :class="{ 'is-reversed': index % 2 === 1, 'surface-alt': index % 2 === 0 }"
   >
     <BaseContainer class="stack-section cap-section__inner">
       <MotionReveal class="cap-section__visual-wrap">
-        <div class="cap-section__sticky">
-          <span
-            class="text-display cap-section__number"
-            aria-hidden="true"
-          >{{ item.number }}</span>
-          <div class="cap-section__visual-frame media-frame">
-            <picture>
-              <source
-                type="image/avif"
-                :srcset="`${assetUrl(`/images/home/capabilities-${index + 1}-480.avif`)} 480w, ${assetUrl(`/images/home/capabilities-${index + 1}-960.avif`)} 960w`"
-                sizes="(max-width: 1023px) 22rem, 42vw"
-              >
-              <source
-                type="image/webp"
-                :srcset="`${assetUrl(`/images/home/capabilities-${index + 1}-480.webp`)} 480w, ${assetUrl(`/images/home/capabilities-${index + 1}-960.webp`)} 960w`"
-                sizes="(max-width: 1023px) 22rem, 42vw"
-              >
-              <img
-                :src="assetUrl(`/images/home/capabilities-${index + 1}.png`)"
-                width="1122"
-                height="1402"
-                alt=""
-                aria-hidden="true"
-                class="cap-section__visual-image"
-                loading="lazy"
-                decoding="async"
-              >
-            </picture>
-          </div>
+        <div class="cap-section__visual-frame media-frame">
+          <picture>
+            <source
+              type="image/avif"
+              :srcset="`${assetUrl(`/images/home/capabilities-${index + 1}-480.avif`)} 480w, ${assetUrl(`/images/home/capabilities-${index + 1}-960.avif`)} 960w`"
+              sizes="(max-width: 1023px) 22rem, 42vw"
+            >
+            <source
+              type="image/webp"
+              :srcset="`${assetUrl(`/images/home/capabilities-${index + 1}-480.webp`)} 480w, ${assetUrl(`/images/home/capabilities-${index + 1}-960.webp`)} 960w`"
+              sizes="(max-width: 1023px) 22rem, 42vw"
+            >
+            <img
+              :src="assetUrl(`/images/home/capabilities-${index + 1}.png`)"
+              width="1122"
+              height="1402"
+              alt=""
+              aria-hidden="true"
+              class="cap-section__visual-image"
+              loading="lazy"
+              decoding="async"
+            >
+          </picture>
         </div>
       </MotionReveal>
 
@@ -49,6 +54,20 @@ const assetUrl = useAssetUrl()
         :delay="120"
         class="cap-section__text"
       >
+        <!--
+          The number leads the text, as it does on the homepage's
+          capability rows. It used to sit above the photograph in the other
+          column, which pushed the photo down by its own height and left
+          the two columns starting on different lines. Here it opens the
+          text instead, so the photo and the heading begin together.
+
+          aria-hidden: "01" is an ordinal the layout already conveys, and a
+          screen reader reading it before every heading adds nothing.
+        -->
+        <span
+          class="cap-section__number"
+          aria-hidden="true"
+        >{{ item.number }}</span>
         <h2 class="text-h1 cap-section__title">
           {{ item.title }}
         </h2>
@@ -71,33 +90,47 @@ const assetUrl = useAssetUrl()
 </template>
 
 <style scoped>
+/*
+  align-items: center, not flex-start. These photographs are portraits and
+  the copy beside them is short — a title and two paragraphs — so pinning
+  both columns to the top left 200-300px of empty section under the text
+  while the image ran on past it. Centring puts that space above and below
+  the text instead, where it reads as margin rather than as a hole.
+*/
 .cap-section__inner {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: clamp(var(--space-6), 5vw, var(--space-9));
 }
 
-.cap-section.is-alt .cap-section__inner {
+.cap-section.is-reversed .cap-section__inner {
   /* Alternates the visual/text side per section, regardless of writing
      direction — row-reverse always flips relative to whatever "row"
      currently means, so the zig-zag stays consistent in both LTR and RTL. */
   flex-direction: row-reverse;
 }
 
+/*
+  An explicit width rather than a share of the row: at 42% of a 1240px
+  container these 1122x1402 portraits rendered about 494px wide and 617px
+  tall, which overran the viewport on a laptop and towered over the copy.
+  Capped at 26rem the frame is roughly 520px tall — close to the text
+  block's own height, and the section fits on screen.
+*/
 .cap-section__visual-wrap {
-  flex: 1 1 42%;
+  flex: 0 0 auto;
+  inline-size: clamp(16rem, 34vw, 26rem);
 }
 
-.cap-section__sticky {
-  position: sticky;
-  inset-block-start: calc(var(--space-8) + var(--space-2));
-}
-
+/* The homepage's own number treatment — h2 scale rather than the display
+   scale this carried while it stood alone in the visual column. */
 .cap-section__number {
   display: block;
-  margin-block-end: var(--space-4);
-  color: var(--color-border-strong);
+  margin-block-end: var(--space-3);
+  font-size: var(--font-size-h2);
+  font-weight: 600;
   line-height: 1;
+  color: var(--color-border-strong);
 }
 
 /* Same frame language as the homepage Capabilities teaser: a hairline
@@ -122,8 +155,8 @@ const assetUrl = useAssetUrl()
 }
 
 .cap-section__text {
-  flex: 1 1 50%;
-  padding-block-start: var(--space-4);
+  flex: 1 1 auto;
+  min-inline-size: 0;
 }
 
 .cap-section__title {
@@ -132,28 +165,23 @@ const assetUrl = useAssetUrl()
 
 .cap-section__summary {
   margin-block-end: var(--space-4);
-  max-inline-size: 32rem;
+  max-inline-size: 34rem;
 }
 
 .cap-section__body {
-  max-inline-size: 32rem;
+  max-inline-size: 34rem;
   margin-block-end: var(--space-6);
 }
 
 @media (max-width: 1023px) {
   .cap-section__inner,
-  .cap-section.is-alt .cap-section__inner {
+  .cap-section.is-reversed .cap-section__inner {
     flex-direction: column;
-  }
-
-  .cap-section__sticky {
-    position: static;
   }
 
   .cap-section__visual-wrap {
     order: -1;
-    inline-size: 100%;
-    max-inline-size: 22rem;
+    inline-size: min(22rem, 100%);
     margin-inline: auto;
     margin-block-end: var(--space-6);
   }

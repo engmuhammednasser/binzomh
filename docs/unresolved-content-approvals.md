@@ -23,11 +23,15 @@ from the reference library (`profile company/01-logos/brands/`) into
 `public/logos/brands/` with no cropping, recoloring, or background
 removal — each source file carries its own flattened (non-transparent)
 background, framed by the homepage teaser's logo tile rather than edited.
-This approval covers only these three files for this placement; it does
-not extend to the ~28 other partner/customer logos in the reference
-library, nor to other pages, without a separate, scoped approval. Do not
-fabricate, redraw, or imitate any logo not covered by an approval like
-this one.
+**Scope extended (2026-09-24)** to the `/brands` roster, on the owner's
+direction: the same three files, unedited, now also identify each row of
+the brand list on that page. No new assets, and no change to the files.
+
+This approval still covers only those three files, in those two
+placements. It does not extend to the ~28 other partner/customer logos in
+the reference library, nor to any further page, without a separate, scoped
+approval. Do not fabricate, redraw, or imitate any logo not covered by an
+approval like this one.
 
 ## 2. Brand roster and relationships
 
@@ -108,6 +112,16 @@ The encode used the JPEG encoder built into Windows (System.Drawing), not a
 new dependency; the project still has no image toolchain, so AVIF/WebP
 derivatives and multiple widths remain ungenerated. The seven team
 portraits were already JPEGs and are untouched.
+
+**Brands page Hero visual: SUPPLIED AND APPROVED (2026-09-27)** — the
+owner supplied `public/images/brands/hero.jpeg` (1672x941, the same 16:9
+as the homepage Hero) and directed its use in the `/brands` Hero,
+replacing the EditorialVisual placeholder. It is a conceptual still life of
+unbranded vessels, not a photograph of any product Binzomah distributes, so
+it makes no claim about the roster beneath it and needs no caveat. It
+renders decoratively (`alt=""`). Re-encoded from the supplied PNG to JPEG
+at quality 85 for delivery — 1,859 KB to 171 KB, pixels and framing
+unchanged; both encodes were compared before the PNG was removed.
 
 Warehouse and channel photography: **NOT APPROVED**.
 
@@ -237,9 +251,18 @@ removal.
 
 Explicitly **excluded** from this approval, and still **BLOCKED**:
 
-- The 3 unidentified generic marks in the same reference folders
-  (`wholesale-mark-01`, `wholesale-mark-02`, `cosmetics-store-mark-12`) —
-  no confirmed company name exists for these.
+- ~~The 3 unidentified generic marks~~ — **released (2026-09-27)**. The
+  owner directed that `wholesale-mark-01`, `wholesale-mark-02` and
+  `cosmetics-store-mark-12` be shown alongside the other 25, so all 28
+  logos on the profile's channel slides now appear. Files were copied
+  byte-for-byte like the rest.
+
+  Still true, and the reason these render without a caption: **no
+  confirmed company name exists for any of the three**. They carry an
+  empty `name` and are marked `aria-hidden`, so nothing on the page or in
+  the accessibility tree claims to identify them. Do not invent a name to
+  fill the gap — if the companies are identified later, set the real names
+  and the decorative treatment falls away on its own.
 - Any use of these logos, or any other partner/customer logo in the
   reference library, on a page other than `/network` and the homepage
   Network teaser, without a separate, scoped approval.
