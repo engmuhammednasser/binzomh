@@ -1,7 +1,7 @@
 <script setup lang="ts">
 interface Props {
   to?: string
-  variant?: 'primary' | 'secondary' | 'text'
+  variant?: 'primary' | 'primary-bordered' | 'secondary' | 'text'
   external?: boolean
 }
 
@@ -66,13 +66,20 @@ const variantClass = computed(() => `base-button base-button--${props.variant}`)
     border-color var(--motion-duration-fast) var(--motion-ease);
 }
 
-.base-button--primary {
+.base-button--primary,
+.base-button--primary-bordered {
   background: var(--color-bg-inverse);
   color: var(--color-text-on-dark);
 }
 
-.base-button--primary:hover:not(:disabled) {
-  background: var(--palette-ink-600);
+.base-button--primary:hover:not(:disabled),
+.base-button--primary-bordered:hover:not(:disabled) {
+  background: var(--color-action-hover);
+}
+
+/* The filled primary action needs a visible border on inverse surfaces. */
+.base-button--primary-bordered {
+  border-color: var(--color-text-on-dark);
 }
 
 .base-button--secondary {

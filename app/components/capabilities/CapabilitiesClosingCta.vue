@@ -32,7 +32,7 @@ defineProps<{ content: CapabilitiesClosingContent }>()
       >
         <BaseButton
           :to="content.cta.to"
-          variant="primary"
+          variant="primary-bordered"
         >
           {{ content.cta.label }}
         </BaseButton>
@@ -71,12 +71,6 @@ defineProps<{ content: CapabilitiesClosingContent }>()
 
 .cap-closing__action {
   flex-shrink: 0;
-}
-
-/* The primary button shares the inverse surface colour, so a white
-   outline is what makes it read as a button here. */
-.cap-closing__action :deep(.base-button) {
-  border-color: var(--color-text-on-dark);
 }
 
 @media (max-width: 767px) {

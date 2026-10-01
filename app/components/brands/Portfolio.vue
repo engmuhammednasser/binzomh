@@ -215,7 +215,7 @@ const siteImage = useSiteImage()
         >
           <BaseButton
             :to="content.enquiryCta.to"
-            variant="primary"
+            variant="primary-bordered"
           >
             {{ content.enquiryCta.label }}
           </BaseButton>
@@ -420,12 +420,6 @@ html[dir='rtl'] .portfolio-roster__card:focus-visible .portfolio-roster__arrow {
 
 .portfolio-enquiry__action {
   flex-shrink: 0;
-}
-
-/* The primary button shares the inverse surface colour, so a white
-   outline is what makes it read as a button here. */
-.portfolio-enquiry__action :deep(.base-button) {
-  border-color: var(--color-text-on-dark);
 }
 
 /* ---------------------------------------------------------------------

@@ -169,7 +169,7 @@ const assetUrl = useAssetUrl()
         >
           <BaseButton
             :to="content.enquiry.cta.to"
-            variant="primary"
+            variant="primary-bordered"
           >
             {{ content.enquiry.cta.label }}
           </BaseButton>
@@ -254,12 +254,6 @@ const assetUrl = useAssetUrl()
 
 .network-enquiry__action {
   flex-shrink: 0;
-}
-
-/* The primary button shares the inverse surface colour, so a white
-   outline is what makes it read as a button here. */
-.network-enquiry__action :deep(.base-button) {
-  border-color: var(--color-text-on-dark);
 }
 
 .network-reach__grid {

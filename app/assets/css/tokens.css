@@ -37,6 +37,7 @@
   --color-bg-alt: var(--palette-surface);
   --color-bg-raised: var(--palette-surface-alt);
   --color-bg-inverse: var(--palette-ink-800);
+  --color-action-hover: var(--palette-ink-600);
 
   --color-border: var(--palette-border);
   --color-border-strong: var(--palette-ink-400);
