@@ -90,3 +90,15 @@ test('EN/AR page copy and channel anchors have matching structures', () => {
     }
   }
 })
+
+test('every management-team member has a thumbnail cut for the carousel', async () => {
+  const { existsSync } = await import('node:fs')
+  const { aboutContent: aboutEn } = await import('../content/en/about.ts')
+  const { aboutContent: aboutAr } = await import('../content/ar/about.ts')
+  for (const about of [aboutEn, aboutAr]) {
+    assert.ok(about.leadership.team?.length, 'team roster missing')
+    for (const person of about.leadership.team) {
+      assert.ok(existsSync(`public/images/about/team/thumbs/${person.slug}.jpeg`), `missing thumb for ${person.slug}`)
+    }
+  }
+})

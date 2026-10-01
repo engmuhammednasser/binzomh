@@ -3,13 +3,13 @@ import { once } from 'node:events'
 import { createServer } from 'node:net'
 import process from 'node:process'
 
-export async function startServer(origin) {
+export async function startServer(origin, overrides = {}) {
   const reservation = createServer()
   reservation.listen(0, '127.0.0.1')
   await once(reservation, 'listening')
   const { port } = reservation.address()
   await new Promise(resolve => reservation.close(resolve))
-  const env = { ...process.env, NITRO_HOST: '127.0.0.1', NITRO_PORT: String(port) }
+  const env = { ...process.env, ...overrides, NITRO_HOST: '127.0.0.1', NITRO_PORT: String(port) }
   delete env.NUXT_PUBLIC_SITE_URL
   delete env.NITRO_UNIX_SOCKET
   if (origin) env.NUXT_PUBLIC_SITE_URL = origin

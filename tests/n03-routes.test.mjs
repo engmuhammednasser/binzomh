@@ -59,7 +59,7 @@ for (const origin of ['https://binzomah.net', 'https://preview.binzomah.example'
             assert.ok(html.includes(brands.detail.missingImage))
             assert.ok(!html.includes('class="brand-detail__ranges"'))
             assert.ok(!html.includes('src="/images/brands/'))
-            assert.ok(html.includes(`href="/${locale}/contact"`))
+            assert.ok(html.includes(`href="/${locale}/contact?brand=${page.brand.slug}"`))
             assert.ok(html.includes(brands.detail.enquiryLabel.replace('{brand}', page.brand.name)))
           }
           else if (page.stem === '/brands') {
@@ -109,3 +109,28 @@ for (const origin of ['https://binzomah.net', 'https://preview.binzomah.example'
     }
   })
 }
+
+// Public-only builds omit dashboard UI and keep every CMS endpoint disabled.
+test('dashboard UI and APIs stay disabled in public-only builds', { timeout: 30000 }, async () => {
+  const server = await startServer()
+  try {
+    for (const path of ['/en/admin', '/ar/admin', '/en/admin/enquiries', '/ar/admin/pages', '/en/admin/login', '/ar/admin/contact-info', '/api/admin/session', '/api/admin/workspace', '/api/content']) {
+      const response = await fetch(server.base + path)
+      assert.equal(response.status, 404, path)
+      await response.body?.cancel()
+    }
+  }
+  finally {
+    await server.stop()
+  }
+  // Editor UI must not leak into public-only bundles. Server handlers remain
+  // bundled but are feature-gated before opening the database.
+  const { readdirSync, readFileSync } = await import('node:fs')
+  const markers = ['admin-panel', 'Your team. In focus.', 'Save a draft, review it, then publish when ready.']
+  for (const root of ['.output/public', '.output/server']) {
+    for (const file of readdirSync(root, { recursive: true }).filter(name => /\.(m?js|css|json|html)$/.test(name))) {
+      const source = readFileSync(`${root}/${file}`, 'utf8')
+      for (const marker of markers) assert.ok(!source.includes(marker), `admin code ("${marker}") leaked into ${root}/${file}`)
+    }
+  }
+})
