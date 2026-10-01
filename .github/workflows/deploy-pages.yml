@@ -28,6 +28,19 @@ jobs:
           cache: npm
 
       - run: npm ci
+      - run: npm audit --audit-level=high
+
+      # Quality gate: nothing is published unless it lints, type-checks and
+      # passes the test suite. The SSR tests boot .output/server, which only
+      # `nuxt build` produces, so build runs before them — generate below
+      # then replaces .output with the static site that actually ships.
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm test
+      - run: npx playwright install --with-deps chromium
+      - name: Test production SSR in desktop and mobile browsers
+        run: npm run test:browser
 
       - name: Generate static site
         env:
@@ -43,12 +56,27 @@ jobs:
           # user/org site) are served from /<repo-name>/, not the domain
           # root — this must match the actual repository name.
           NUXT_APP_BASE_URL: /${{ github.event.repository.name }}/
-          # Not required on Linux runners (this works around a Windows-only
-          # file-rename race hit during local testing), but the site is
-          # tiny — ~55 prerendered routes in ~2s — so serializing costs
-          # nothing and removes any doubt.
+          # Read by nuxt.config.ts into nitro.prerender.concurrency (Nitro
+          # does not read it itself). Not required on Linux runners — it
+          # works around a Windows-only file-rename race — but the site is
+          # tiny, ~55 prerendered routes in ~2s, so serialising costs nothing.
           NITRO_PRERENDER_CONCURRENCY: 1
+          # Where the contact form posts, from the repository variable
+          # CONTACT_FORM_ENDPOINT (Settings → Secrets and variables →
+          # Actions → Variables). It is baked into the static HTML here, so
+          # it must be set before this step runs; unset, the form ships
+          # display-only with its send button disabled.
+          NUXT_PUBLIC_CONTACT_FORM_ENDPOINT: ${{ vars.CONTACT_FORM_ENDPOINT }}
+          NUXT_PUBLIC_CONTACT_FORM_SUCCESS_FIELD: ${{ vars.CONTACT_FORM_SUCCESS_FIELD || 'ok' }}
         run: npm run generate
+
+      - name: Test generated site under the deployment base path
+        env:
+          E2E_STATIC: '1'
+          E2E_BASE_PATH: /${{ github.event.repository.name }}/
+        run: |
+          npm run test:static
+          npm run test:browser
 
       - uses: actions/configure-pages@v5
 
@@ -56,8 +84,22 @@ jobs:
         with:
           path: ./.output/public
 
+  dashboard-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build:admin
+      - run: npm run test:admin
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:admin:browser
+
   deploy:
-    needs: build
+    needs: [build, dashboard-checks]
     runs-on: ubuntu-latest
     environment:
       name: github-pages

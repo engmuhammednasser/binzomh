@@ -12,18 +12,30 @@
     "lint": "eslint .",
     "test:site-origin": "node --test tests/site-origin.test.mjs",
     "test:n03": "node --test tests/brand-content.test.mjs tests/n03-routes.test.mjs",
-    "test": "node --test tests/site-origin.test.mjs tests/brand-content.test.mjs tests/n03-routes.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "test:browser": "playwright test",
+    "test:static": "node --test tests/static/*.test.mjs",
+    "admin:account": "node scripts/admin-account.mjs",
+    "build:admin": "node scripts/build-admin.mjs",
+    "admin:backup": "node scripts/admin-backup.mjs",
+    "test:admin": "node --test tests/admin/*.test.mjs",
+    "test:admin:browser": "playwright test --config playwright.admin.config.ts"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.17.0",
     "@nuxtjs/i18n": "^10.6.0",
     "eslint": "^10.11.0",
     "nuxt": "^4.5.2",
+    "sharp": "^0.35.5",
     "vue": "^3.5.42",
     "vue-router": "^5.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "typescript": "^6.0.3",
     "vue-tsc": "^3.3.11"
+  },
+  "engines": {
+    "node": ">=24.20.0"
   }
 }

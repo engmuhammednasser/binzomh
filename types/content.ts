@@ -59,6 +59,8 @@ export interface HomeAboutContent extends ContentBase {
 }
 
 export interface HomeCapabilityItem {
+  id: string
+  imageSlotId?: string
   number: string
   title: string
   description: string
@@ -237,6 +239,8 @@ export interface CapabilitiesHeroContent extends ContentBase {
 }
 
 export interface CapabilitiesSectionItem extends ContentBase {
+  id: string
+  imageSlotId?: string
   number: string
   title: string
   summary: string
