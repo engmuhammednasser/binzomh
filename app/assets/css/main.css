@@ -22,6 +22,10 @@ body {
   color: var(--color-text);
 }
 
+html:lang(ar) body {
+  line-height: var(--line-height-body-ar);
+}
+
 h1,
 h2,
 h3,

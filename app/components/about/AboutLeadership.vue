@@ -250,9 +250,9 @@ const assetUrl = useAssetUrl()
   max-inline-size: none;
 }
 
-/* Arabic needs the looser leading its own token sets; the global rule only
-   applies it to headings. */
-html[dir="rtl"] .chairman__paragraph {
+/* Keep Arabic body leading when overriding the inherited English leading
+   for this biography. */
+html:lang(ar) .chairman__paragraph {
   line-height: var(--line-height-body-ar);
 }
 
