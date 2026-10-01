@@ -11,7 +11,11 @@ never redirected by detection.
 
 Rule: root / picks a locale.
 Implementation: detectBrowserLanguage.redirectOn is "root", so detection
-only runs at the unprefixed root.
+only runs at the unprefixed root for SSR. For static generation, the
+prerender hook replaces the build-time redirect with `build/static-entry.ts`.
+`public/locale-redirect.js` reads the visitor's cookie/browser languages and
+selects a generated same-origin link. Both language links remain usable
+without JavaScript. The deployment base path, query and hash are preserved.
 
 Rule: a saved preference beats browser language.
 Implementation: detectBrowserLanguage.useCookie is true (cookie name

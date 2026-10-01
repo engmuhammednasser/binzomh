@@ -131,6 +131,24 @@ content purpose in the design. Do not present random stock photography as
 Binzomah facilities. PowerPoint imagery is visual reference only unless
 later explicitly approved for public use.
 
+**Image slots and galleries (2026-09-28):** page images now come from one
+registry, `content/images.ts` — one independent entry per place on a page,
+plus a free gallery per page (empty, so nothing is shown yet). The approval
+rule is unchanged and applies to both: a file goes into a slot or a gallery
+only once approved here. Removing a slot's image shows the design
+placeholder (EditorialVisual), consistent with the placeholder guidance in
+this section; it never falls back to stock photography.
+
+**WebP as the main format (2026-09-29):** every approved page image now has
+a full-size WebP copy beside its original (`hero.png` → `hero.webp`), and
+pages offer WebP first, then AVIF where derivatives exist, with the
+original PNG/JPEG as the fallback. The nine copies were encoded at quality
+85 with Chrome's built-in WebP encoder (no new dependency) from the
+approved files: same pixels, dimensions and framing, no crop, recolour or
+retouch, 73–195 KB each. They are delivery copies of approved assets, not
+new imagery. New images arrive from the designer as the original plus a
+WebP copy (docs/DESIGNER_IMAGE_BRIEF_2026-09-29.pdf).
+
 ## 4. Company chronology
 
 Working interpretation for planning only:
@@ -148,10 +166,16 @@ earlier year is the founding year and the later year is the rebranding —
 longer treated as contradictory. The /about timeline may state this
 sequence as documented.
 
-Still open: the **legal entity names** “RMZ Holding Company” and “BINZOMAH
-Group” remain **UNCONFIRMED** and stay out of published copy — the owner's
-decision covered the dates, not the corporate structure. Do not present
-1970, 2015, or 2021 as a prominent homepage statistic.
+“Binzomah Group” / «مجموعة بنزوما»: **APPROVED (2026-09-28)**. The owner
+confirmed the name for published copy, so the /about timeline's founding
+entry ("…what would become the Binzomah Group") stands as published. Raised
+by the QA review of the same date (docs/QA_SECURITY_REVIEW_2026-09-28.md,
+F06).
+
+Still open: the **legal entity name** “RMZ Holding Company” remains
+**UNCONFIRMED** and stays out of published copy — neither decision covered
+the rest of the corporate structure. Do not present 1970, 2015, or 2021 as
+a prominent homepage statistic.
 
 ## 5. Metrics
 
