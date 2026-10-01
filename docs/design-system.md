@@ -7,3 +7,10 @@ Page and workspace styles must never go there. Workspace styles belong in
 Use `BaseButton`'s `primary-bordered` variant for primary actions on dark or
 inverse surfaces. Sections must use this variant instead of overriding the
 button's `border-color`. Preserve this rule when expanding the guide in Step 8.
+
+## Verification
+
+The pixel-identical gate applies to changes in templates, styles, or assets,
+including <template> and <style> blocks inside .vue files. Changes limited to
+<script> imports or pure logic are verified by the full test suite, builds, and a
+diff showing no template, style, or asset changes.
