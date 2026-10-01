@@ -1,0 +1,15 @@
+# Normalize text files to LF in both the repository and working tree.
+* text=auto eol=lf
+
+# Keep binary assets byte-for-byte.
+*.png -text
+*.jpg -text
+*.jpeg -text
+*.webp -text
+*.avif -text
+*.gif -text
+*.ico -text
+*.pdf -text
+*.pptx -text
+*.woff -text
+*.woff2 -text
