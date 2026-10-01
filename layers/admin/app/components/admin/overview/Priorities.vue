@@ -82,7 +82,7 @@ const { state, dirty, unpublished } = useAdminWorkspace()
 
 .priority--enquiries {
   background: linear-gradient(120deg, #283b37, #222d2d);
-  border-color: #49635a;
+  border-color: var(--admin-success-border);
 }
 
 .priority:hover {
@@ -148,7 +148,7 @@ const { state, dirty, unpublished } = useAdminWorkspace()
 
 .priority--enquiries .priority__action {
   color: var(--admin-accent);
-  border-color: #49635a;
+  border-color: var(--admin-success-border);
 }
 
 @media (max-width: 760px) {

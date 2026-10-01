@@ -169,7 +169,7 @@ watch(page, () => {
 .copy-editor__sections > p { margin: 0 0 .5rem; padding-inline: .75rem; color: var(--color-text-muted); font-size: .75rem; }
 .copy-editor__sections button { display: flex; align-items: center; gap: .5rem; text-align: start; min-block-size: 44px; padding: .65rem .75rem; border: 1px solid transparent; border-radius: 8px; color: var(--color-text-muted); font: inherit; font-size: .875rem; cursor: pointer; }
 .copy-editor__sections button:hover { background: var(--color-bg); color: var(--color-text); }
-.copy-editor__sections button[aria-pressed=true] { background: var(--admin-success-bg); border-color: #49635a; color: var(--admin-accent); }
+.copy-editor__sections button[aria-pressed=true] { background: var(--admin-success-bg); border-color: var(--admin-success-border); color: var(--admin-accent); }
 .copy-editor__count { margin-inline-start: auto; font-size: .75rem; font-variant-numeric: tabular-nums; }
 .copy-editor__summary { margin: 0 0 1rem; color: var(--color-text-muted); font-size: .8125rem; }
 .copy-editor__group + .copy-editor__group { margin-block-start: 2rem; }

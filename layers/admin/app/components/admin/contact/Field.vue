@@ -104,7 +104,7 @@ const describedBy = computed(() =>
 }
 
 .field__error {
-  color: #f0b5ac;
+  color: var(--admin-error-text);
 }
 
 .field :slotted(.admin-field__input) {

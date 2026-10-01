@@ -321,8 +321,8 @@ async function submit() {
 </template>
 
 <style scoped>
-.login__error { margin: .5rem 0 0; color: #ffb8b8; font-size: .875rem; line-height: 1.7; }
-.login__input[aria-invalid="true"] { border-color: #ffb8b8; }
+.login__error { margin: .5rem 0 0; color: var(--admin-error-text-strong); font-size: .875rem; line-height: 1.7; }
+.login__input[aria-invalid="true"] { border-color: var(--admin-error-text-strong); }
 .login {
   --login-surface: #1d2225;
   --login-field: #252a2d;

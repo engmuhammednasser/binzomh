@@ -351,8 +351,8 @@ const srcOf = (src: string) => src.startsWith('blob:') ? src : assetUrl(src as `
   margin: 0;
   padding: 0.75rem 1rem;
   border-radius: 10px;
-  background: #462c2b;
-  color: #f0b5ac;
+  background: var(--admin-error-bg);
+  color: var(--admin-error-text);
   font-size: 0.8125rem;
   list-style: none;
 }

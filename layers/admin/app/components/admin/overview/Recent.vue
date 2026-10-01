@@ -123,7 +123,7 @@ const recent = computed(() => [...enquiries.value]
 
 .recent__avatar--new {
   color: var(--admin-accent);
-  border-color: #49635a;
+  border-color: var(--admin-success-border);
   background: var(--admin-success-bg);
 }
 

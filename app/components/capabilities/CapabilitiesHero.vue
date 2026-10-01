@@ -110,7 +110,7 @@ const siteImage = useSiteImage()
   aspect-ratio: 1122 / 1402;
   border-radius: var(--radius-md);
   border: 1px solid rgb(17 17 17 / 0.06);
-  box-shadow: 0 24px 48px -28px rgb(17 17 17 / 0.28);
+  box-shadow: var(--shadow-media);
 }
 
 .cap-hero__visual-image {

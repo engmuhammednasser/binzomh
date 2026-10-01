@@ -53,7 +53,7 @@ const { current } = useAdminNav()
   border: 1px solid var(--color-border);
   border-radius: 6px;
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
+  font-size: var(--font-size-label);
   white-space: nowrap;
 }
 

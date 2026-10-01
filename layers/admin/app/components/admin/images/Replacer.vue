@@ -391,8 +391,8 @@ function onDrop(event: DragEvent) {
 }
 
 .notice--error {
-  background: #462c2b;
-  color: #f0b5ac;
+  background: var(--admin-error-bg);
+  color: var(--admin-error-text);
 }
 
 .replacer__foot {

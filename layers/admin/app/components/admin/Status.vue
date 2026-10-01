@@ -53,8 +53,8 @@ const meta = computed(() => {
 }
 
 .admin-status--negative {
-  background: #462c2b;
-  color: #f0b5ac;
+  background: var(--admin-error-bg);
+  color: var(--admin-error-text);
 }
 
 .admin-status--neutral {

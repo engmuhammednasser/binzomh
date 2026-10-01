@@ -179,7 +179,7 @@ onBeforeUnmount(() => {
 .workspace-bar__actions, .workspace-bar__confirm { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; }
 .workspace-bar__actions .admin-btn { min-block-size: 44px; font-size: .8125rem; }
 .workspace-bar p { margin: .3rem 0 0; font-size: .75rem; color: var(--color-text-muted); }
-.workspace-bar .workspace-bar__error { color: #ffb8b8; }
+.workspace-bar .workspace-bar__error { color: var(--admin-error-text-strong); }
 .workspace-bar__more { position: relative; }
 .workspace-bar__more-button { min-inline-size: 44px; min-block-size: 44px; border: 1px solid var(--color-border); border-radius: 8px; font-size: 1.2rem; cursor: pointer; }
 .workspace-bar__popover { position: absolute; inset-block-end: calc(100% + 1rem); inset-inline-end: 0; inline-size: min(19rem, calc(100vw - 2rem)); padding: 1rem; border: 1px solid var(--color-border-strong); border-radius: 10px; background: var(--color-bg); box-shadow: 0 4px 24px #0006; }
