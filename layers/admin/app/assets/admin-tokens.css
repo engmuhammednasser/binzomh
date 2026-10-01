@@ -1,0 +1,10 @@
+/* Shared feedback tokens for the workspace and standalone login.
+   Keep workspace-only styling in admin-workspace.css so loading the login
+   theme does not change the workspace stylesheet's loading boundary. */
+.admin,
+.login {
+  --admin-error-bg: #462c2b;
+  --admin-error-text: #f0b5ac;
+  --admin-error-text-strong: #ffb8b8;
+  --admin-success-border: #49635a;
+}

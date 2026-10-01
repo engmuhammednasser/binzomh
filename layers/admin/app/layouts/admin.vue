@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import '../assets/admin.css'
+import '../assets/admin-workspace.css'
 
 useAdminMessages()
 

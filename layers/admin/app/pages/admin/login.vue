@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import '../../assets/admin-tokens.css'
 import { siteImageSlots } from '~~/content/images'
 
 definePageMeta({ layout: false })
