@@ -44,16 +44,22 @@ export const homeContent: HomeContent = {
       'From brand partnerships to sales, distribution, and warehousing, Binzomah connects global principals to the Saudi market.',
     items: [
       {
+        id: 'brand-partnerships',
+        imageSlotId: 'home-capabilities-1',
         number: '01',
         title: 'Brand Partnerships',
         description: 'Onboarding world-class global brands and building long-term relationships with principals.',
       },
       {
+        id: 'sales-distribution',
+        imageSlotId: 'home-capabilities-2',
         number: '02',
         title: 'Sales & Distribution',
         description: 'Reaching pharmacies, hospitals, wholesalers, and retailers across the Kingdom.',
       },
       {
+        id: 'warehousing-logistics',
+        imageSlotId: 'home-capabilities-3',
         number: '03',
         title: 'Warehousing & Logistics',
         description: 'Operating temperature-controlled storage with structured stock rotation.',

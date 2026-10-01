@@ -4,6 +4,8 @@
  */
 export function useNavItems() {
   const { t } = useI18n()
+  const route = useRoute()
+  const localePath = useLocalePath()
 
   return computed(() => [
     { label: t('nav.home'), to: '/' },
@@ -12,5 +14,9 @@ export function useNavItems() {
     { label: t('nav.capabilities'), to: '/capabilities' },
     { label: t('nav.network'), to: '/network' },
     { label: t('nav.contact'), to: '/contact' },
-  ])
+  ].map(item => ({
+    ...item,
+    active: route.path.replace(/\/$/, '') === localePath(item.to).replace(/\/$/, '')
+      || (item.to !== '/' && route.path.startsWith(`${localePath(item.to)}/`)),
+  })))
 }

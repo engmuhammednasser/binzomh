@@ -2,7 +2,7 @@ import type { AboutContent } from '~~/types/content'
 
 export const aboutContent: AboutContent = {
   status: 'draft',
-  note: 'N03 About experience. The "RMZ Holding Company" / "BINZOMAH Group" legal names stay out — still unconfirmed (item 4). Founding year and the leadership roster are both owner-confirmed as of 2026-09-23; see docs/unresolved-content-approvals.md items 4 and 10.',
+  note: 'N03 About experience. The "RMZ Holding Company" legal name stays out — still unconfirmed (item 4); "Binzomah Group" is owner-approved as of 2026-09-28. Founding year and the leadership roster are both owner-confirmed as of 2026-09-23; see docs/unresolved-content-approvals.md items 4 and 10.',
 
   hero: {
     status: 'draft',

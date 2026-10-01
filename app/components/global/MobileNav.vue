@@ -2,6 +2,7 @@
 interface NavItem {
   label: string
   to: string
+  active: boolean
 }
 
 const props = defineProps<{
@@ -21,20 +22,32 @@ watch(
   () => emit('close'),
 )
 
+// Hold the page still behind the open menu, so a scroll gesture on the
+// panel cannot move the reading position underneath it. The watcher only
+// fires on a change of `open`, which never happens during SSR, so the
+// document is only touched in the browser.
+function lockPageScroll(locked: boolean) {
+  document.documentElement.style.overflow = locked ? 'hidden' : ''
+}
+
+onBeforeUnmount(() => {
+  if (props.open) lockPageScroll(false)
+})
+
 watch(
   () => props.open,
   async (isOpen) => {
+    lockPageScroll(isOpen)
     if (!isOpen) return
     await nextTick()
-    const firstLink = panel.value?.querySelector('a')
-    ;(firstLink as HTMLElement | null)?.focus()
+    panel.value?.querySelector<HTMLButtonElement>('.mobile-nav__close')?.focus()
   },
 )
 
 function getFocusable(): HTMLElement[] {
   if (!dialog.value) return []
   return Array.from(
-    dialog.value.querySelectorAll<HTMLElement>('a[href], button, [tabindex]:not([tabindex="-1"])'),
+    dialog.value.querySelectorAll<HTMLElement>('a[href], button:not([disabled]):not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])'),
   )
 }
 
@@ -73,11 +86,13 @@ function onKeydown(event: KeyboardEvent) {
       class="mobile-nav"
       role="dialog"
       aria-modal="true"
+      :aria-label="$t('nav.mainNavigation')"
       @keydown="onKeydown"
     >
       <button
         type="button"
         class="mobile-nav__backdrop"
+        tabindex="-1"
         :aria-label="$t('nav.closeMenu')"
         @click="emit('close')"
       />
@@ -87,11 +102,20 @@ function onKeydown(event: KeyboardEvent) {
         class="mobile-nav__panel"
         :aria-label="$t('nav.mainNavigation')"
       >
+        <button
+          type="button"
+          class="mobile-nav__close"
+          @click="emit('close')"
+        >
+          <span aria-hidden="true">×</span>
+          {{ $t('nav.closeMenu') }}
+        </button>
         <NuxtLink
           v-for="item in items"
           :key="item.to"
           :to="localePath(item.to)"
           class="mobile-nav__link"
+          :class="{ 'is-active': item.active }"
           @click="emit('close')"
         >
           {{ item.label }}
@@ -127,6 +151,11 @@ function onKeydown(event: KeyboardEvent) {
   gap: var(--space-2);
   padding: var(--space-8) var(--space-5);
   box-shadow: var(--shadow-sm);
+  /* Its own scroll on short screens (a phone turned sideways), so the last
+     links stay reachable; contain keeps that scroll from chaining out to
+     the page once the panel reaches its end. */
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .mobile-nav__link {
@@ -134,6 +163,22 @@ function onKeydown(event: KeyboardEvent) {
   font-size: var(--font-size-body-lg);
   text-decoration: none;
   border-block-end: 1px solid var(--color-border);
+}
+
+.mobile-nav__close {
+  min-block-size: 44px;
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-inline: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.mobile-nav__link.is-active {
+  font-weight: 700;
+  border-block-end-color: currentColor;
 }
 
 @media (prefers-reduced-motion: no-preference) {

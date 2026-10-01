@@ -4,8 +4,9 @@ import { contactContent as contactEn } from '~~/content/en/contact'
 import { contactContent as contactAr } from '~~/content/ar/contact'
 import { homeContent as homeEn } from '~~/content/en/home'
 import { homeContent as homeAr } from '~~/content/ar/home'
-import { homeBrandCandidates } from '~~/content/brands'
-import { socialLinks } from '~~/content/social'
+
+const { brands: homeBrandCandidates } = useManagedSite()
+const { social: socialLinks } = useManagedSite()
 
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -27,14 +28,14 @@ const brandLinks = homeBrandCandidates
 // address is gone. Every field is still optional on ContactContent and
 // guarded below, so clearing one in the content files hides its row rather
 // than rendering an empty link.
-const contact = usePairedContent(contactEn, contactAr)
+const contact = usePairedContent(contactEn, contactAr, 'contact')
 
 // The footer's longer description reuses the homepage About section's own
 // body copy (content/en/home.ts / content/ar/home.ts) rather than a
 // second, separately-maintained copy of the same sentence in i18n — one
 // approved source of truth, so the two can't drift out of sync if that
 // copy is ever revised.
-const home = usePairedContent(homeEn, homeAr)
+const home = usePairedContent(homeEn, homeAr, 'home')
 
 // Derived from the single display string in the content files instead of
 // stored as a second field, so the dialled number can never disagree with

@@ -4,6 +4,8 @@ import type { HomeNetworkContent } from '~~/types/content'
 defineProps<{ content: HomeNetworkContent }>()
 
 const assetUrl = useAssetUrl()
+const track = ref<HTMLElement | null>(null)
+const { canAnimate, running, paused, toggle } = useMotionPlayback(track)
 </script>
 
 <template>
@@ -48,26 +50,35 @@ const assetUrl = useAssetUrl()
           {{ content.logosLabel }}
         </p>
         <div
+          ref="track"
           class="network__logos-track"
-          aria-hidden="true"
         >
-          <div class="network__logos-marquee">
+          <div
+            class="network__logos-marquee"
+            :class="{ 'is-running': running }"
+          >
             <div
               v-for="(entry, i) in [...content.logos, ...content.logos]"
               :key="`${entry.name}-${i}`"
               class="network__logo"
+              :aria-hidden="i >= content.logos.length ? true : undefined"
             >
               <img
                 :src="assetUrl(entry.logo.src)"
                 :width="entry.logo.width"
                 :height="entry.logo.height"
-                alt=""
+                :alt="i < content.logos.length ? entry.name : ''"
                 decoding="async"
                 loading="lazy"
               >
             </div>
           </div>
         </div>
+        <MotionPlaybackButton
+          v-if="canAnimate"
+          :paused="paused"
+          @toggle="toggle"
+        />
       </MotionReveal>
 
       <MotionReveal
@@ -175,6 +186,11 @@ const assetUrl = useAssetUrl()
   display: flex;
   inline-size: max-content;
   animation: network-logos-scroll 34s linear infinite;
+  animation-play-state: paused;
+}
+
+.network__logos-marquee.is-running {
+  animation-play-state: running;
 }
 
 @keyframes network-logos-scroll {
@@ -204,7 +220,7 @@ html[dir="rtl"] .network__logos-marquee {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .network__logos-marquee {
+  .network__logos-marquee.is-running {
     animation-play-state: paused;
   }
 }

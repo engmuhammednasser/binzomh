@@ -1,7 +1,19 @@
 <script setup lang="ts">
 import type { AboutHeroContent } from '~~/types/content'
+import { frameAspect } from '~~/shared/utils/site-image'
+
+const { slotFor } = useManagedSite()
 
 defineProps<{ content: AboutHeroContent }>()
+
+// The file, its size and its alt come from the image registry
+// (content/images.ts); only the layout-dependent attributes — sizes,
+// loading priority — stay in this template.
+const slot = computed(() => slotFor('about-hero')!)
+const image = computed(() => slot.value.image)
+// With no image chosen for the slot, the design placeholder fills the
+// same frame (see content/images.ts).
+const siteImage = useSiteImage()
 </script>
 
 <template>
@@ -42,21 +54,36 @@ defineProps<{ content: AboutHeroContent }>()
           rather than information.
 
           eager + fetchpriority="high" because this sits above the fold and
-          is the page's largest contentful paint candidate. No <picture>
-          sources yet — AVIF/WebP derivatives have not been generated, so
-          the PNG ships alone; see the note in item 3.
+          is the page's largest contentful paint candidate. Served as WebP
+          from a full-size copy, with the JPEG original as the fallback;
+          `sizes` follows the column: the full container width while the
+          hero stacks (<=1023px), then the ~490px of the desktop 52/42 split.
         -->
         <div class="about-hero__visual-frame media-frame">
-          <img
-            src="/images/about/hero.jpeg"
-            width="1448"
-            height="1086"
-            alt=""
-            class="about-hero__image"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-          >
+          <picture v-if="image">
+            <source
+              v-for="source in siteImage.sources(image)"
+              :key="source.type"
+              :type="source.type"
+              :srcset="source.srcset"
+              sizes="(max-width: 767px) calc(100vw - 2.5rem), (max-width: 1023px) calc(100vw - 3.25rem), 490px"
+            >
+            <img
+              :src="siteImage.src(image)"
+              :width="image.width"
+              :height="image.height"
+              :alt="siteImage.alt(image)"
+              class="about-hero__image"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            >
+          </picture>
+          <HomeEditorialVisual
+            v-else
+            treatment="photography"
+            :aspect="frameAspect(slot.frame)"
+          />
         </div>
       </MotionReveal>
     </BaseContainer>

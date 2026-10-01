@@ -15,6 +15,8 @@ export const capabilitiesContent: CapabilitiesContent = {
   sections: [
     {
       status: 'draft',
+      id: 'brand-partnerships',
+      imageSlotId: 'capabilities-section-1',
       number: '01',
       title: 'Brand Partnerships',
       summary: 'Onboarding and supporting global health and beauty brands.',
@@ -24,6 +26,8 @@ export const capabilitiesContent: CapabilitiesContent = {
     },
     {
       status: 'draft',
+      id: 'sales-distribution',
+      imageSlotId: 'capabilities-section-2',
       number: '02',
       title: 'Sales & Distribution',
       summary: 'Reaching pharmacies, hospitals, wholesalers, and retailers.',
@@ -34,6 +38,8 @@ export const capabilitiesContent: CapabilitiesContent = {
     },
     {
       status: 'draft',
+      id: 'warehousing-logistics',
+      imageSlotId: 'capabilities-section-3',
       number: '03',
       title: 'Warehousing & Logistics',
       summary: 'Temperature-controlled storage with structured stock rotation.',

@@ -71,7 +71,7 @@ const variantClass = computed(() => `base-button base-button--${props.variant}`)
   color: var(--color-text-on-dark);
 }
 
-.base-button--primary:hover {
+.base-button--primary:hover:not(:disabled) {
   background: var(--palette-ink-600);
 }
 
@@ -81,7 +81,7 @@ const variantClass = computed(() => `base-button base-button--${props.variant}`)
   color: var(--color-text);
 }
 
-.base-button--secondary:hover {
+.base-button--secondary:hover:not(:disabled) {
   border-color: var(--color-text);
 }
 
@@ -91,5 +91,10 @@ const variantClass = computed(() => `base-button base-button--${props.variant}`)
   min-block-size: auto;
   color: var(--color-text);
   text-decoration: underline;
+}
+
+.base-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 </style>

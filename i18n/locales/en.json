@@ -43,12 +43,17 @@
     "optional": "optional",
     "send": "Send enquiry",
     "sending": "Sending…",
-    "success": "Thank you — your enquiry has been sent. We will be in touch.",
+    "success": "Thank you — your enquiry has been received. We will be in touch.",
+    "brand": "Brand",
+    "allBrands": "General enquiry / another brand",
     "error": "Your enquiry could not be sent. Please email us directly at {email}.",
     "botField": "Leave this field empty"
   },
   "common": {
-    "comingSoon": "Content for this page is being prepared and reviewed."
+    "comingSoon": "Content for this page is being prepared and reviewed.",
+    "gallery": "Gallery",
+    "pauseMotion": "Pause animation",
+    "resumeMotion": "Resume animation"
   },
   "brand": {
     "view": "View Brand"

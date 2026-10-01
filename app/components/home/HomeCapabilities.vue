@@ -1,65 +1,52 @@
 <script setup lang="ts">
 import type { ComponentPublicInstance } from 'vue'
 import type { HomeCapabilitiesContent } from '~~/types/content'
+import { frameAspect } from '~~/shared/utils/site-image'
 
-defineProps<{ content: HomeCapabilitiesContent }>()
+const { slotFor } = useManagedSite()
 
-// These photo paths are dynamic (template-literal-built per row index), so
-// they bypass Nuxt's build-time static-asset-URL transform entirely and
-// need explicit base-path resolution — see shared/utils/asset-url.ts.
-const assetUrl = useAssetUrl()
+const props = defineProps<{ content: HomeCapabilitiesContent }>()
+
+const siteImage = useSiteImage()
+const capabilitySlots = computed(() => props.content.items.map(item => ({
+  id: item.id,
+  slot: slotFor(item.imageSlotId),
+})))
 
 const activeIndex = ref(0)
 const rowEls = ref<HTMLElement[]>([])
-const prefersReduced = usePrefersReducedMotion()
+const visual = ref<HTMLElement | null>(null)
+const isMobile = ref(false)
+const { canAnimate, running, paused, toggle } = useMotionPlayback(visual)
 
 function setRowRef(el: Element | ComponentPublicInstance | null, index: number) {
   if (el instanceof HTMLElement) rowEls.value[index] = el
 }
 
-/**
- * One real photo per capability row (public/images/home/capabilities-1/2/3),
- * shown as a crossfade rather than swapping the <img> src — all three stay
- * mounted and opacity-toggled, so switching between them is instant with no
- * re-fetch or blank-frame flash.
- */
-const VISUAL_COUNT = 3
-
 let autoplayTimer: ReturnType<typeof setInterval> | undefined
-let mobileQuery: MediaQueryList | undefined
 
-function stopAutoplay() {
-  if (autoplayTimer) {
-    clearInterval(autoplayTimer)
-    autoplayTimer = undefined
-  }
-}
-
-function startAutoplay() {
-  stopAutoplay()
-  if (prefersReduced.value) return
+function syncAutoplay() {
+  clearInterval(autoplayTimer)
+  if (!running.value || !isMobile.value || props.content.items.length < 2) return
   autoplayTimer = setInterval(() => {
-    activeIndex.value = (activeIndex.value + 1) % VISUAL_COUNT
+    activeIndex.value = (activeIndex.value + 1) % props.content.items.length
   }, 3500)
 }
 
-// Autoplay only stands in for the desktop hover/scroll interaction on
-// touch/mobile widths, where there's no hover and no sticky scroll-tied
-// panel to react to — desktop keeps the row-linked behavior instead, so
-// autoplay stays off there even if prefers-reduced-motion changes.
-function syncAutoplay() {
-  if (mobileQuery?.matches) startAutoplay()
-  else stopAutoplay()
-}
+watch([running, isMobile, () => props.content.items.length], () => {
+  activeIndex.value = Math.min(activeIndex.value, Math.max(0, props.content.items.length - 1))
+  syncAutoplay()
+})
+onScopeDispose(() => clearInterval(autoplayTimer))
 
 onMounted(() => {
-  mobileQuery = window.matchMedia('(max-width: 1023px)')
-  syncAutoplay()
-  mobileQuery.addEventListener('change', syncAutoplay)
-  onScopeDispose(() => {
-    mobileQuery?.removeEventListener('change', syncAutoplay)
-    stopAutoplay()
-  })
+  const mobileQuery = window.matchMedia('(max-width: 1023px)')
+  const syncViewport = () => {
+    isMobile.value = mobileQuery.matches
+  }
+  syncViewport()
+  mobileQuery.addEventListener('change', syncViewport)
+  onScopeDispose(() => mobileQuery.removeEventListener('change', syncViewport))
 
   if (typeof IntersectionObserver === 'undefined') return
 
@@ -71,6 +58,7 @@ onMounted(() => {
   // that band to be crossed.
   const observer = new IntersectionObserver(
     (entries) => {
+      if (isMobile.value) return
       const visible = entries.filter(entry => entry.isIntersecting)
       if (visible.length === 0) return
 
@@ -86,8 +74,6 @@ onMounted(() => {
   rowEls.value.forEach(el => observer.observe(el))
   onScopeDispose(() => observer.disconnect())
 })
-
-watch(prefersReduced, syncAutoplay)
 </script>
 
 <template>
@@ -105,37 +91,16 @@ watch(prefersReduced, syncAutoplay)
         </p>
       </MotionReveal>
 
-      <!--
-        Real corporate photography: one photo per capability row
-        (public/images/home/capabilities-1/2/3.png), replacing the
-        "geometric" abstract treatment EditorialVisual used to render
-        here. All three stay mounted in the frame below and crossfade via
-        opacity based on activeIndex — an instant swap, no re-fetch, no
-        blank-frame flash. AVIF/WebP + PNG fallback, 480w/960w generated
-        from each 1122x1402 source — never upscaled.
-
-        Desktop: activeIndex is driven by scrolling a row into the sticky
-        band (the existing IntersectionObserver below, unchanged) *or* by
-        hovering a row directly (see @mouseenter on .capability-row) —
-        hover reacts immediately, scroll remains the fallback for
-        keyboard/no-mouse navigation. Mobile/tablet: there's no hover and
-        the panel isn't sticky there, so it autoplays instead (see
-        startAutoplay/syncAutoplay in the script), cycling every 3.5s —
-        off entirely under prefers-reduced-motion.
-
-        One shared block (not a separate mobile copy) — CSS repositions
-        it above the rows on mobile via `order`, so there's only ever one
-        set of three images in the DOM, not two.
-      -->
+      <!-- Stable content IDs keep each image attached to its capability when reordered. -->
       <div class="capabilities__grid">
         <div class="capabilities__rows">
           <div
             v-for="(item, index) in content.items"
-            :key="item.number"
+            :key="item.id"
             :ref="(el) => setRowRef(el, index)"
             class="capability-row"
             :class="{ 'is-active': activeIndex === index }"
-            @mouseenter="activeIndex = index"
+            @mouseenter="!isMobile && (activeIndex = index)"
           >
             <MotionReveal :delay="index * 90">
               <span class="capability-row__number">{{ item.number }}</span>
@@ -149,39 +114,55 @@ watch(prefersReduced, syncAutoplay)
           </div>
         </div>
 
-        <div class="capabilities__visual">
+        <div
+          ref="visual"
+          class="capabilities__visual"
+        >
           <div class="capabilities__visual-frame media-frame">
-            <picture
-              v-for="n in VISUAL_COUNT"
-              :key="n"
-              class="capabilities__visual-picture"
-              :class="{ 'is-active': activeIndex === n - 1 }"
+            <template
+              v-for="({ id, slot }, i) in capabilitySlots"
+              :key="id"
             >
-              <source
-                type="image/avif"
-                :srcset="`${assetUrl(`/images/home/capabilities-${n}-480.avif`)} 480w, ${assetUrl(`/images/home/capabilities-${n}-960.avif`)} 960w`"
-                sizes="(max-width: 1023px) 22rem, 500px"
+              <picture
+                v-if="slot?.image"
+                class="capabilities__visual-picture"
+                :class="{ 'is-active': activeIndex === i }"
               >
-              <source
-                type="image/webp"
-                :srcset="`${assetUrl(`/images/home/capabilities-${n}-480.webp`)} 480w, ${assetUrl(`/images/home/capabilities-${n}-960.webp`)} 960w`"
-                sizes="(max-width: 1023px) 22rem, 500px"
-              >
-              <img
-                :src="assetUrl(`/images/home/capabilities-${n}.png`)"
-                width="1122"
-                height="1402"
-                alt=""
-                aria-hidden="true"
-                class="capabilities__visual-image"
-                loading="lazy"
-                decoding="async"
-              >
-            </picture>
+                <source
+                  v-for="source in siteImage.sources(slot.image)"
+                  :key="source.type"
+                  :type="source.type"
+                  :srcset="source.srcset"
+                  sizes="(max-width: 1023px) 22rem, 500px"
+                >
+                <img
+                  :src="siteImage.src(slot.image)"
+                  :width="slot.image.width"
+                  :height="slot.image.height"
+                  :alt="siteImage.alt(slot.image)"
+                  aria-hidden="true"
+                  class="capabilities__visual-image"
+                  loading="lazy"
+                  decoding="async"
+                >
+              </picture>
+              <HomeEditorialVisual
+                v-else
+                class="capabilities__visual-picture"
+                :class="{ 'is-active': activeIndex === i }"
+                treatment="photography"
+                :aspect="frameAspect(slot?.frame ?? { width: 4, height: 5 })"
+              />
+            </template>
             <p class="capabilities__visual-caption text-label">
               {{ content.items[activeIndex]?.title }}
             </p>
           </div>
+          <MotionPlaybackButton
+            v-if="canAnimate && isMobile && content.items.length > 1"
+            :paused="paused"
+            @toggle="toggle"
+          />
         </div>
       </div>
 

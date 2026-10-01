@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { ContactContent } from '~~/types/content'
 
+const { brands: brandProfiles } = useManagedSite()
+const findBrand = (slug: string) => brandProfiles.value.find(brand => brand.slug === slug)
+
 /**
  * The contact page: one full-bleed split. The statement and the approved
  * contact details hold the ink panel; the enquiry form holds the white one.
@@ -11,9 +14,17 @@ import type { ContactContent } from '~~/types/content'
 const props = defineProps<{ content: ContactContent }>()
 
 const { t } = useI18n()
-const config = useRuntimeConfig()
+const route = useRoute()
+const { endpoint, status, submit: send, clearResult } = useContactSubmission()
+const selectedBrand = ref('')
 
-const endpoint = computed(() => config.public.contactFormEndpoint as string)
+// Static HTML has no query-specific selection. Apply it after hydration,
+// and only accept a known brand rather than displaying arbitrary URL text.
+onMounted(() => {
+  watch(() => route.query.brand, (value) => {
+    selectedBrand.value = typeof value === 'string' ? findBrand(value)?.slug ?? '' : ''
+  }, { immediate: true })
+})
 
 /**
  * The form always renders — on the owner's call, so the published page
@@ -30,44 +41,12 @@ const telHref = computed(() => {
   return phone ? `tel:${phone.replace(/[^\d+]/g, '')}` : undefined
 })
 
-type Status = 'idle' | 'sending' | 'sent' | 'failed'
-const status = ref<Status>('idle')
-
-/**
- * Posts with fetch so the reader stays on the page and gets an inline
- * answer. If JavaScript never runs, the form still has a real action and
- * method and submits natively — the enhancement is the inline result, not
- * the ability to send.
- *
- * Accept: application/json is what the common form services (Formspree,
- * Formspark, Basin, Web3Forms) key off to answer with JSON instead of
- * redirecting to their own thank-you page.
- */
 async function submit(event: Event) {
-  const el = event.target as HTMLFormElement
-
-  // Always stop the native submit first. Returning before this would let
-  // an unconfigured form post to the current URL and reload the page,
-  // which is the one outcome worse than not sending.
   event.preventDefault()
-  if (!endpoint.value) return
-
-  status.value = 'sending'
-
-  try {
-    const response = await fetch(endpoint.value, {
-      method: 'POST',
-      body: new FormData(el),
-      headers: { Accept: 'application/json' },
-    })
-    if (!response.ok) throw new Error(String(response.status))
-    status.value = 'sent'
-    el.reset()
-  }
-  catch {
-    // Never swallowed into silence: the failure message carries the email
-    // address, so a reader whose enquiry did not send still has a way through.
-    status.value = 'failed'
+  const form = event.target as HTMLFormElement
+  if (await send(form)) {
+    form.reset()
+    selectedBrand.value = ''
   }
 }
 </script>
@@ -263,7 +242,9 @@ async function submit(event: Event) {
           class="contact-form"
           :action="endpoint || undefined"
           method="post"
+          :aria-busy="status === 'sending'"
           @submit="submit"
+          @input="clearResult"
         >
           <!--
             A honeypot, not a real field: hidden from sight and from the
@@ -299,6 +280,7 @@ async function submit(event: Event) {
                 type="text"
                 name="name"
                 autocomplete="name"
+                :readonly="status === 'sending'"
                 required
               >
             </div>
@@ -314,6 +296,7 @@ async function submit(event: Event) {
                 type="email"
                 name="email"
                 autocomplete="email"
+                :readonly="status === 'sending'"
                 dir="ltr"
                 required
               >
@@ -334,7 +317,33 @@ async function submit(event: Event) {
               type="text"
               name="company"
               autocomplete="organization"
+              :readonly="status === 'sending'"
             >
+          </div>
+
+          <div class="contact-form__field">
+            <label
+              class="contact-form__label"
+              for="contact-brand"
+            >{{ t('contact.brand') }} <span class="contact-form__optional">{{ t('contact.optional') }}</span></label>
+            <select
+              id="contact-brand"
+              v-model="selectedBrand"
+              class="contact-form__input"
+              name="brand"
+              :disabled="status === 'sending'"
+            >
+              <option value="">
+                {{ t('contact.allBrands') }}
+              </option>
+              <option
+                v-for="brand in brandProfiles"
+                :key="brand.slug"
+                :value="brand.slug"
+              >
+                {{ brand.name }}
+              </option>
+            </select>
           </div>
 
           <div class="contact-form__field">
@@ -347,6 +356,7 @@ async function submit(event: Event) {
               class="contact-form__input contact-form__textarea"
               name="message"
               rows="4"
+              :readonly="status === 'sending'"
               required
             />
           </div>

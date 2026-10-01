@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { homeContent as homeEn } from '~~/content/en/home'
 import { homeContent as homeAr } from '~~/content/ar/home'
-import { homeBrandCandidates } from '~~/content/brands'
 
-const content = usePairedContent(homeEn, homeAr)
+const { brands } = useManagedSite()
+const homeBrandCandidates = computed(() => brands.value.map(({ slug, name, status, logo }) => ({ slug, name, status, logo })))
+
+const content = usePairedContent(homeEn, homeAr, 'home')
 
 // H06 (metrics) is intentionally not rendered — every candidate figure is
 // blocked for public display; see docs/unresolved-content-approvals.md
@@ -21,6 +23,7 @@ usePageSeo(() => content.value.hero.headline, () => content.value.hero.descripti
     <HomeAbout :content="content.about" />
     <HomeCapabilities :content="content.capabilities" />
     <HomeNetwork :content="content.network" />
+    <BaseGallery page="home" />
     <HomePartnershipCta :content="content.partnership" />
   </div>
 </template>

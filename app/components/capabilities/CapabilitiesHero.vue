@@ -1,9 +1,19 @@
 <script setup lang="ts">
 import type { CapabilitiesHeroContent } from '~~/types/content'
+import { frameAspect } from '~~/shared/utils/site-image'
+
+const { slotFor } = useManagedSite()
 
 defineProps<{ content: CapabilitiesHeroContent }>()
 
-const assetUrl = useAssetUrl()
+// The file, its size and its alt come from the image registry
+// (content/images.ts); only the layout-dependent attributes — sizes,
+// loading priority — stay in this template.
+const slot = computed(() => slotFor('capabilities-hero')!)
+const image = computed(() => slot.value.image)
+// With no image chosen for the slot, the design placeholder fills the
+// same frame (see content/images.ts).
+const siteImage = useSiteImage()
 </script>
 
 <template>
@@ -32,28 +42,30 @@ const assetUrl = useAssetUrl()
         class="cap-hero__visual"
       >
         <div class="cap-hero__visual-frame media-frame">
-          <picture>
+          <picture v-if="image">
             <source
-              type="image/avif"
-              :srcset="`${assetUrl('/images/home/capabilities-1-480.avif')} 480w, ${assetUrl('/images/home/capabilities-1-960.avif')} 960w`"
-              sizes="(max-width: 1023px) 20rem, 34vw"
-            >
-            <source
-              type="image/webp"
-              :srcset="`${assetUrl('/images/home/capabilities-1-480.webp')} 480w, ${assetUrl('/images/home/capabilities-1-960.webp')} 960w`"
+              v-for="source in siteImage.sources(image)"
+              :key="source.type"
+              :type="source.type"
+              :srcset="source.srcset"
               sizes="(max-width: 1023px) 20rem, 34vw"
             >
             <img
-              :src="assetUrl('/images/home/capabilities-1.png')"
-              width="1122"
-              height="1402"
-              alt=""
+              :src="siteImage.src(image)"
+              :width="image.width"
+              :height="image.height"
+              :alt="siteImage.alt(image)"
               aria-hidden="true"
               class="cap-hero__visual-image"
               loading="lazy"
               decoding="async"
             >
           </picture>
+          <HomeEditorialVisual
+            v-else
+            treatment="photography"
+            :aspect="frameAspect(slot.frame)"
+          />
         </div>
       </MotionReveal>
     </BaseContainer>

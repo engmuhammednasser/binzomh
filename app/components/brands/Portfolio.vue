@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import type { BrandProfile, BrandsPageContent } from '~~/types/brands'
+import { frameAspect } from '~~/shared/utils/site-image'
+
+const { slotFor } = useManagedSite()
 
 defineProps<{ brands: BrandProfile[], content: BrandsPageContent }>()
 
@@ -8,6 +11,14 @@ const localePath = useLocalePath()
 // HomeHero.vue / HomeBrands.vue) — apply it explicitly. See
 // shared/utils/asset-url.ts.
 const assetUrl = useAssetUrl()
+
+// The hero's file, size and alt come from the image registry
+// (content/images.ts); the brand logos stay on their brand records.
+const slot = computed(() => slotFor('brands-hero')!)
+const heroImage = computed(() => slot.value.image)
+// With no image chosen for the slot, the design placeholder fills the
+// same frame (see content/images.ts).
+const siteImage = useSiteImage()
 </script>
 
 <template>
@@ -66,20 +77,35 @@ const assetUrl = useAssetUrl()
             the two pages open on identically proportioned media.
 
             eager + fetchpriority="high": this is above the fold and is the
-            page's largest contentful paint candidate. No <picture> sources
-            yet — AVIF/WebP derivatives have not been generated; see item 3.
+            page's largest contentful paint candidate. Served as WebP from a
+            full-size copy, with the JPEG original as the fallback; `sizes`
+            matches the homepage hero's, since the column split is the same.
           -->
           <div class="portfolio-hero__visual-frame media-frame">
-            <img
-              src="/images/brands/hero.jpeg"
-              width="1672"
-              height="941"
-              alt=""
-              class="portfolio-hero__image"
-              loading="eager"
-              fetchpriority="high"
-              decoding="async"
-            >
+            <picture v-if="heroImage">
+              <source
+                v-for="source in siteImage.sources(heroImage)"
+                :key="source.type"
+                :type="source.type"
+                :srcset="source.srcset"
+                sizes="(max-width: 767px) calc(100vw - 2.5rem), (max-width: 1023px) calc(100vw - 3.25rem), 648px"
+              >
+              <img
+                :src="siteImage.src(heroImage)"
+                :width="heroImage.width"
+                :height="heroImage.height"
+                :alt="siteImage.alt(heroImage)"
+                class="portfolio-hero__image"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+              >
+            </picture>
+            <HomeEditorialVisual
+              v-else
+              treatment="photography"
+              :aspect="frameAspect(slot.frame)"
+            />
           </div>
         </MotionReveal>
       </BaseContainer>

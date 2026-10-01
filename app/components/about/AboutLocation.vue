@@ -1,7 +1,19 @@
 <script setup lang="ts">
 import type { AboutLocationContent } from '~~/types/content'
+import { frameAspect } from '~~/shared/utils/site-image'
+
+const { slotFor } = useManagedSite()
 
 defineProps<{ content: AboutLocationContent }>()
+
+// The file, its size and its alt come from the image registry
+// (content/images.ts); only the layout-dependent attributes — sizes,
+// loading priority — stay in this template.
+const slot = computed(() => slotFor('about-location')!)
+const image = computed(() => slot.value.image)
+// With no image chosen for the slot, the design placeholder fills the
+// same frame (see content/images.ts).
+const siteImage = useSiteImage()
 </script>
 
 <template>
@@ -31,22 +43,38 @@ defineProps<{ content: AboutLocationContent }>()
         cities", "+3000 retail points" and the rest stay blocked (item 5).
 
         The photograph is decorative (alt=""); every word over it is real
-        text in the DOM, not burnt into the image.
+        text in the DOM, not burnt into the image. WebP first, from a
+        full-size copy, with the JPEG original as the fallback; the card
+        spans the container while the section stacks (<=1023px).
       -->
       <MotionReveal
         :delay="140"
         class="location__marker"
       >
         <div class="location__card media-frame">
-          <img
-            src="/images/about/location.jpeg"
-            width="1536"
-            height="1024"
-            alt=""
-            class="location__image"
-            loading="lazy"
-            decoding="async"
-          >
+          <picture v-if="image">
+            <source
+              v-for="source in siteImage.sources(image)"
+              :key="source.type"
+              :type="source.type"
+              :srcset="source.srcset"
+              sizes="(max-width: 767px) calc(100vw - 2.5rem), (max-width: 1023px) calc(100vw - 3.25rem), 480px"
+            >
+            <img
+              :src="siteImage.src(image)"
+              :width="image.width"
+              :height="image.height"
+              :alt="siteImage.alt(image)"
+              class="location__image"
+              loading="lazy"
+              decoding="async"
+            >
+          </picture>
+          <HomeEditorialVisual
+            v-else
+            treatment="photography"
+            :aspect="frameAspect(slot.frame)"
+          />
           <div class="location__plate">
             <p class="text-label location__card-label">
               {{ content.cityLabel }}

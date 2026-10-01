@@ -85,7 +85,7 @@ const withBrand = (text: string) => text.replace('{brand}', props.brand.name)
         <p class="text-body-lg text-muted">
           {{ content.detail.enquiryBody }}
         </p>
-        <BaseButton to="/contact">
+        <BaseButton :to="`/contact?brand=${encodeURIComponent(brand.slug)}`">
           {{ withBrand(content.detail.enquiryLabel) }}
         </BaseButton>
       </BaseContainer>

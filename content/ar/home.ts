@@ -47,16 +47,22 @@ export const homeContent: HomeContent = {
       'من شراكات العلامات التجارية إلى المبيعات والتوزيع والتخزين، تربط بنزوما الشركات المصنّعة العالمية بالسوق السعودي.',
     items: [
       {
+        id: 'brand-partnerships',
+        imageSlotId: 'home-capabilities-1',
         number: '01',
         title: 'شراكات العلامات التجارية',
         description: 'استقطاب علامات تجارية عالمية رائدة وبناء علاقات طويلة الأمد مع الشركات المصنّعة.',
       },
       {
+        id: 'sales-distribution',
+        imageSlotId: 'home-capabilities-2',
         number: '02',
         title: 'المبيعات والتوزيع',
         description: 'الوصول إلى الصيدليات والمستشفيات وتجار الجملة والتجزئة في جميع أنحاء المملكة.',
       },
       {
+        id: 'warehousing-logistics',
+        imageSlotId: 'home-capabilities-3',
         number: '03',
         title: 'التخزين والخدمات اللوجستية',
         description: 'تشغيل مستودعات مكيّفة الحرارة باتباع ممارسات منظمة لتدوير المخزون.',

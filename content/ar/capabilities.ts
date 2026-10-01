@@ -14,6 +14,8 @@ export const capabilitiesContent: CapabilitiesContent = {
   sections: [
     {
       status: 'draft',
+      id: 'brand-partnerships',
+      imageSlotId: 'capabilities-section-1',
       number: '01',
       title: 'شراكات العلامات التجارية',
       summary: 'استقطاب ودعم العلامات التجارية العالمية للصحة والجمال.',
@@ -22,6 +24,8 @@ export const capabilitiesContent: CapabilitiesContent = {
     },
     {
       status: 'draft',
+      id: 'sales-distribution',
+      imageSlotId: 'capabilities-section-2',
       number: '02',
       title: 'المبيعات والتوزيع',
       summary: 'الوصول إلى الصيدليات والمستشفيات وتجار الجملة والتجزئة.',
@@ -30,6 +34,8 @@ export const capabilitiesContent: CapabilitiesContent = {
     },
     {
       status: 'draft',
+      id: 'warehousing-logistics',
+      imageSlotId: 'capabilities-section-3',
       number: '03',
       title: 'التخزين والخدمات اللوجستية',
       summary: 'تخزين مكيّف الحرارة مع تدوير منظم للمخزون.',

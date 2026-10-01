@@ -2,7 +2,7 @@
 import { aboutContent as aboutEn } from '~~/content/en/about'
 import { aboutContent as aboutAr } from '~~/content/ar/about'
 
-const content = usePairedContent(aboutEn, aboutAr)
+const content = usePairedContent(aboutEn, aboutAr, 'about')
 usePageSeo(() => content.value.hero.heading, () => content.value.hero.intro)
 </script>
 
@@ -24,6 +24,7 @@ usePageSeo(() => content.value.hero.heading, () => content.value.hero.intro)
     <AboutVisionMission :content="content.visionMission" />
     <AboutStrategies :content="content.strategies" />
     <AboutLeadership :content="content.leadership" />
+    <BaseGallery page="about" />
 
     <section
       v-if="content.cta"

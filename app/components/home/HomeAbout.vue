@@ -1,10 +1,18 @@
 <script setup lang="ts">
 import type { HomeAboutContent } from '~~/types/content'
+import { frameAspect } from '~~/shared/utils/site-image'
+
+const { slotFor } = useManagedSite()
 
 defineProps<{ content: HomeAboutContent }>()
-// Dynamic srcset bypasses Nuxt's build-time base-path prefixing (same
-// reason as HomeHero.vue) — apply it explicitly. See shared/utils/asset-url.ts.
-const assetUrl = useAssetUrl()
+// The file, its size and its alt come from the image registry
+// (content/images.ts); only the layout-dependent attributes — sizes,
+// loading priority — stay in this template.
+const slot = computed(() => slotFor('home-about')!)
+const image = computed(() => slot.value.image)
+// With no image chosen for the slot, the design placeholder fills the
+// same frame (see content/images.ts).
+const siteImage = useSiteImage()
 </script>
 
 <template>
@@ -51,34 +59,37 @@ const assetUrl = useAssetUrl()
           Decorative: alt="" / aria-hidden, matching the placeholder's own
           accessibility treatment, since the heading and body copy right
           next to it already carry the section's meaning in real, visible
-          text. AVIF/WebP + PNG fallback, 480w/960w generated from the
-          supplied 1122x1402 source (public/images/home/about.png) — never
-          upscaled. loading="lazy" (not eager like the Hero image) since
-          this section sits below the fold.
+          text. WebP first, then AVIF, PNG fallback: 480w/960w derivatives
+          plus the full-size 1122w copy of the supplied source
+          (public/images/home/about.png) — never upscaled. loading="lazy"
+          (not eager like the Hero image) since this section sits below
+          the fold.
         -->
         <div class="about__visual-frame media-frame">
-          <picture>
+          <picture v-if="image">
             <source
-              type="image/avif"
-              :srcset="`${assetUrl('/images/home/about-480.avif')} 480w, ${assetUrl('/images/home/about-960.avif')} 960w`"
-              sizes="(max-width: 1023px) 22rem, 480px"
-            >
-            <source
-              type="image/webp"
-              :srcset="`${assetUrl('/images/home/about-480.webp')} 480w, ${assetUrl('/images/home/about-960.webp')} 960w`"
+              v-for="source in siteImage.sources(image)"
+              :key="source.type"
+              :type="source.type"
+              :srcset="source.srcset"
               sizes="(max-width: 1023px) 22rem, 480px"
             >
             <img
-              src="/images/home/about.png"
-              width="1122"
-              height="1402"
-              alt=""
+              :src="siteImage.src(image)"
+              :width="image.width"
+              :height="image.height"
+              :alt="siteImage.alt(image)"
               aria-hidden="true"
               class="about__image"
               loading="lazy"
               decoding="async"
             >
           </picture>
+          <HomeEditorialVisual
+            v-else
+            treatment="photography"
+            :aspect="frameAspect(slot.frame)"
+          />
         </div>
       </MotionReveal>
     </BaseContainer>

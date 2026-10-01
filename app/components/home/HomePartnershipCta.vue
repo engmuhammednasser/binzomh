@@ -18,7 +18,7 @@ defineProps<{ content: HomePartnershipContent }>()
           class="partnership__accent"
           aria-hidden="true"
         />
-        <h2 class="text-display partnership__heading">
+        <h2 class="text-h2 partnership__heading">
           {{ content.heading }}
         </h2>
       </MotionReveal>
@@ -40,7 +40,7 @@ defineProps<{ content: HomePartnershipContent }>()
 
 <style scoped>
 .partnership {
-  padding-block: clamp(var(--space-9), 8vw, var(--space-10));
+  padding-block: clamp(var(--space-8), 6vw, var(--space-9));
 }
 
 .partnership__inner {
@@ -58,7 +58,7 @@ defineProps<{ content: HomePartnershipContent }>()
   display: block;
   inline-size: 3rem;
   block-size: 4px;
-  margin-block: var(--space-4) var(--space-5);
+  margin-block: var(--space-3) var(--space-4);
   background: var(--gradient-silver);
   clip-path: polygon(0 100%, 25% 0, 100% 0, 100% 100%);
 }
@@ -67,16 +67,9 @@ html[dir="rtl"] .partnership__accent {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 75% 100%);
 }
 
-/* text-display (see the class on the <h2> above) is the site's largest
-   type-scale step — clamp(2.75rem, 2rem + 3.5vw, 5.5rem), the same
-   unscaled token the Home Hero heading used before it got a local
-   override there. This section never got that pass: with nothing else
-   in the row to balance it (no image, just the CTA button, and a wide
-   flex row with room to spare), the heading was reading oversized the
-   same way. Scoped override here, same approach as the Hero's. */
+/* A wider measure keeps the closing question compact at the h2 scale. */
 .partnership__heading {
-  max-inline-size: 32rem;
-  font-size: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  max-inline-size: 38rem;
 }
 
 .partnership__action {

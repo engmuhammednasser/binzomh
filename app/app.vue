@@ -5,6 +5,10 @@
 const localeHead = useLocaleHead()
 const siteName = useSiteName()
 const siteUrl = useSiteUrl()
+// The site's home is the origin plus app.baseURL — "/binzomh/" on a GitHub
+// Pages project site — the same join the sitemap and robots routes make.
+// Without it the schema named the account root, not this site.
+const withBase = useAssetUrl()
 useHead({
   titleTemplate: title => title && title !== siteName.value ? `${title} · ${siteName.value}` : siteName.value,
   htmlAttrs: {
@@ -18,8 +22,8 @@ useHead({
       textContent: () => JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'WebSite',
-        '@id': siteUrl('/#website'),
-        'url': siteUrl(),
+        '@id': siteUrl(withBase('/#website')),
+        'url': siteUrl(withBase('/')),
         'name': siteName.value,
         'inLanguage': ['en-US', 'ar-SA'],
       }).replaceAll('<', '\\u003c'),
@@ -29,6 +33,7 @@ useHead({
 </script>
 
 <template>
+  <PreviewBanner />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>

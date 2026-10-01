@@ -20,9 +20,8 @@ const props = defineProps<{ label?: string, people: AboutPerson[] }>()
 
 const { t } = useI18n()
 const assetUrl = useAssetUrl()
-const prefersReduced = usePrefersReducedMotion()
-
 const track = ref<HTMLElement | null>(null)
+const { canAnimate: canAutoplay, running: motionRunning, prefersReduced } = useMotionPlayback(track)
 
 /**
  * The cards, read straight off the track in DOM order.
@@ -165,27 +164,16 @@ function goToPerson(index: number) {
 
 const ROTATE_MS = 5000
 
-/**
- * Client-only, and read in onMounted rather than during setup. The
- * prefers-reduced-motion composable resolves synchronously on the client,
- * so branching the template on it directly would render something different
- * from the server's HTML and break hydration. Starting false means the
- * server emits no rotation control at all — correct, since it is useless
- * without JavaScript.
- */
-const canAutoplay = ref(false)
-
 const playing = ref(true)
 const hovered = ref(false)
 const focused = ref(false)
-const pageHidden = ref(false)
 
 // Every reason to hold still, in one place. Hover and focus are courtesy
 // pauses — someone reading a card should not have it slide away — while
-// `playing` is the explicit control and `pageHidden` stops the timer doing
-// invisible work in a background tab.
+// `playing` is the explicit control; shared motion playback also pauses
+// when offscreen, in a hidden tab, or when reduced motion is requested.
 const running = computed(() =>
-  canAutoplay.value && playing.value && !hovered.value && !focused.value && !pageHidden.value,
+  motionRunning.value && playing.value && !hovered.value && !focused.value,
 )
 
 let timer: ReturnType<typeof setInterval> | undefined
@@ -225,13 +213,6 @@ onMounted(() => {
   // measurements have to be retaken.
   window.addEventListener('resize', onScroll, { passive: true })
 
-  canAutoplay.value = !prefersReduced.value
-
-  const onVisibility = () => {
-    pageHidden.value = document.visibilityState === 'hidden'
-  }
-  document.addEventListener('visibilitychange', onVisibility)
-
   // One watcher owns the timer's whole lifecycle, so there is no path that
   // starts a second interval or leaves one running.
   const stop = watch(running, restart, { immediate: true })
@@ -241,7 +222,6 @@ onMounted(() => {
     clearInterval(timer)
     el.removeEventListener('scroll', onScroll)
     window.removeEventListener('resize', onScroll)
-    document.removeEventListener('visibilitychange', onVisibility)
     if (frame) cancelAnimationFrame(frame)
   })
 })
@@ -289,10 +269,15 @@ onMounted(() => {
             :aria-current="index === activePerson ? 'true' : undefined"
             @click="goToPerson(index)"
           >
+            <!-- A 132px square cut from the portrait's centre — what
+                 object-fit: cover shows in this 44px circle anyway, at 3x
+                 for dense screens. The full portrait would pull all seven
+                 originals (~960 KB) the moment this row appears; the set of
+                 thumbs is ~31 KB. File stem is the slug, as for the photo. -->
             <img
-              :src="assetUrl(person.photo)"
-              :width="person.width"
-              :height="person.height"
+              :src="assetUrl(`/images/about/team/thumbs/${person.slug}.jpeg`)"
+              width="132"
+              height="132"
               alt=""
               class="team__thumb-image"
               loading="lazy"

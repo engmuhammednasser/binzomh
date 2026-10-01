@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import type { HomeHeroContent } from '~~/types/content'
+import { frameAspect } from '~~/shared/utils/site-image'
+
+const { slotFor } = useManagedSite()
 
 defineProps<{ content: HomeHeroContent }>()
 
-const siteName = useSiteName()
-// Bound (not static) srcset below already sidesteps a different Vue-compiler
-// bug (see the template comment) — but any dynamic src/srcset also bypasses
-// Nuxt's build-time base-path prefixing, so these paths need it applied
-// explicitly. See shared/utils/asset-url.ts.
-const assetUrl = useAssetUrl()
+// The file, its size and its alt come from the image registry
+// (content/images.ts); only the layout-dependent attributes — sizes,
+// loading priority — stay in this template.
+const slot = computed(() => slotFor('home-hero')!)
+const image = computed(() => slot.value.image)
+// With no image chosen for the slot, the design placeholder fills the
+// same frame (see content/images.ts).
+const siteImage = useSiteImage()
 </script>
 
 <template>
@@ -61,13 +66,12 @@ const assetUrl = useAssetUrl()
       >
         <!--
           Responsive Hero delivery (native <picture>, no @nuxt/image):
-          - AVIF, then WebP, then the original PNG as a universal fallback.
-          - 960w/1440w are real derivatives generated from the existing
-            1672x941 source (public/images/home/hero.png) — never upscaled.
-          - A 1920w tier is intentionally NOT listed yet: it would need to be
-            generated from a genuine ~1920x1080 master, which hasn't been
-            supplied. Add hero-1920.avif/.webp + a "1920w" entry to both
-            srcset lists above once that master lands.
+          - WebP first (the main format), then AVIF, then the original PNG
+            as a universal fallback — the order and the file list come from
+            the registry through siteImage.sources().
+          - Each format offers the 960w/1440w derivatives plus the
+            full-size 1672w copy, so the file is served at its own size
+            where the layout needs it — never upscaled.
           - `sizes` mirrors the actual layout math: full-bleed minus the
             fluid --gutter while the hero stacks (<=1023px, see the
             max-width: 1023px rule below), then the ~648px the visual
@@ -75,7 +79,7 @@ const assetUrl = useAssetUrl()
             min-width: 1024px rule).
         -->
         <div class="hero__visual-frame media-frame">
-          <picture>
+          <picture v-if="image">
             <!--
               :srcset (bound) rather than a static srcset attribute: Vue's
               SFC compiler auto-converts a *static* srcset on <source> into
@@ -87,26 +91,28 @@ const assetUrl = useAssetUrl()
               compiler.
             -->
             <source
-              type="image/avif"
-              :srcset="`${assetUrl('/images/home/hero-960.avif')} 960w, ${assetUrl('/images/home/hero-1440.avif')} 1440w`"
-              sizes="(max-width: 767px) calc(100vw - 2.5rem), (max-width: 1023px) calc(100vw - 3.25rem), 648px"
-            >
-            <source
-              type="image/webp"
-              :srcset="`${assetUrl('/images/home/hero-960.webp')} 960w, ${assetUrl('/images/home/hero-1440.webp')} 1440w`"
+              v-for="source in siteImage.sources(image)"
+              :key="source.type"
+              :type="source.type"
+              :srcset="source.srcset"
               sizes="(max-width: 767px) calc(100vw - 2.5rem), (max-width: 1023px) calc(100vw - 3.25rem), 648px"
             >
             <img
-              src="/images/home/hero.png"
-              width="1672"
-              height="941"
-              :alt="siteName"
+              :src="siteImage.src(image)"
+              :width="image.width"
+              :height="image.height"
+              :alt="siteImage.alt(image)"
               class="hero__image"
               loading="eager"
               fetchpriority="high"
               decoding="async"
             >
           </picture>
+          <HomeEditorialVisual
+            v-else
+            treatment="photography"
+            :aspect="frameAspect(slot.frame)"
+          />
         </div>
       </MotionReveal>
     </BaseContainer>

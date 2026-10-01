@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import { findBrand } from '~~/content/brands'
 import { presentBrand } from '~~/content/brands/presentation'
 import { brandsContent as brandsEn } from '~~/content/en/brands'
 import { brandsContent as brandsAr } from '~~/content/ar/brands'
+
+const { brands } = useManagedSite()
 
 // A different slug must run lookup/404 handling again during client navigation.
 definePageMeta({ key: route => route.path })
 
 const route = useRoute()
-const brand = findBrand(String(route.params.slug))
-if (!brand) throw createError({ statusCode: 404, statusMessage: 'Brand not found', fatal: import.meta.client })
+const brand = computed(() => brands.value.find(brand => brand.slug === String(route.params.slug)))
+if (!brand.value) throw createError({ statusCode: 404, statusMessage: 'Brand not found', fatal: import.meta.client })
 
 const { locale } = useI18n()
-const content = usePairedContent(brandsEn, brandsAr)
-const presentation = computed(() => presentBrand(brand, locale.value === 'ar' ? 'ar' : 'en'))
+const content = usePairedContent(brandsEn, brandsAr, 'brands')
+const presentation = computed(() => presentBrand(brand.value!, locale.value === 'ar' ? 'ar' : 'en'))
 usePageSeo(
-  () => brand.name,
-  () => content.value.detail.description.replace('{brand}', brand.name),
+  () => brand.value!.name,
+  () => content.value.detail.description.replace('{brand}', brand.value!.name),
 )
 </script>
 

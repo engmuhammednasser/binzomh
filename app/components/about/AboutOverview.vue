@@ -1,7 +1,19 @@
 <script setup lang="ts">
 import type { AboutOverviewContent } from '~~/types/content'
+import { frameAspect } from '~~/shared/utils/site-image'
+
+const { slotFor } = useManagedSite()
 
 defineProps<{ content: AboutOverviewContent }>()
+
+// The file, its size and its alt come from the image registry
+// (content/images.ts); only the layout-dependent attributes — sizes,
+// loading priority — stay in this template.
+const slot = computed(() => slotFor('about-overview')!)
+const image = computed(() => slot.value.image)
+// With no image chosen for the slot, the design placeholder fills the
+// same frame (see content/images.ts).
+const siteImage = useSiteImage()
 </script>
 
 <template>
@@ -19,18 +31,33 @@ defineProps<{ content: AboutOverviewContent }>()
           it already carry the section's meaning in real text.
 
           Its 1086x1448 source is exactly the 3/4 the placeholder declared,
-          so the column's proportions are unchanged.
+          so the column's proportions are unchanged. WebP first, from a
+          full-size copy, with the JPEG original as the fallback.
         -->
         <div class="overview__visual-frame media-frame">
-          <img
-            src="/images/about/overview.jpeg"
-            width="1086"
-            height="1448"
-            alt=""
-            class="overview__image"
-            loading="lazy"
-            decoding="async"
-          >
+          <picture v-if="image">
+            <source
+              v-for="source in siteImage.sources(image)"
+              :key="source.type"
+              :type="source.type"
+              :srcset="source.srcset"
+              sizes="(max-width: 1023px) 20rem, 460px"
+            >
+            <img
+              :src="siteImage.src(image)"
+              :width="image.width"
+              :height="image.height"
+              :alt="siteImage.alt(image)"
+              class="overview__image"
+              loading="lazy"
+              decoding="async"
+            >
+          </picture>
+          <HomeEditorialVisual
+            v-else
+            treatment="photography"
+            :aspect="frameAspect(slot.frame)"
+          />
         </div>
       </MotionReveal>
 

@@ -38,6 +38,7 @@ function closeMobile() {
           :key="item.to"
           :to="localePath(item.to)"
           class="app-header__link"
+          :class="{ 'is-active': item.active }"
         >
           {{ item.label }}
         </NuxtLink>
@@ -120,7 +121,8 @@ function closeMobile() {
   transition: transform var(--motion-duration-fast) var(--motion-ease);
 }
 
-.app-header__link:hover::after {
+.app-header__link:hover::after,
+.app-header__link.is-active::after {
   transform: scaleX(1);
 }
 
