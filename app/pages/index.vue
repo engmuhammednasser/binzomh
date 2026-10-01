@@ -2,7 +2,8 @@
 import { homeContent as homeEn } from '~~/content/en/home'
 import { homeContent as homeAr } from '~~/content/ar/home'
 
-const { brands } = useManagedSite()
+const { brands, galleryFor } = useManagedSite()
+const galleryImages = computed(() => galleryFor('home'))
 const homeBrandCandidates = computed(() => brands.value.map(({ slug, name, status, logo }) => ({ slug, name, status, logo })))
 
 const content = usePairedContent(homeEn, homeAr, 'home')
@@ -23,7 +24,10 @@ usePageSeo(() => content.value.hero.headline, () => content.value.hero.descripti
     <HomeAbout :content="content.about" />
     <HomeCapabilities :content="content.capabilities" />
     <HomeNetwork :content="content.network" />
-    <BaseGallery page="home" />
+    <BaseGallery
+      page="home"
+      :images="galleryImages"
+    />
     <HomePartnershipCta :content="content.partnership" />
   </div>
 </template>

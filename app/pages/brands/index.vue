@@ -2,7 +2,8 @@
 import { brandsContent as brandsEn } from '~~/content/en/brands'
 import { brandsContent as brandsAr } from '~~/content/ar/brands'
 
-const { brands: brandProfiles } = useManagedSite()
+const { brands: brandProfiles, galleryFor } = useManagedSite()
+const galleryImages = computed(() => galleryFor('brands'))
 
 const content = usePairedContent(brandsEn, brandsAr, 'brands')
 usePageSeo(() => content.value.title, () => content.value.description)
@@ -14,6 +15,9 @@ usePageSeo(() => content.value.title, () => content.value.description)
       :brands="brandProfiles"
       :content="content"
     />
-    <BaseGallery page="brands" />
+    <BaseGallery
+      page="brands"
+      :images="galleryImages"
+    />
   </div>
 </template>

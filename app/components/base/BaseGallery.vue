@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import type { SiteImagePage } from '~~/types/images'
-
-const { galleryFor } = useManagedSite()
+import type { GalleryImage, SiteImagePage } from '~~/types/images'
 
 /**
- * A page's free-form gallery (content/images.ts → pageGalleries). Renders
+ * A page's free-form gallery, supplied by its parent. Renders
  * nothing at all while the page has no pictures, so adding the component
  * to a page changes nothing until the first picture is approved and
  * listed.
@@ -12,11 +10,10 @@ const { galleryFor } = useManagedSite()
  * Each picture has its own description: unlike the section visuals, a
  * gallery picture stands alone with no text beside it.
  */
-const props = defineProps<{ page: SiteImagePage }>()
+defineProps<{ page: SiteImagePage, images: GalleryImage[] }>()
 
 const { t } = useI18n()
 const siteImage = useSiteImage()
-const images = computed(() => galleryFor(props.page))
 </script>
 
 <template>

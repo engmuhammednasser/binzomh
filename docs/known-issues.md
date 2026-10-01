@@ -1,7 +1,8 @@
 # Known issues
 
-These issues are recorded in the CMS/dashboard baseline before the design-system
-cleanup. Both remain open by the owner's instruction; recording them is not a fix.
+The two CMS issues below were recorded in the dashboard baseline before the
+design-system cleanup. Both remain open by the owner's instruction; recording
+them is not a fix.
 
 ## CMS-001 — Reload can overwrite edits made while its request is pending
 
@@ -38,3 +39,21 @@ cleanup. Both remain open by the owner's instruction; recording them is not a fi
   that a server session was revoked when the request did not succeed.
 - Verification: expire the session before logout, and separately simulate a network
   failure; verify cleanup, navigation, and truthful feedback about server revocation.
+
+## Visual regression tooling is not versioned
+
+- Severity: Medium
+- Status: Open; migration deferred until after design-system Step 8.
+- Current capture script: `.data/baseline-review/capture-stable-design-system.mjs`.
+- Current comparison script: `.data/baseline-review/compare-captures.mjs`.
+- Carousel stabilization: `settle(page)` in the capture script. It waits for fonts,
+  network and image decoding, selects the second person and then the first, and
+  asserts that the first remains active before and after capture.
+- Gallery fixture capture and behavior checks: `.data/baseline-review/verify-gallery.mjs`.
+- Current baselines and reports: `.data/design-system/`.
+- Problem: these tools and artifacts exist only under gitignored `.data/`.
+- Impact: a fresh checkout or CI cannot reproduce the visual verification from
+  versioned files alone.
+- Suggested fix: after Step 8, add the tooling and reproducible fixture setup under
+  `tests/`, document its commands and baseline policy, and retain exact pixel
+  comparison without masks or tolerance. Keep the current files in place until then.
