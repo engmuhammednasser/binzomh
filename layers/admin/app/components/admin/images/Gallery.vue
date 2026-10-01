@@ -34,8 +34,8 @@ function onDrop(event: DragEvent) {
   add(event.dataTransfer?.files)
 }
 
-// Published pictures are served from public/; ones added this session are
-// local object URLs already.
+// Uploads use server media paths; root-relative sources need the app base URL.
+// Preserve a blob URL unchanged if one is supplied.
 const srcOf = (src: string) => src.startsWith('blob:') ? src : assetUrl(src as `/${string}`)
 </script>
 
@@ -58,10 +58,6 @@ const srcOf = (src: string) => src.startsWith('blob:') ? src : assetUrl(src as `
             alt=""
             loading="lazy"
           >
-          <span
-            v-if="false"
-            class="item__badge"
-          >{{ t('admin.images.newItem') }}</span>
           <span
             class="item__index"
             aria-hidden="true"
@@ -217,7 +213,6 @@ const srcOf = (src: string) => src.startsWith('blob:') ? src : assetUrl(src as `
   object-fit: cover;
 }
 
-.item__badge,
 .item__index {
   position: absolute;
   inset-block-start: 0.625rem;
@@ -225,12 +220,6 @@ const srcOf = (src: string) => src.startsWith('blob:') ? src : assetUrl(src as `
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 600;
-}
-
-.item__badge {
-  inset-inline-start: 0.625rem;
-  background: var(--admin-warning-bg);
-  color: var(--admin-warning);
 }
 
 .item__index {

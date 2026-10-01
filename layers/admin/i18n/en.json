@@ -273,7 +273,6 @@
       "removePicture": "Remove picture",
       "altMissing": "Add a description in both languages — gallery pictures have no text beside them.",
       "refused": "Not added: {name} — {reason}",
-      "newItem": "New",
       "changes": "No image changes | 1 image change | {count} image changes"
     },
     "live": {
