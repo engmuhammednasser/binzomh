@@ -1,37 +1,57 @@
 # Motion principles
 
-Motion is part of the corporate identity, and it is meant to stay
-invisible when it is working: restrained, premium, purposeful.
+Keep motion restrained and preserve readable content when animation cannot run.
+The implementation uses CSS transitions/keyframes, native scrolling and JavaScript
+timers/observers. No animation library is declared in `package.json`.
 
-## What N01 ships
+## Reveal and reduced motion
 
-- MotionReveal.vue: a single IntersectionObserver-based fade and rise-in
-  primitive (.reveal to .reveal.is-visible in main.css), used once per
-  page section. No stagger choreography or scroll-linked effects yet.
-- CSS transitions only, on color, border, opacity, and transform. No
-  animation library. GSAP is explicitly not installed in the foundation
-  phase.
-- ZDivider.vue: the only place the logos diagonal Z ribbon is echoed, as a
-  slim, diagonally clipped divider bar using the silver gradient token. It
-  is not reused as a literal graphic anywhere else. Any future use of this
-  motif, such as a section transition line, an image-mask reveal, or an
-  underline, should stay this restrained: a hint, never decoration
-  plastered across the page.
+`app/components/motion/MotionReveal.vue` renders visible content by default. After
+mounting, it adds `.is-pending` only when reduced motion is not requested and
+IntersectionObserver exists. An intersection removes that class; its optional
+`delay` prop supplies a transition delay. It does not depend on an `.is-visible` class.
 
-## Reduced motion
+`app/assets/css/main.css` defines the reveal transition and a reduced-motion media
+query that reduces animation/transition durations, disables smooth scrolling and
+keeps pending reveals visible. `usePrefersReducedMotion()` reads `matchMedia` only
+on the client and listens for preference changes. `MotionReveal` skips its observer
+when reduced motion is already enabled at mount; CSS handles visibility if the
+preference changes later.
 
-prefers-reduced-motion: reduce is handled twice:
+## Automatic motion that exists today
 
-- CSS: a global media query in main.css collapses all transition and
-  animation durations to effectively zero and forces .reveal content to
-  be visible immediately.
-- JS: usePrefersReducedMotion() lets MotionReveal skip attaching the
-  IntersectionObserver entirely and show content immediately, rather than
-  relying on the CSS override alone.
+- `app/components/about/AboutTeamCarousel.vue` uses native scroll snapping and a
+  5000 ms autoplay timer. It renders three roster copies for looping; the outer
+  copies are hidden from assistive technology. Thumbnails and previous/next buttons
+  provide manual navigation. An icon button with a translated action label toggles
+  automatic rotation.
+- The carousel stops autoplay while hovered, focused, explicitly paused, offscreen,
+  in a hidden document, or under reduced motion. The shared visibility/motion gate
+  lives in `app/composables/useMotionPlayback.ts`. The play/pause control is rendered
+  only after mounting and when reduced motion is off. Reduced motion also makes
+  manual programmatic scrolling instant instead of smooth.
+- `app/components/home/HomeCapabilities.vue` rotates the active item every 3500 ms
+  at widths up to 1023px when at least two items exist and motion is allowed. On
+  larger screens, row visibility/hover selects the visual. It has an explicit
+  pause/resume control for mobile automatic playback.
+- `app/components/home/HomeNetwork.vue` animates its repeated logo row with CSS
+  keyframes and gates `animation-play-state` through the same playback composable.
+  `app/components/motion/PlaybackButton.vue` supplies the icon control with translated
+  `aria-label` and `title` for the home components.
 
-## Explicitly avoided
+`useMotionPlayback()` combines mounting, user pause, reduced motion, element
+visibility and document visibility. When IntersectionObserver is unavailable it
+treats the element as visible; reduced-motion, document-visibility and pause checks
+still apply. Timers/listeners/observers are cleaned up by their owning scopes.
 
-Bounce easing, autoplay sliders, scroll hijacking, heavy parallax, a
-custom cursor, and animating everything on the page. None of these are
-present, and adding any of them is a deliberate design decision for a
-later phase, not a default.
+## Rules for changes and verification
+
+Preserve manual controls and reduced-motion behavior. Do not add autoplay or new
+motion dependencies as an incidental styling change. Carousel extraction remains
+outside this cleanup's scope; it is not an implemented shared carousel abstraction.
+
+Existing checks in `tests/browser/site.spec.ts` cover marquee pause/visibility,
+mobile capability playback and changing the team carousel's reduced-motion preference
+after hydration. For the screenshot gate, see
+[Verification](design-system.md#verification). Screenshots with motion disabled
+do not replace these behavioral checks.
