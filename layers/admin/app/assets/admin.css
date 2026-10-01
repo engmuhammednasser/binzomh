@@ -1,0 +1,302 @@
+/*
+  Shared controls for the /admin workspace. Loaded by layouts/admin.vue
+  only, and every class is admin- prefixed so none of it can reach the
+  public site's components. Included only in dashboard-enabled builds.
+*/
+
+.admin {
+  color-scheme: dark;
+  --color-text: #f0f2f2;
+  --color-text-muted: #b6c0c7;
+  --color-text-subtle: #a4b0b8;
+  --color-bg: #22292e;
+  --color-bg-alt: #171c20;
+  --color-bg-raised: #2b343b;
+  --color-bg-inverse: #e7e8e4;
+  --color-text-on-dark: #171c20;
+  --color-border: #3b454c;
+  --color-border-strong: #75828c;
+  --color-focus-ring: #e7e8e4;
+  --color-focus-halo: #171c20;
+  --admin-rail: #101518;
+  --admin-accent: #cce0da;
+  --admin-accent-ink: #19332b;
+  --admin-success: #a5d2bc;
+  --admin-success-bg: #283c35;
+  --admin-warning: #e3c38d;
+  --admin-warning-bg: #3b3428;
+  --font-size-h2: clamp(1.5rem, 1.2rem + 1vw, 1.875rem);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+
+.admin :where(a, button, input, textarea, select, summary):focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 3px;
+  box-shadow: none;
+}
+
+.admin-change-dot { flex: 0 0 7px; inline-size: 7px; block-size: 7px; border-radius: 50%; background: var(--admin-warning); }
+
+.admin-panel {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+}
+
+/* ------------------------------------------------------------------ */
+/* Buttons                                                             */
+/* ------------------------------------------------------------------ */
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: 44px;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.admin-btn:hover:not(:disabled) {
+  border-color: var(--color-text);
+}
+
+.admin-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-btn--small {
+  min-block-size: 36px;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-small);
+}
+
+.admin-btn--primary {
+  background: var(--color-bg-inverse);
+  border-color: var(--color-bg-inverse);
+  color: var(--color-text-on-dark);
+}
+
+.admin-btn--primary:hover:not(:disabled) {
+  background: #cfd4d2;
+  border-color: #cfd4d2;
+}
+
+/* ------------------------------------------------------------------ */
+/* Fields                                                              */
+/* ------------------------------------------------------------------ */
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+
+.admin-field__label {
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.admin-field__input {
+  inline-size: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: inherit;
+}
+
+/* Keep the focus ring close to editable fields inside the dense tables. */
+.admin-field__input:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 0;
+  box-shadow: none;
+}
+
+textarea.admin-field__input {
+  resize: vertical;
+}
+
+/* An English/Arabic pair side by side, each in its own direction. */
+.admin-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.admin-pair > legend {
+  grid-column: 1 / -1;
+  margin-block-end: var(--space-2);
+  padding: 0;
+}
+
+@media (max-width: 640px) {
+  .admin-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Tables                                                              */
+/* ------------------------------------------------------------------ */
+/* position: relative so the visually-hidden labels inside cells (absolutely
+   positioned) resolve against this scroller, not the page — otherwise
+   they sit at their offset inside the wide table and stretch the document
+   sideways on a phone. */
+.admin-table-wrap {
+  position: relative;
+  overflow-x: auto;
+}
+
+.admin-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: start;
+  vertical-align: middle;
+}
+
+.admin-table thead th {
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: var(--color-bg-alt);
+  border-block-end: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.admin-table tbody tr + tr {
+  border-block-start: 1px solid var(--color-border);
+}
+
+.admin-table tbody th {
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ */
+/* Editor panel                                                        */
+/* ------------------------------------------------------------------ */
+.admin-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin-block-start: var(--space-6);
+  padding: var(--space-5);
+}
+
+.admin-editor__head,
+.admin-editor__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.admin-editor__head {
+  justify-content: space-between;
+}
+
+.admin-editor__title {
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Panel sections (shared by the overview's panels)                    */
+/* ------------------------------------------------------------------ */
+.admin-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-block-end: 1px solid var(--color-border);
+}
+
+.admin-section-head h2 {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+.admin-section-head p {
+  margin: 0.3rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+.admin-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-block-size: 44px;
+  color: var(--admin-accent);
+  white-space: nowrap;
+  font-size: 0.8125rem;
+  text-decoration: none;
+}
+
+.admin-link:hover {
+  text-decoration: underline;
+}
+
+.admin-link .admin-icon {
+  inline-size: 16px;
+}
+
+.admin-empty {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 600px) {
+  .admin-section-head {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Page blocks (a titled group on a page, e.g. team, logos)            */
+/* ------------------------------------------------------------------ */
+.admin-block {
+  scroll-margin-block-start: 1.5rem;
+}
+
+.admin-block + .admin-block {
+  margin-block-start: var(--space-7);
+}
+
+.admin-block__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-block-end: var(--space-4);
+}
+
+.admin-block__title {
+  margin: 0;
+}
