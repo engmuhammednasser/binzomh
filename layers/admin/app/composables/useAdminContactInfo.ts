@@ -7,7 +7,7 @@ import {
   validateRequired,
   validateSocialUrl,
   type ContactFieldError,
-} from '../../utils/contact-validation'
+} from '#shared/utils/contact-validation'
 
 export interface ContactInfoDraft {
   phone: string

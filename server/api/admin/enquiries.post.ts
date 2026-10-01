@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { requireSession } from '../../cms/auth'
 import { limitedJson, stringValue, invalid } from '../../cms/http'
-import { validateEmail } from '../../../layers/admin/utils/contact-validation'
+import { validateEmail } from '#shared/utils/contact-validation'
 import type { Enquiry } from '../../../types/cms'
 
 export default defineEventHandler(async (event) => {

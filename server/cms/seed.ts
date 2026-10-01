@@ -14,7 +14,7 @@ import { brandProfiles } from '../../content/brands'
 import { siteImageSlots } from '../../content/images'
 import { socialLinks } from '../../content/social'
 import { collectCopy } from '../../shared/utils/cms-copy'
-import { SOCIAL_PLATFORMS } from '../../layers/admin/utils/contact-validation'
+import { SOCIAL_PLATFORMS } from '#shared/utils/contact-validation'
 import type { Workspace } from '../../types/cms'
 
 export const pagePairs = { home: [homeEn, homeAr], about: [aboutEn, aboutAr], brands: [brandsEn, brandsAr], capabilities: [capabilitiesEn, capabilitiesAr], network: [networkEn, networkAr], contact: [contactEn, contactAr] } as const

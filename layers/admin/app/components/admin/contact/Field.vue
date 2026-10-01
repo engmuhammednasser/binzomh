@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ContactFieldError } from '../../../../utils/contact-validation'
+import type { ContactFieldError } from '#shared/utils/contact-validation'
 
 /**
  * A labelled input with its hint and error wired up for assistive tech:

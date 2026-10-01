@@ -1,11 +1,9 @@
-import type { SocialPlatform } from '../../../types/content'
+import type { SocialPlatform } from '../../types/content'
 
 /**
- * Validation for the dashboard's contact-details form. Kept here, apart
- * from the component, so the rules are unit-tested
- * (tests/admin-contact-validation.test.mjs) and can move unchanged into a
- * server endpoint once saving exists — where they must be enforced again,
- * since a browser check is never the security boundary.
+ * Pure contact validation shared by the dashboard and server. Rules are
+ * unit-tested in tests/admin-contact-validation.test.mjs and enforced by
+ * server endpoints, since a browser check is never the security boundary.
  *
  * Each validator returns null when the value is acceptable, or an error
  * code the form translates (admin.contactInfo.errors.*).

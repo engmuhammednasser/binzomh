@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { dialable } from '../../../../utils/contact-validation'
+import { dialable } from '#shared/utils/contact-validation'
 
 const { t } = useI18n()
 const { draft, errors, changedFields } = useAdminContactInfoContext()

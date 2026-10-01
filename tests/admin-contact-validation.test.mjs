@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { dialable, validateEmail, validatePhone, validateRequired, validateSocialUrl } from '../layers/admin/utils/contact-validation.ts'
+import { dialable, validateEmail, validatePhone, validateRequired, validateSocialUrl } from '../shared/utils/contact-validation.ts'
 
 test('phone numbers accept display formatting and reject what cannot be dialled', () => {
   for (const ok of ['+966 50 006 4807', '0500064807', '+966-50-006-4807', '(011) 123 4567']) assert.equal(validatePhone(ok), null, ok)

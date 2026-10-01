@@ -3,7 +3,7 @@ import type { Workspace } from '../../types/cms'
 import type { SiteImageFile } from '../../types/images'
 import { seedWorkspace } from './seed'
 import { invalid, record, stringValue } from './http'
-import { SOCIAL_PLATFORMS, validateEmail, validatePhone, validateSocialUrl } from '../../layers/admin/utils/contact-validation'
+import { SOCIAL_PLATFORMS, validateEmail, validatePhone, validateSocialUrl } from '#shared/utils/contact-validation'
 
 export function validateWorkspace(input: unknown, db: DatabaseSync, publishing = false): Workspace {
   const value = record(input)

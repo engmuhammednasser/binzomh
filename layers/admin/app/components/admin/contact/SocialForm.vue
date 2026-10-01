@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SOCIAL_HOSTS, SOCIAL_PLATFORMS } from '../../../../utils/contact-validation'
+import { SOCIAL_HOSTS, SOCIAL_PLATFORMS } from '#shared/utils/contact-validation'
 import { SOCIAL_LABELS } from '../../../composables/useAdminContactInfo'
 
 const { t } = useI18n()

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { dialable, SOCIAL_PLATFORMS } from '../../../../utils/contact-validation'
+import { dialable, SOCIAL_PLATFORMS } from '#shared/utils/contact-validation'
 import { SOCIAL_LABELS } from '../../../composables/useAdminContactInfo'
 
 /**
