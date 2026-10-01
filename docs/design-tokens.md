@@ -1,38 +1,27 @@
 # Design tokens
 
-All tokens live in app/assets/css/tokens.css as CSS custom properties.
-Components must reference the semantic tokens (--color-text,
---color-bg-inverse, and so on), never the raw --palette-* values
-directly, so a future palette change is one file.
+For token layers, component usage, typography rules and verification, read the
+[design system guide](design-system.md). Keep those rules there rather than
+maintaining a second copy in this document.
 
-## Palette (current working direction, not yet approved branding)
+## Current sources
 
-#111111, #1A1A1A, #464646, #777777, #FFFFFF, #F7F7F5, #F1F1EF, #DDDDDA,
-plus a restrained silver gradient accent (--gradient-silver) echoing the
-wordmarks metallic Z. See the source projects
-docs/content/ASSET-AND-APPROVAL-REGISTER.md: this direction is explicitly
-marked proposed, not an approved hex specification. The former
-Forte-Pharma-style red palette is not used anywhere.
+- `app/assets/css/tokens.css`: public palette, semantic roles and shared scales.
+- `app/assets/css/main.css` and `reset.css`: global type, layout and focus rules.
+- `app/assets/css/fonts.css`: local Cairo font-face declarations.
+- `layers/admin/app/assets/admin-tokens.css`: shared admin feedback tokens only.
+- `layers/admin/app/assets/admin-workspace.css`: workspace theme overrides and controls.
 
-## Typography
+The global stylesheet is loaded through `nuxt.config.ts`. Admin workspace and
+login stylesheet boundaries are documented in the guide; not all project tokens
+live in the public token file. Preserve existing values when moving a declaration
+into a semantic token.
 
-Local and system font stack only; no remote font loading yet. A fluid
-scale via clamp() covers Display, H1 to H4, Body Large, Body, Small, and
-Label roles. Arabic does not inherit the English label letter-spacing and
-uppercase treatment (see the html[dir="ltr"] versus html[dir="rtl"] rules
-for .text-label in main.css), and heading and body line-height are set
-separately for Arabic script, looser than the Latin values, via
---line-height-heading-ar and --line-height-body-ar.
+## Company logo usage
 
-## Logos
-
-Only the two supplied production files are used: public/logos/
-binzomah-logo-dark.png (dark artwork, for light backgrounds) and
-binzomah-logo-light.png (light artwork, for dark backgrounds), copied
-unmodified from the source projects docs/logos/. BaseLogo.vue renders
-each at its own real aspect ratio, since they are not identical
-(1252x329 versus 1254x323), and adds a small top offset to the light
-variant to correct its zero top padding relative to the dark variants
-roughly three percent margin, per the source asset registers documented
-finding. The logos are never redrawn, recolored, or flattened; the silver
-Z gradient is part of the source PNG files, not re-created in CSS.
+`app/components/base/BaseLogo.vue` selects `public/logos/binzomah-logo-dark.png`
+or `public/logos/binzomah-logo-light.png`. Its source map records separate dimensions
+of 1252 x 329 and 1254 x 323, respectively; the image keeps automatic inline size.
+The light variant adds `margin-block-start: 0.06em`. Preserve these variant-specific
+dimensions and alignment when reusing the component. This concerns the company
+logo component, not the separate brand/partner logo registries.

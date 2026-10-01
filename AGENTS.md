@@ -37,3 +37,18 @@ For every finding provide:
 - recommended fix
 
 Avoid stylistic nitpicks unless they affect maintainability or correctness.
+
+## Design System Rules
+
+Read [docs/design-system.md](docs/design-system.md).
+
+- Use semantic tokens; never use raw `--palette-*` variables in components.
+- Never use `:deep()` to restyle base components; add a variant or surface token.
+- Never hardcode colors, shadows or font sizes when a token exists; propose a token
+  if none fits.
+- Pass data to base components through props; never fetch or select data inside them.
+- Check visual changes in `/en` and `/ar`, at desktop and mobile widths.
+- Require pixel-identical captures for template, style or asset changes, including
+  `<template>` and `<style>` blocks inside `.vue` files. For changes limited to
+  `<script>` imports or pure logic, run the full test suite and builds, and show a
+  diff proving no template, style or asset changes.
