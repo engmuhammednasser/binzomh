@@ -50,15 +50,28 @@ export function validateWorkspace(input: unknown, db: DatabaseSync, publishing =
     }
     return original
   })
+  // Dimensions come from the stored upload, never from the client.
+  function upload(source: string) {
+    const name = /^\/images\/admin\/([a-f0-9-]+\.webp)$/.exec(source)?.[1]
+    const media = (name ? db.prepare('SELECT width,height FROM media WHERE name=?').get(name) : undefined) as { width: number, height: number } | undefined
+    if (!media) invalid('Unknown image')
+    return { src: source as `/images/admin/${string}`, width: media!.width, height: media!.height }
+  }
   function image(value: unknown): SiteImageFile {
     const img = record(value)
     const source = stringValue(img.src, 'image path', 200)
     const existing = Object.values(seed.slots).find(entry => entry?.src === source)
     if (existing) return JSON.parse(JSON.stringify(existing))
-    const name = /^\/images\/admin\/([a-f0-9-]+\.webp)$/.exec(source)?.[1]
-    const media = (name ? db.prepare('SELECT width,height FROM media WHERE name=?').get(name) : undefined) as { width: number, height: number } | undefined
-    if (!media) invalid('Unknown image')
-    return { src: source as SiteImageFile['src'], width: media!.width, height: media!.height, formats: ['webp'], alt: 'decorative' }
+    return { ...upload(source), formats: ['webp'], alt: 'decorative' }
+  }
+  // A logo shows an approved logo file or an upload — never a page photo.
+  const approvedLogos = Object.values(seed.logos)
+  const logos = value.logos === undefined ? {} : record(value.logos)
+  for (const id of Object.keys(seed.logos)) {
+    if (logos[id] === undefined) continue
+    const source = stringValue(record(logos[id]).src, 'logo path', 200)
+    const approved = approvedLogos.find(entry => entry.src === source)
+    seed.logos[id] = approved ? { ...approved } : upload(source)
   }
   const slots = record(value.slots)
   // Resolve against the immutable seed before assigning, so shared source files remain valid.

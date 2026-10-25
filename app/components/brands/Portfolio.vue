@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { BrandProfile, BrandsPageContent } from '~~/types/brands'
+import type { BrandProfile, BrandsPageContent, LogoOnlyBrand } from '~~/types/brands'
 import { frameAspect } from '~~/shared/utils/site-image'
 
 const { slotFor } = useManagedSite()
 
-defineProps<{ brands: BrandProfile[], content: BrandsPageContent }>()
+defineProps<{ brands: BrandProfile[], logos?: LogoOnlyBrand[], content: BrandsPageContent }>()
 
 const localePath = useLocalePath()
 // Dynamic src bypasses Nuxt's build-time base-path prefixing (same reason as
@@ -27,9 +27,135 @@ const siteImage = useSiteImage()
       Built to the homepage's own patterns rather than to this page's
       former ones: an image-led hero with the headline rising out of a
       mask, a card grid for the roster, and a closing statement on the
-      inverse surface. Section rhythm matches the homepage too —
-      hero (base) → roster (alt) → closing (inverse).
+      inverse surface. The roster leads, so the brands are the first
+      thing the page shows: roster (alt) → hero (base) → closing (inverse).
     -->
+    <section class="portfolio-roster surface-alt">
+      <BaseContainer class="stack-section">
+        <MotionReveal>
+          <p class="text-small text-muted portfolio-roster__notice">
+            {{ content.rosterNotice }}
+          </p>
+        </MotionReveal>
+
+        <!--
+          A card grid on the homepage's model, in place of the stacked
+          roster rows this page used to carry. The cards are richer than
+          the homepage teaser's, because this is the page the teaser links
+          to: each one names its brand and states its action rather than
+          leaving the logo to do both jobs alone.
+        -->
+        <ol class="portfolio-roster__grid">
+          <li
+            v-for="(brand, index) in brands"
+            :key="brand.slug"
+            class="portfolio-roster__item"
+          >
+            <MotionReveal :delay="index * 90">
+              <NuxtLink
+                :to="localePath(`/brands/${brand.slug}`)"
+                :aria-label="`${content.viewBrand} ${brand.name}`"
+                class="portfolio-roster__card"
+              >
+                <!--
+                  The approved production logos, extended to this page by
+                  the owner on 2026-09-24 (item 1) — the same three files
+                  the homepage teaser uses, unedited. Embryolisse's is the
+                  official SVG wordmark that replaced its deck extract on
+                  2026-10-15.
+
+                  alt="" and aria-hidden: the brand's name sits under the
+                  mark in real text and the link already carries its own
+                  label, so naming the image too would have a screen reader
+                  read the same brand three times per card.
+
+                  object-fit: contain inside a fixed tile — the files differ
+                  in background (two opaque, one transparent) and range from
+                  225x225 to 1365x667, so a shared frame normalises them
+                  instead of stretching the artwork.
+
+                  Eager: the roster opens the page, so these logos are
+                  above the fold.
+                -->
+                <span
+                  v-if="brand.logo"
+                  class="portfolio-roster__logo"
+                >
+                  <img
+                    :src="assetUrl(brand.logo.src)"
+                    :width="brand.logo.width"
+                    :height="brand.logo.height"
+                    alt=""
+                    aria-hidden="true"
+                    class="portfolio-roster__logo-img"
+                    loading="eager"
+                    decoding="async"
+                  >
+                </span>
+                <!-- Fallback for a future roster entry that ships before
+                     its own logo clears approval — see the optional
+                     BrandLogo field in types/brands.ts. -->
+                <span
+                  v-else
+                  class="portfolio-roster__logo portfolio-roster__logo--empty"
+                  aria-hidden="true"
+                />
+
+                <span class="portfolio-roster__body">
+                  <h2 class="text-h4 portfolio-roster__name"><bdi>{{ brand.name }}</bdi></h2>
+                  <span class="text-small portfolio-roster__action">
+                    {{ content.viewBrand }}
+                    <span
+                      class="portfolio-roster__arrow"
+                      aria-hidden="true"
+                    >↗</span>
+                  </span>
+                </span>
+              </NuxtLink>
+            </MotionReveal>
+          </li>
+        </ol>
+
+        <!--
+          Further brands shown by logo (docs/unresolved-content-approvals.md
+          item 1, 2026-10-15). They are not on the roster and have no
+          profile page, so each card keeps the roster card's shape but is
+          not a link and states no action. The logo stays decorative for
+          the same reason as above: the name under it is real text.
+        -->
+        <ul
+          v-if="logos?.length"
+          class="portfolio-roster__more"
+        >
+          <li
+            v-for="(entry, index) in logos"
+            :key="entry.logo.src"
+            class="portfolio-roster__item"
+          >
+            <MotionReveal :delay="(brands.length + index) * 90">
+              <div class="portfolio-roster__card portfolio-roster__card--static">
+                <span class="portfolio-roster__logo">
+                  <img
+                    :src="assetUrl(entry.logo.src)"
+                    :width="entry.logo.width"
+                    :height="entry.logo.height"
+                    alt=""
+                    aria-hidden="true"
+                    class="portfolio-roster__logo-img"
+                    loading="eager"
+                    decoding="async"
+                  >
+                </span>
+                <span class="portfolio-roster__body">
+                  <h2 class="text-h4 portfolio-roster__name"><bdi>{{ entry.name }}</bdi></h2>
+                </span>
+              </div>
+            </MotionReveal>
+          </li>
+        </ul>
+      </BaseContainer>
+    </section>
+
     <section class="portfolio-hero">
       <BaseContainer class="portfolio-hero__inner">
         <div class="portfolio-hero__text">
@@ -70,16 +196,16 @@ const siteImage = useSiteImage()
             EditorialVisual placeholder this hero opened with. Unbranded
             vessels in the house palette — a conceptual still life, not a
             photograph of any product Binzomah distributes, so it makes no
-            claim about the portfolio below it. Decorative: the headline
+            claim about the portfolio above it. Decorative: the headline
             and intro beside it carry the section's meaning in real text.
 
             Its 1672x941 source is the same 16:9 the homepage hero uses, so
             the two pages open on identically proportioned media.
 
-            eager + fetchpriority="high": this is above the fold and is the
-            page's largest contentful paint candidate. Served as WebP from a
-            full-size copy, with the JPEG original as the fallback; `sizes`
-            matches the homepage hero's, since the column split is the same.
+            Lazy: the roster now opens the page, so this sits below the
+            fold on most viewports. Served as WebP from a full-size copy,
+            with the JPEG original as the fallback; `sizes` matches the
+            homepage hero's, since the column split is the same.
           -->
           <div class="portfolio-hero__visual-frame media-frame">
             <picture v-if="heroImage">
@@ -96,8 +222,7 @@ const siteImage = useSiteImage()
                 :height="heroImage.height"
                 :alt="siteImage.alt(heroImage)"
                 class="portfolio-hero__image"
-                loading="eager"
-                fetchpriority="high"
+                loading="lazy"
                 decoding="async"
               >
             </picture>
@@ -108,89 +233,6 @@ const siteImage = useSiteImage()
             />
           </div>
         </MotionReveal>
-      </BaseContainer>
-    </section>
-
-    <section class="portfolio-roster surface-alt">
-      <BaseContainer class="stack-section">
-        <MotionReveal>
-          <p class="text-small text-muted portfolio-roster__notice">
-            {{ content.rosterNotice }}
-          </p>
-        </MotionReveal>
-
-        <!--
-          A card grid on the homepage's model, in place of the stacked
-          roster rows this page used to carry. The cards are richer than
-          the homepage teaser's, because this is the page the teaser links
-          to: each one names its brand and states its action rather than
-          leaving the logo to do both jobs alone.
-        -->
-        <ol class="portfolio-roster__grid">
-          <li
-            v-for="(brand, index) in brands"
-            :key="brand.slug"
-            class="portfolio-roster__item"
-          >
-            <MotionReveal :delay="index * 90">
-              <NuxtLink
-                :to="localePath(`/brands/${brand.slug}`)"
-                :aria-label="`${content.viewBrand} ${brand.name}`"
-                class="portfolio-roster__card"
-              >
-                <!--
-                  The approved production logos, extended to this page by
-                  the owner on 2026-09-24 (item 1) — the same three files
-                  the homepage teaser uses, unedited.
-
-                  alt="" and aria-hidden: the brand's name sits under the
-                  mark in real text and the link already carries its own
-                  label, so naming the image too would have a screen reader
-                  read the same brand three times per card.
-
-                  object-fit: contain inside a fixed tile — the files carry
-                  their own opaque backgrounds and range from 630x630 to
-                  1365x667, so a shared frame normalises them instead of
-                  stretching the artwork.
-                -->
-                <span
-                  v-if="brand.logo"
-                  class="portfolio-roster__logo"
-                >
-                  <img
-                    :src="assetUrl(brand.logo.src)"
-                    :width="brand.logo.width"
-                    :height="brand.logo.height"
-                    alt=""
-                    aria-hidden="true"
-                    class="portfolio-roster__logo-img"
-                    loading="lazy"
-                    decoding="async"
-                  >
-                </span>
-                <!-- Fallback for a future roster entry that ships before
-                     its own logo clears approval — see the optional
-                     BrandLogo field in types/brands.ts. -->
-                <span
-                  v-else
-                  class="portfolio-roster__logo portfolio-roster__logo--empty"
-                  aria-hidden="true"
-                />
-
-                <span class="portfolio-roster__body">
-                  <h2 class="text-h4 portfolio-roster__name"><bdi>{{ brand.name }}</bdi></h2>
-                  <span class="text-small portfolio-roster__action">
-                    {{ content.viewBrand }}
-                    <span
-                      class="portfolio-roster__arrow"
-                      aria-hidden="true"
-                    >↗</span>
-                  </span>
-                </span>
-              </NuxtLink>
-            </MotionReveal>
-          </li>
-        </ol>
       </BaseContainer>
     </section>
 
@@ -230,9 +272,9 @@ const siteImage = useSiteImage()
    Hero — the homepage hero's proportions and motion
 --------------------------------------------------------------------- */
 
-/* Tighter than the shared --space-section rhythm: the hero sits directly
-   under the header with nothing above it, so it needs less air than a
-   mid-page section. A local override, not a change to the token. */
+/* Tighter than the shared --space-section rhythm, sized for when the hero
+   opened the page directly under the header; the roster has since moved
+   above it. A local override, not a change to the token. */
 .portfolio-hero {
   padding-block-start: clamp(var(--space-6), 6vw, var(--space-8));
   padding-block-end: clamp(var(--space-6), 5vw, var(--space-8));
@@ -321,6 +363,27 @@ const siteImage = useSiteImage()
 .portfolio-roster__card:focus-visible {
   border-color: var(--color-border-strong);
   box-shadow: var(--shadow-sm);
+}
+
+/* Not a link: no hover lift to suggest one. */
+.portfolio-roster__card--static:hover {
+  border-color: var(--color-border);
+  box-shadow: none;
+}
+
+/* Each card is one roster column wide, so the two rows read as one set,
+   and the shorter row is centred so it reads as intentional. */
+.portfolio-roster__more {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-5) 0 0;
+  display: flex;
+  justify-content: center;
+  gap: var(--space-5);
+}
+
+.portfolio-roster__more .portfolio-roster__item {
+  flex: 0 1 calc((100% - 2 * var(--space-5)) / 3);
 }
 
 .portfolio-roster__logo {
@@ -475,6 +538,15 @@ html[dir='rtl'] .portfolio-roster__card:focus-visible .portfolio-roster__arrow {
 @media (max-width: 767px) {
   .portfolio-roster__grid {
     grid-template-columns: 1fr;
+  }
+
+  /* One column, like the roster above it. */
+  .portfolio-roster__more {
+    flex-direction: column;
+  }
+
+  .portfolio-roster__more .portfolio-roster__item {
+    flex-basis: auto;
   }
 
   .portfolio-enquiry__inner {

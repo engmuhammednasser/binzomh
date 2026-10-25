@@ -16,12 +16,13 @@ const emit = defineEmits<{ close: [] }>()
 
 const { t } = useI18n()
 const assetUrl = useAssetUrl()
-const { slotEdits, replaceSlot, resetSlot } = useAdminImagesContext()
+const { slotEdits, replaceSlot, chooseForSlot, resetSlot } = useAdminImagesContext()
 
 const dialog = useTemplateRef<HTMLDialogElement>('dialog')
 const error = ref<ReplacementError | null>(null)
 const dragging = ref(false)
 const busy = ref(false)
+const picking = ref(false)
 
 const replacement = computed(() => {
   const edit = props.entry ? slotEdits.value.get(props.entry.id) : undefined
@@ -157,6 +158,15 @@ function onDrop(event: DragEvent) {
           >
             {{ t('admin.images.accepted') }}
           </p>
+          <button
+            v-if="!replacement"
+            type="button"
+            class="admin-btn admin-btn--small replacer__library"
+            :disabled="busy"
+            @click="picking = true"
+          >
+            {{ t('admin.media.fromLibrary') }}
+          </button>
         </figure>
       </div>
 
@@ -218,6 +228,14 @@ function onDrop(event: DragEvent) {
           {{ t('admin.common.close') }}
         </button>
       </footer>
+      <AdminMediaPicker
+        :open="picking"
+        :heading="t('admin.media.chooseFor', { name: title })"
+        :kinds="['upload', 'photo']"
+        :taken="entry.image ? [entry.image.src] : []"
+        @pick="chooseForSlot(entry, $event)"
+        @close="picking = false"
+      />
     </div>
   </dialog>
 </template>
@@ -286,6 +304,10 @@ function onDrop(event: DragEvent) {
   gap: 0.5rem;
   margin: 0;
   min-inline-size: 0;
+}
+
+.replacer__library {
+  align-self: flex-start;
 }
 
 .replacer__compare figcaption {

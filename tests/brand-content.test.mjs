@@ -67,7 +67,7 @@ function shape(value) {
 test('EN/AR page copy and channel anchors have matching structures', () => {
   assert.deepEqual(shape(brandsAr), shape(brandsEn))
   assert.deepEqual(shape(networkAr), shape(networkEn))
-  assert.deepEqual(networkEn.channels.map(channel => channel.id), ['pharmacies', 'e-commerce', 'hospitals', 'wholesale', 'cosmetics-stores'])
+  assert.deepEqual(networkEn.channels.map(channel => channel.id), ['pharmacies', 'e-commerce', 'cosmetics-stores', 'hospitals', 'wholesale'])
   assert.deepEqual(networkAr.channels.map(channel => channel.id), networkEn.channels.map(channel => channel.id))
   // All 28 logos from the profile's channel slides, including the three
   // the profile never names — see docs/unresolved-content-approvals.md
@@ -88,6 +88,32 @@ test('EN/AR page copy and channel anchors have matching structures', () => {
       assert.equal(view.introduction, undefined)
       assert.deepEqual(view.ranges, [])
     }
+  }
+})
+
+test('every partner logo sits in one channel row, as on the profile slides', async () => {
+  const channelIds = networkEn.channels.map(channel => channel.id)
+  const count = content => Object.fromEntries(channelIds.map(id => [id, content.partners.names.filter(partner => partner.channel === id).length]))
+  // Per-channel counts from the profile's channel folders
+  // (profile company/01-logos/partners-and-customers/), all 28 accounted for.
+  assert.deepEqual(count(networkEn), { 'pharmacies': 5, 'e-commerce': 4, 'cosmetics-stores': 12, 'hospitals': 4, 'wholesale': 3 })
+  assert.deepEqual(networkAr.partners.names.map(partner => partner.channel), networkEn.partners.names.map(partner => partner.channel))
+  assert.deepEqual(networkAr.channels.map(channel => channel.icon), networkEn.channels.map(channel => channel.icon))
+  // Icon names are checked by the ChannelIcon type; here, no two channels
+  // may share one.
+  assert.equal(new Set(networkEn.channels.map(channel => channel.icon)).size, networkEn.channels.length)
+})
+
+test('homepage channel cards carry the same icon as their /network channel', async () => {
+  const { homeContent: homeEn } = await import('../content/en/home.ts')
+  const { homeContent: homeAr } = await import('../content/ar/home.ts')
+  // channelIcons is a list parallel to channels, so pair them by index and
+  // check each pair against the /network channel of the same name.
+  for (const [home, network] of [[homeEn, networkEn], [homeAr, networkAr]]) {
+    assert.deepEqual(
+      home.network.channels.map((name, index) => [name, home.network.channelIcons[index]]),
+      network.channels.map(channel => [channel.name, channel.icon]),
+    )
   }
 })
 

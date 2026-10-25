@@ -8,6 +8,8 @@ const route = useRoute()
 const router = useRouter()
 const { page, rows, pageChanged } = useAdminPageContent()
 const { slotsFor, changesFor, galleries } = useAdminImages()
+// The library pickers in the replace dialog and the gallery read it.
+useAdminMedia()
 const tabs = ['text', 'images', 'gallery'] as const
 const tab = computed({
   get: () => tabs.find(value => value === route.query.tab) ?? 'text',

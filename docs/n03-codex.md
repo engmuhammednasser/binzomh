@@ -17,8 +17,8 @@ external URLs have been invented.
 ## Network presentation
 
 Paired files under `content/en/network.ts` and `content/ar/network.ts`
-describe pharmacies, e-commerce, hospitals, wholesale and cosmetics
-stores. These are customer/distribution channels, not Binzomah-owned
+describe pharmacies, e-commerce, cosmetics stores, hospitals and
+wholesale. These are customer/distribution channels, not Binzomah-owned
 locations. The page uses static editorial sections and real anchor links;
 it has no location finder, map, metrics or fabricated client logos.
 

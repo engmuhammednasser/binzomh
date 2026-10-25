@@ -12,17 +12,114 @@ const approvedPartners = computed(() =>
     partner.status === 'approved' && (partner.name?.trim() || partner.logo),
   ),
 )
+// One row per channel, in the channels' own order. A channel with no
+// approved entry renders no row.
+const partnerGroups = computed(() =>
+  props.content.channels
+    .map(channel => ({ channel, partners: approvedPartners.value.filter(partner => partner.channel === channel.id) }))
+    .filter(group => group.partners.length),
+)
 const assetUrl = useAssetUrl()
 </script>
 
 <template>
   <div class="network-experience">
+    <section class="network-partners surface-alt">
+      <BaseContainer>
+        <MotionReveal class="network-partners__head">
+          <h2 class="text-h2">
+            {{ content.partners.heading }}
+          </h2>
+          <p class="text-body-lg text-muted">
+            {{ content.partners.body }}
+          </p>
+        </MotionReveal>
+        <template v-if="partnerGroups.length">
+          <!--
+            Laid out as the company profile's "Main Partners & Customers"
+            slide: a band per channel holding the channel's icon and name,
+            then its logos. The name is a real heading, so each band is
+            reachable by heading navigation and labels its own logo list.
+          -->
+          <div class="network-partners__channels">
+            <div
+              v-for="group in partnerGroups"
+              :key="group.channel.id"
+              class="network-partners__channel"
+            >
+              <div class="network-partners__channel-head">
+                <!-- Decorative: the heading beside it names the channel. -->
+                <span class="network-partners__icon">
+                  <NetworkChannelIcon :name="group.channel.icon" />
+                </span>
+                <h3
+                  :id="`partners-${group.channel.id}`"
+                  class="text-h4"
+                >
+                  {{ group.channel.name }}
+                </h3>
+              </div>
+              <ul
+                class="network-partners__logos"
+                :aria-labelledby="`partners-${group.channel.id}`"
+              >
+                <li
+                  v-for="partner in group.partners"
+                  :key="partner.logo?.src ?? partner.name"
+                  class="network-partners__logo"
+                >
+                  <!--
+                    An unnamed mark renders decoratively: alt text has to say
+                    something true, and "which company this is" is exactly what
+                    nobody has confirmed. A sighted reader may recognise it; a
+                    screen reader is told nothing rather than a guess.
+                  -->
+                  <img
+                    v-if="partner.logo"
+                    :src="assetUrl(partner.logo.src)"
+                    :width="partner.logo.width"
+                    :height="partner.logo.height"
+                    :alt="partner.name ?? ''"
+                    :aria-hidden="partner.name ? undefined : 'true'"
+                    decoding="async"
+                    loading="lazy"
+                  >
+                  <span
+                    v-else
+                    class="text-small"
+                  >{{ partner.name }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <p
+            v-if="content.partners.note"
+            class="text-small text-muted network-partners__note"
+          >
+            {{ content.partners.note }}
+          </p>
+        </template>
+        <div
+          v-else
+          class="network-partners__pending"
+        >
+          <p class="text-label">
+            {{ content.partners.pendingLabel }}
+          </p>
+          <p class="text-small text-muted">
+            {{ content.partners.pendingBody }}
+          </p>
+        </div>
+      </BaseContainer>
+    </section>
+
     <!--
-      Surface rhythm: hero (base) → channels (alt) → reach (base) →
-      partners (alt) → enquiry (inverse). The hero and the channel list
-      used to share one inverse wrapper, which put about 1650px of
-      unbroken charcoal — two viewport heights — at the top of the page
-      before any other surface appeared.
+      Surface rhythm: partners (alt) → hero (base) → channels (alt) →
+      reach (base) → enquiry (inverse). The partner logos lead, so the
+      client roster is the first thing the page shows. The hero and the
+      channel list used to share one inverse wrapper, which put about
+      1650px of unbroken charcoal — two viewport heights — near the top of
+      the page before any other surface appeared.
 
       The hero keeps its two columns: the statement on one side and the
       in-page jump nav to the five channels on the other. That nav is why
@@ -61,8 +158,14 @@ const assetUrl = useAssetUrl()
                 :key="channel.id"
                 :href="`#${channel.id}`"
               >
+                <span class="network-hero__nav-icon">
+                  <NetworkChannelIcon :name="channel.icon" />
+                </span>
                 <span>{{ channel.name }}</span>
-                <span aria-hidden="true">↓</span>
+                <span
+                  class="network-hero__nav-arrow"
+                  aria-hidden="true"
+                >↓</span>
               </a>
             </nav>
           </MotionReveal>
@@ -90,66 +193,6 @@ const assetUrl = useAssetUrl()
             {{ content.reach.note }}
           </p>
         </MotionReveal>
-      </BaseContainer>
-    </section>
-
-    <section class="network-partners surface-alt">
-      <BaseContainer>
-        <MotionReveal class="network-partners__head">
-          <h2 class="text-h2">
-            {{ content.partners.heading }}
-          </h2>
-          <p class="text-body-lg text-muted">
-            {{ content.partners.body }}
-          </p>
-        </MotionReveal>
-        <template v-if="approvedPartners.length">
-          <ul class="network-partners__logos">
-            <li
-              v-for="partner in approvedPartners"
-              :key="partner.logo?.src ?? partner.name"
-              class="network-partners__logo"
-            >
-              <!--
-                An unnamed mark renders decoratively: alt text has to say
-                something true, and "which company this is" is exactly what
-                nobody has confirmed. A sighted reader may recognise it; a
-                screen reader is told nothing rather than a guess.
-              -->
-              <img
-                v-if="partner.logo"
-                :src="assetUrl(partner.logo.src)"
-                :width="partner.logo.width"
-                :height="partner.logo.height"
-                :alt="partner.name ?? ''"
-                :aria-hidden="partner.name ? undefined : 'true'"
-                decoding="async"
-                loading="lazy"
-              >
-              <span
-                v-else
-                class="text-small"
-              >{{ partner.name }}</span>
-            </li>
-          </ul>
-          <p
-            v-if="content.partners.note"
-            class="text-small text-muted network-partners__note"
-          >
-            {{ content.partners.note }}
-          </p>
-        </template>
-        <div
-          v-else
-          class="network-partners__pending"
-        >
-          <p class="text-label">
-            {{ content.partners.pendingLabel }}
-          </p>
-          <p class="text-small text-muted">
-            {{ content.partners.pendingBody }}
-          </p>
-        </div>
       </BaseContainer>
     </section>
 
@@ -211,13 +254,38 @@ const assetUrl = useAssetUrl()
 .network-hero__nav a {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-4);
-  padding-block: var(--space-4);
+  padding-block: var(--space-3);
   min-block-size: 44px;
   border-block-end: 1px solid var(--color-border);
   color: var(--color-text);
   text-decoration: none;
+}
+
+/* Each channel's icon before its name, in the homepage cards' silver
+   ring. A heavier stroke at this smaller size keeps the line weight the
+   same as the larger icons elsewhere on the page. */
+.network-hero__nav-icon {
+  flex-shrink: 0;
+  display: flex;
+  inline-size: 3rem;
+  block-size: 3rem;
+  padding: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(var(--color-bg), var(--color-bg)) padding-box,
+    var(--gradient-silver) border-box;
+}
+
+.network-hero__nav-icon svg {
+  inline-size: 100%;
+  block-size: 100%;
+  stroke-width: 2;
+}
+
+.network-hero__nav-arrow {
+  margin-inline-start: auto;
 }
 
 .network-hero__nav a:hover,
@@ -287,42 +355,87 @@ const assetUrl = useAssetUrl()
   margin-block-start: 0;
 }
 
-/* Source logos (public/logos/partners/) are already transparent PNGs at
-   modest native resolution (~130-200px) — a dense grayscale-to-color wall
-   suits both the file quality and a large roster better than the singular,
-   larger cards used for the three principal brand logos. See
-   docs/unresolved-content-approvals.md item 9 for the scoped approval. */
+/* A band per channel: the head sits in a fixed column so every row's
+   logos start on the same line, and the logos wrap within their own
+   column when a channel outgrows it. */
+.network-partners__channels {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.network-partners__channel {
+  display: grid;
+  grid-template-columns: 14rem minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-bg-raised);
+  border-radius: var(--radius-md);
+}
+
+.network-partners__channel-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/* Same hairline silver ring as the homepage channel cards. */
+.network-partners__icon {
+  flex-shrink: 0;
+  display: flex;
+  inline-size: 4.5rem;
+  block-size: 4.5rem;
+  padding: var(--space-3);
+  color: var(--color-text);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(var(--color-bg), var(--color-bg)) padding-box,
+    var(--gradient-silver) border-box;
+}
+
+.network-partners__icon svg {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* Source logos (public/logos/partners/) are already circular badges on
+   transparent corners, cut from the profile's channel slides at ~130-200px,
+   so each fills a circle of its own and shows in its original colours, as
+   on the slide. See docs/unresolved-content-approvals.md item 9 for the
+   scoped approval. */
 .network-partners__logos {
   list-style: none;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
-  gap: var(--space-4);
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
 .network-partners__logo {
   display: flex;
   align-items: center;
   justify-content: center;
-  block-size: 5.5rem;
-  padding: var(--space-3);
+  inline-size: 4rem;
+  block-size: 4rem;
+  overflow: hidden;
   background: var(--color-bg);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: 999px;
 }
 
 .network-partners__logo img {
-  max-inline-size: 100%;
-  max-block-size: 100%;
+  inline-size: 100%;
+  block-size: 100%;
   object-fit: contain;
-  filter: grayscale(1);
-  opacity: 0.7;
-  transition: filter var(--motion-duration-base) var(--motion-ease), opacity var(--motion-duration-base) var(--motion-ease);
 }
 
-.network-partners__logo:hover img {
-  filter: grayscale(0);
-  opacity: 1;
+/* A name-only entry has no artwork to fill the circle. */
+.network-partners__logo span {
+  padding: var(--space-2);
+  text-align: center;
+  overflow-wrap: anywhere;
 }
 
 .network-partners__note {
@@ -350,6 +463,19 @@ const assetUrl = useAssetUrl()
   .network-enquiry__inner {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  /* Stacked: the head above its logos, so the logos get the full width. */
+  .network-partners__channel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    padding: var(--space-4);
+  }
+
+  .network-partners__icon {
+    inline-size: 3.5rem;
+    block-size: 3.5rem;
+    padding: var(--space-2);
   }
 }
 </style>

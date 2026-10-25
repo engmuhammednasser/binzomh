@@ -2,15 +2,33 @@ import type { InjectionKey } from 'vue'
 import { siteImageSlots } from '~~/content/images'
 import type { SiteImageFile, SiteImagePage, SiteImageSlot } from '~~/types/images'
 import { assessImageFit, validateImageFile, type ImageFit, type ImageFileError } from '../../utils/image-validation'
+import { slotFileFor, type LibraryImage } from '../../utils/media-library'
 
 export interface LocalImage { url: string, fileName: string, bytes: number, width: number, height: number }
 export interface PendingReplacement extends LocalImage { fit: ImageFit }
 export type SlotEdit = { kind: 'replace', image: PendingReplacement } | { kind: 'remove' }
 export type ReplacementError = ImageFileError | 'read'
 
-export function useAdminImages() {
-  const { draft, state: baseline, error, uploads } = useAdminWorkspace()
+/** Uploads one file to the media library; the server decodes, checks and re-encodes it. */
+export function useAdminUpload() {
+  const { error, uploads } = useAdminWorkspace()
   const { session, base } = useAdminSession()
+  return async function upload(file: File) {
+    uploads.value++
+    try {
+      return await $fetch<SiteImageFile>(`${base}/api/admin/media`, { method: 'POST', headers: { 'x-csrf-token': session.value?.csrf || '', 'content-type': file.type }, body: file })
+    }
+    catch (cause) {
+      error.value = (cause as { data?: { statusMessage?: string } }).data?.statusMessage || 'Image upload failed'
+      return null
+    }
+    finally { uploads.value-- }
+  }
+}
+
+export function useAdminImages() {
+  const { draft, state: baseline } = useAdminWorkspace()
+  const upload = useAdminUpload()
   const assetUrl = useAssetUrl()
   const galleries = computed(() => draft.value!.galleries)
   const slotsFor = (page: SiteImagePage): SiteImageSlot[] => Object.values(siteImageSlots)
@@ -30,17 +48,6 @@ export function useAdminImages() {
   function removeSlot(slot: SiteImageSlot) {
     draft.value!.slots[slot.id] = null
   }
-  async function upload(file: File) {
-    uploads.value++
-    try {
-      return await $fetch<SiteImageFile>(`${base}/api/admin/media`, { method: 'POST', headers: { 'x-csrf-token': session.value?.csrf || '', 'content-type': file.type }, body: file })
-    }
-    catch (cause) {
-      error.value = (cause as { data?: { statusMessage?: string } }).data?.statusMessage || 'Image upload failed'
-      return null
-    }
-    finally { uploads.value-- }
-  }
   async function replaceSlot(slot: SiteImageSlot, file: File): Promise<ReplacementError | null> {
     const invalid = validateImageFile(file)
     if (invalid) return invalid
@@ -48,6 +55,9 @@ export function useAdminImages() {
     if (!image) return 'read'
     draft.value!.slots[slot.id] = image
     return null
+  }
+  function chooseForSlot(slot: SiteImageSlot, image: LibraryImage) {
+    draft.value!.slots[slot.id] = slotFileFor(image)
   }
   async function addToGallery(page: SiteImagePage, files: File[]) {
     const refused: { name: string, error: ReplacementError }[] = []
@@ -66,6 +76,13 @@ export function useAdminImages() {
     }
     return refused
   }
+  // A picture appears once per gallery: its path is its key.
+  function addFromLibrary(page: SiteImagePage, image: LibraryImage) {
+    const list = galleries.value[page]
+    if (list.length >= 40 || list.some(item => item.src === image.src)) return
+    const { src, width, height } = slotFileFor(image)
+    list.push({ key: src, src, width, height, altEn: '', altAr: '' })
+  }
   function removeFromGallery(page: SiteImagePage, key: string) {
     const index = galleries.value[page].findIndex(item => item.key === key)
     if (index >= 0) galleries.value[page].splice(index, 1)
@@ -80,7 +97,7 @@ export function useAdminImages() {
   }
   const changesFor = (page: SiteImagePage) => slotsFor(page).filter(slot => slotEdits.value.has(slot.id)).length
     + Number(JSON.stringify(galleries.value[page]) !== JSON.stringify(baseline.value!.draft.galleries[page]))
-  const state = { slotEdits, galleries, slotsFor, replaceSlot, removeSlot, resetSlot, addToGallery, removeFromGallery, moveInGallery, changesFor }
+  const state = { slotEdits, galleries, slotsFor, replaceSlot, chooseForSlot, removeSlot, resetSlot, addToGallery, addFromLibrary, removeFromGallery, moveInGallery, changesFor }
   provide(ADMIN_IMAGES_KEY, state)
   return state
 }

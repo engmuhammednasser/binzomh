@@ -2,7 +2,7 @@
 import { homeContent as homeEn } from '~~/content/en/home'
 import { homeContent as homeAr } from '~~/content/ar/home'
 
-const { brands, galleryFor } = useManagedSite()
+const { brands, logoBrands, galleryFor } = useManagedSite()
 const galleryImages = computed(() => galleryFor('home'))
 const homeBrandCandidates = computed(() => brands.value.map(({ slug, name, status, logo }) => ({ slug, name, status, logo })))
 
@@ -20,6 +20,7 @@ usePageSeo(() => content.value.hero.headline, () => content.value.hero.descripti
     <HomeBrands
       :content="content.brands"
       :brands="homeBrandCandidates"
+      :logos="logoBrands"
     />
     <HomeAbout :content="content.about" />
     <HomeCapabilities :content="content.capabilities" />

@@ -12,7 +12,8 @@ const logos = computed(() => networkEn.partners.names.map((entry, index) => ({
   key: entry.logo?.src ?? `name-${index}`,
   nameEn: draft.value?.copy.network.find(row => row.path === `partners.names.${index}.name`)?.en ?? entry.name,
   nameAr: draft.value?.copy.network.find(row => row.path === `partners.names.${index}.name`)?.ar,
-  logo: entry.logo,
+  // The draft's artwork (changed under Media), or the approved file.
+  logo: entry.logo && (draft.value?.logos[entry.logo.src] ?? entry.logo),
   status: entry.status,
 })))
 </script>

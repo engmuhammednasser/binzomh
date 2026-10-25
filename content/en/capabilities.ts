@@ -9,7 +9,7 @@ export const capabilitiesContent: CapabilitiesContent = {
     eyebrow: 'Our Capabilities',
     heading: 'How We Operate',
     intro:
-      'Binzomah supports brand principals and customers across three core capability areas: brand partnerships, sales and distribution, and warehousing and logistics.',
+      'Binzomah supports brand principals and customers across four core capability areas: brand partnerships, sales and distribution, marketing and branding, and warehousing and logistics.',
   },
 
   sections: [
@@ -32,15 +32,26 @@ export const capabilitiesContent: CapabilitiesContent = {
       title: 'Sales & Distribution',
       summary: 'Reaching pharmacies, hospitals, wholesalers, and retailers.',
       body:
-        'Our distribution network reaches pharmacies, hospitals, wholesalers, e-commerce, and cosmetics retail channels across the Kingdom.',
+        'Our distribution network reaches pharmacy, e-commerce, cosmetics retail, hospital, and wholesale channels across the Kingdom.',
       cta: { label: 'See Our Network', to: '/network' },
       note: 'Daily delivered-order capacity is a blocked metric — not quoted here.',
     },
     {
       status: 'draft',
+      id: 'marketing-branding',
+      imageSlotId: 'capabilities-section-4',
+      number: '03',
+      title: 'Marketing & Branding',
+      summary: 'Executing marketing strategies and plans for our brands.',
+      body:
+        'We execute full-fledged marketing strategies and plans for our brands in the Saudi market.',
+      note: 'Restates the homepage\'s Marketing & Branding line, the only approved copy for this capability; no further marketing claims are made.',
+    },
+    {
+      status: 'draft',
       id: 'warehousing-logistics',
       imageSlotId: 'capabilities-section-3',
-      number: '03',
+      number: '04',
       title: 'Warehousing & Logistics',
       summary: 'Temperature-controlled storage with structured stock rotation.',
       body:

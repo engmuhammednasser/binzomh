@@ -15,6 +15,7 @@ export function useAdminNav() {
     { to: '/admin/brands', label: t('admin.nav.brands'), icon: 'brands' as const },
     { to: '/admin/team', label: t('admin.nav.team'), icon: 'team' as const },
     { to: '/admin/pages', label: t('admin.nav.pages'), icon: 'pages' as const },
+    { to: '/admin/media', label: t('admin.nav.media'), icon: 'image' as const },
     { to: '/admin/contact-info', label: t('admin.nav.contactInfo'), icon: 'contact' as const },
   ])
 

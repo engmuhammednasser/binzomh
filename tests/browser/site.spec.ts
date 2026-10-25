@@ -174,6 +174,8 @@ test('contact rejects false successes, preserves input and clears only after acc
   await visit(page, 'en/contact?brand=zoa')
   await page.locator('#contact-name').fill('Local QA')
   await page.locator('#contact-email').fill('qa@example.test')
+  await page.locator('#contact-company').fill('Local QA Co.')
+  await page.locator('#contact-mobile').fill('+966 50 000 0000')
   await page.locator('#contact-message').fill('Local browser test — never sent to a provider.')
   const responses = [
     { body: '{}', contentType: 'application/json' },
@@ -226,7 +228,20 @@ test('contact validation and pending request prevent duplicate submissions', asy
   expect(count).toBe(0)
   await page.locator('#contact-name').fill('Local QA')
   await page.locator('#contact-email').fill('qa@example.test')
-  await page.locator('#contact-message').fill('Local QA')
+  // The company and a dialable mobile number are required; the message is
+  // optional: without them nothing is sent, with them an empty message
+  // still sends.
+  await send.click()
+  expect(count).toBe(0)
+  expect(await page.locator('#contact-company').evaluate(el => (el as HTMLInputElement).validity.valueMissing)).toBe(true)
+  expect(await page.locator('#contact-mobile').evaluate(el => (el as HTMLInputElement).validity.valueMissing)).toBe(true)
+  expect(await page.locator('#contact-message').evaluate(el => (el as HTMLTextAreaElement).checkValidity())).toBe(true)
+  await page.locator('#contact-company').fill('Local QA Co.')
+  await page.locator('#contact-mobile').fill('call me')
+  await send.click()
+  expect(count).toBe(0)
+  expect(await page.locator('#contact-mobile').evaluate(el => (el as HTMLInputElement).validity.customError)).toBe(true)
+  await page.locator('#contact-mobile').fill('+966 50 000 0000')
   await send.click()
   await expect(send).toBeDisabled()
   await expect(page.locator('#contact-name')).toHaveAttribute('readonly', '')
@@ -241,6 +256,8 @@ test('contact timeout and network failure preserve the enquiry for retry', async
   await visit(page, 'en/contact')
   await page.locator('#contact-name').fill('Local QA')
   await page.locator('#contact-email').fill('qa@example.test')
+  await page.locator('#contact-company').fill('Local QA Co.')
+  await page.locator('#contact-mobile').fill('+966 50 000 0000')
   await page.locator('#contact-message').fill('Keep this enquiry')
   await page.route('**/_contact-test', route => route.abort('failed'))
   await page.locator('button[type="submit"]').click()

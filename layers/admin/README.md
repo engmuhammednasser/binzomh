@@ -7,16 +7,20 @@ A bilingual authenticated Nuxt dashboard with SQLite persistence. Development en
 - Owner sign-in and server-side session checks on pages and all private APIs.
 - Shared Arabic/English page-copy editing, contact details/social links, existing team names/roles and existing brand names/introductions/relationships.
 - Independent image-slot replacement/removal and per-page galleries with descriptions and ordering.
+- A media library listing every upload, site photo and logo with where the draft uses it. Upload once, then choose the image for any page slot, gallery or logo.
+- Brand and partner logo replacement and restore-to-original; one change reaches every place that logo appears.
 - Save, private saved-draft preview, explicit publication, content revision history and restore-as-draft. Stale writes return 409 instead of overwriting another tab.
 - A real inbox with manual capture, search, filters, persisted status changes, copy email and a mailto reply link. No email is sent automatically. The public contact form stays disabled.
 
-The approved brand/team/partner roster and logo identities remain fixed. This is a single-owner content workspace, not a multi-user CRM: adding roster members, brand ranges/artwork, new logo assets, roles, MFA and email delivery are not implemented. Unapproved brand introduction/relationship copy is excluded from the public and preview payloads. Explicit publication records the owner's approval in the content history.
+The approved brand/team/partner roster remains fixed: a logo's artwork can be replaced, but entries cannot be added or removed. This is a single-owner content workspace, not a multi-user CRM: adding roster members, brand ranges/artwork, roles, MFA and email delivery are not implemented. Unapproved brand introduction/relationship copy is excluded from the public and preview payloads. Explicit publication records the owner's approval in the content history.
 
 ## Editing workflow
 
 The overview prioritizes new enquiries, editable brand text and publication status. The enquiry shortcut opens the manual capture form. Content history shows the latest three revisions and can expand to the last 30.
 
 In **Page content**, choose a page and then **Text**, **Section images** or **Gallery**. Text is grouped into named sections; search spans all sections on that page. **Changed only** compares fields with the saved draft. Switching sections, image tabs or language views keeps edits in the shared workspace. Arabic/English fields stack on phones, with the current interface language first.
+
+In **Media**, **All images** uploads files and filters by uploads, site photos or logos. Uploading stores the file privately; it reaches visitors only once a published page uses it. **Logos** replaces each brand or partner logo by uploading or choosing from the library, and **Restore original** returns it to the approved file. The replace dialog and the gallery also offer **Choose from library**.
 
 The bottom bar distinguishes unsaved edits, a saved draft and published content. Save with **Save draft** or **Ctrl/⌘+S**, review **Preview saved draft**, then explicitly publish. Preview always shows the last saved version. **More actions** contains saved/published revision numbers and the reload action, which asks before discarding unsaved edits. Page indicators mark both text and image changes.
 
@@ -79,4 +83,4 @@ npm run generate
 npm run test:static
 ```
 
-The browser tests require `npx playwright install chromium`. Dashboard tests use isolated databases and generated credentials under ignored `.data`; they do not touch the owner database. API tests cover authentication/CSRF, invalid input, stale writes, private previews/media, publication, server restart, restore, enquiry status conflicts, expiry, logout and throttling. Browser tests cover both languages, mobile/desktop, SSR/hydration, saving/publishing, cross-tab conflicts and editor flows.
+The browser tests require `npx playwright install chromium`. Dashboard tests use isolated databases and generated credentials under ignored `.data`; they do not touch the owner database. API tests cover authentication/CSRF, invalid input, stale writes, private previews/media, logo validation and older drafts without logos, publication, server restart, restore, enquiry status conflicts, expiry, logout and throttling. Browser tests cover both languages, mobile/desktop, SSR/hydration, saving/publishing, cross-tab conflicts and editor flows, including the media library and logos.

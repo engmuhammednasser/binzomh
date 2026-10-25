@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import type { HomeNetworkContent } from '~~/types/content'
 
-defineProps<{ content: HomeNetworkContent }>()
+const props = defineProps<{ content: HomeNetworkContent }>()
 
+const cards = computed(() =>
+  props.content.channels.map((name, index) => ({ name, icon: props.content.channelIcons?.[index] })),
+)
 const assetUrl = useAssetUrl()
 const track = ref<HTMLElement | null>(null)
 const { canAnimate, running, paused, toggle } = useMotionPlayback(track)
@@ -25,14 +28,25 @@ const { canAnimate, running, paused, toggle } = useMotionPlayback(track)
 
       <ul class="network__list">
         <li
-          v-for="(channel, index) in content.channels"
-          :key="channel"
+          v-for="(card, index) in cards"
+          :key="card.name"
           class="network__row"
         >
-          <MotionReveal :delay="index * 80">
+          <MotionReveal
+            :delay="index * 80"
+            class="network__reveal"
+          >
             <div class="network__card">
-              <span class="text-label network__index">{{ String(index + 1).padStart(2, '0') }}</span>
-              <span class="network__name">{{ channel }}</span>
+              <div class="network__card-top">
+                <span
+                  v-if="card.icon"
+                  class="network__icon"
+                >
+                  <NetworkChannelIcon :name="card.icon" />
+                </span>
+                <span class="text-label network__index">{{ String(index + 1).padStart(2, '0') }}</span>
+              </div>
+              <span class="network__name">{{ card.name }}</span>
             </div>
           </MotionReveal>
         </li>
@@ -125,6 +139,13 @@ const { canAnimate, running, paused, toggle } = useMotionPlayback(track)
   margin-block-end: var(--space-8);
 }
 
+/* Every card fills its grid row, so a channel name that wraps to a second
+   line doesn't leave its neighbours shorter. */
+.network__reveal,
+.network__card {
+  block-size: 100%;
+}
+
 .network__card {
   display: flex;
   flex-direction: column;
@@ -140,8 +161,39 @@ const { canAnimate, running, paused, toggle } = useMotionPlayback(track)
   border-color: var(--color-text-on-dark);
 }
 
+/* The icon and its number sit together on the left in both languages, by
+   request — so this row is pinned left-to-right rather than following the
+   page direction. */
+.network__card-top {
+  direction: ltr;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
 .network__index {
   color: var(--color-text-on-dark-muted);
+}
+
+/* The same channel icons as the /network partner rows, inside a hairline
+   ring in the wordmark's silver accent. */
+.network__icon {
+  flex-shrink: 0;
+  display: flex;
+  inline-size: 3.5rem;
+  block-size: 3.5rem;
+  padding: var(--space-2);
+  color: var(--color-text-on-dark);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(var(--color-bg-inverse), var(--color-bg-inverse)) padding-box,
+    var(--gradient-silver) border-box;
+}
+
+.network__icon svg {
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .network__name {
@@ -161,9 +213,9 @@ const { canAnimate, running, paused, toggle } = useMotionPlayback(track)
   margin-block-end: var(--space-4);
 }
 
-/* Same white logo-tile language as the homepage Brands cards and the
-   /network "Clients & partners" wall — a curated preview of that same
-   roster, not a separate approval. See
+/* Same white logo-tile language as the homepage Brands cards — a curated
+   preview of the /network "Clients & partners" roster, not a separate
+   approval. See
    docs/unresolved-content-approvals.md item 9.
 
    An infinite marquee rather than a static grid: the logo list is

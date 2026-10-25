@@ -1,7 +1,7 @@
 import type { DatabaseSync } from 'node:sqlite'
 import { createError } from 'h3'
 import { openDatabase } from './database'
-import { seedWorkspace } from './seed'
+import { seedWorkspace, normalizeWorkspace } from './seed'
 import type { Revision, Workspace, WorkspaceResponse } from '../../types/cms'
 
 let database: DatabaseSync | undefined
@@ -21,7 +21,7 @@ export function storedWorkspace(db: DatabaseSync): StoredWorkspace {
 export function workspaceResponse(db: DatabaseSync): WorkspaceResponse {
   const row = storedWorkspace(db)
   return {
-    draft: JSON.parse(row.draft), revision: row.revision, publishedRevision: row.published_revision,
+    draft: normalizeWorkspace(JSON.parse(row.draft)), revision: row.revision, publishedRevision: row.published_revision,
     history: db.prepare('SELECT id, action, created_at AS createdAt FROM revisions ORDER BY id DESC LIMIT 30').all() as unknown as Revision[],
   }
 }

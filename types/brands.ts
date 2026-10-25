@@ -19,6 +19,14 @@ export interface BrandRange {
   description?: string
 }
 
+/** A brand shown by its logo only. It is not on the roster, so it has no
+ *  profile page, no sitemap entry and no contact-form option. */
+export interface LogoOnlyBrand {
+  /** Shared across locales, like roster names. */
+  name: string
+  logo: BrandLogo
+}
+
 export interface BrandProfile extends ContentBase {
   slug: string
   /** The design-approved name is shared across locales; it is not a logo. */

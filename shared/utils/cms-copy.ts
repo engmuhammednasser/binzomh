@@ -1,6 +1,6 @@
 import type { CopyRow } from '../../types/cms'
 
-const SKIP = new Set(['status', 'note', 'src', 'to', 'href', 'slug', 'id', 'icon', 'photo', 'imageSlotId'])
+const SKIP = new Set(['status', 'note', 'src', 'to', 'href', 'slug', 'id', 'channel', 'icon', 'channelIcons', 'photo', 'imageSlotId'])
 export function collectCopy(en: unknown, ar: unknown, path = '', rows: CopyRow[] = []): CopyRow[] {
   if (typeof en === 'string') rows.push({ path, en, ar: typeof ar === 'string' ? ar : '' })
   else if (en && typeof en === 'object') {

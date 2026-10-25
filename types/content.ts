@@ -74,11 +74,19 @@ export interface HomeCapabilitiesContent extends ContentBase {
   cta?: CtaLink
 }
 
+/** A distribution channel's line icon, drawn in
+ *  app/components/network/ChannelIcon.vue. */
+export type ChannelIcon = 'pharmacy' | 'e-commerce' | 'hospital' | 'wholesale' | 'cosmetics'
+
 export interface HomeNetworkContent extends ContentBase {
   eyebrow: string
   heading: string
   intro: string
   channels: string[]
+  /** One icon per entry in `channels`, in the same order. A parallel list
+   *  rather than objects in `channels`, because the dashboard edits each
+   *  channel name by its `network.channels.<index>` path. */
+  channelIcons?: ChannelIcon[]
   logosLabel?: string
   /** A curated preview only — the full roster lives on /network. See
    *  docs/unresolved-content-approvals.md item 9. */
@@ -311,8 +319,9 @@ export interface SocialLink {
 }
 
 export interface BrandLogo {
-  /** Approved production asset — never a presentation-deck extraction. */
-  src: `/logos/brands/${string}`
+  /** Approved production asset — never a presentation-deck extraction —
+   *  or, at runtime, the dashboard replacement the owner published. */
+  src: `/logos/brands/${string}` | `/images/admin/${string}`
   width: number
   height: number
 }
@@ -327,8 +336,9 @@ export interface BrandContent extends ContentBase {
 }
 
 export interface PartnerLogo {
-  /** Approved production asset — never a presentation-deck extraction. */
-  src: `/logos/partners/${string}`
+  /** Approved production asset — never a presentation-deck extraction —
+   *  or, at runtime, the dashboard replacement the owner published. */
+  src: `/logos/partners/${string}` | `/images/admin/${string}`
   width: number
   height: number
 }

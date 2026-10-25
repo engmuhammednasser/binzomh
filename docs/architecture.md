@@ -63,6 +63,14 @@ when CMS is enabled. `GET /api/admin/preview` requires a session and returns the
 filtered saved draft. Public route middleware loads these into Nuxt state for SSR
 and hydration; ordinary static/public builds keep using the versioned defaults.
 
+Brand and partner logos are listed once in `content/logos.ts`, keyed by their
+approved file. The workspace `logos` map holds each key's artwork (the approved file
+or an upload), and `shared/utils/cms-logos.ts` applies it in `usePairedContent()` and
+`useManagedSite()`, so one replacement reaches every place the logo appears.
+Workspaces and revisions saved before this map existed read as the approved files
+(`normalizeWorkspace()` in `server/cms/seed.ts`). `GET /api/admin/media` lists uploads for
+the dashboard's media library; it requires a session.
+
 The public contact form is separate from the admin enquiries API. Its configured
 endpoint defaults to empty, and `useContactSubmission()` refuses to send without
 one. `POST /api/admin/enquiries` requires an admin session and CSRF token; it is

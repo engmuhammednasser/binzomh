@@ -12,11 +12,12 @@ const props = defineProps<{ page: SiteImagePage }>()
 
 const { t } = useI18n()
 const assetUrl = useAssetUrl()
-const { galleries, addToGallery, removeFromGallery, moveInGallery } = useAdminImagesContext()
+const { galleries, addToGallery, addFromLibrary, removeFromGallery, moveInGallery } = useAdminImagesContext()
 
 const items = computed(() => galleries.value[props.page])
 const refused = ref<{ name: string, error: ReplacementError }[]>([])
 const dragging = ref(false)
+const picking = ref(false)
 
 async function add(files: FileList | File[] | null | undefined) {
   if (!files?.length) return
@@ -150,6 +151,22 @@ const srcOf = (src: string) => src.startsWith('blob:') ? src : assetUrl(src as `
         class="add__hint"
       >{{ t('admin.images.addHint') }}</span>
     </label>
+    <button
+      type="button"
+      class="admin-btn admin-btn--small gallery__library"
+      :disabled="items.length >= 40"
+      @click="picking = true"
+    >
+      {{ t('admin.media.fromLibrary') }}
+    </button>
+    <AdminMediaPicker
+      :open="picking"
+      :heading="t('admin.media.chooseForGallery')"
+      :kinds="['upload', 'photo']"
+      :taken="items.map(item => item.src)"
+      @pick="addFromLibrary(page, $event)"
+      @close="picking = false"
+    />
 
     <ul
       v-if="refused.length"
@@ -334,6 +351,10 @@ const srcOf = (src: string) => src.startsWith('blob:') ? src : assetUrl(src as `
 
 .add__hint {
   font-size: 0.75rem;
+}
+
+.gallery__library {
+  align-self: flex-start;
 }
 
 .refused {

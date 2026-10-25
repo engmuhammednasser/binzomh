@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { startServer } from './helpers/server.mjs'
-import { brandProfiles } from '../content/brands/index.ts'
+import { brandProfiles, logoOnlyBrands } from '../content/brands/index.ts'
 import { brandsContent as brandsEn } from '../content/en/brands.ts'
 import { brandsContent as brandsAr } from '../content/ar/brands.ts'
 import { networkContent as networkEn } from '../content/en/network.ts'
@@ -65,6 +65,14 @@ for (const origin of ['https://binzomah.net', 'https://preview.binzomah.example'
           else if (page.stem === '/brands') {
             for (const brand of brandProfiles) assert.ok(html.includes(`href="/${locale}/brands/${brand.slug}"`))
             assert.ok(html.includes(brands.rosterNotice))
+            // Logo-only brands render under the roster, named, but never as
+            // links: they have no profile page to link to.
+            for (const brand of logoOnlyBrands) {
+              assert.ok(html.includes(brand.logo.src), brand.logo.src)
+              assert.ok(html.includes(escapeHtml(brand.name)), brand.name)
+            }
+            const linked = [...html.matchAll(new RegExp(`href="/${locale}/brands/([^"/]+)"`, 'g'))].map(match => match[1])
+            assert.ok(linked.every(slug => brandProfiles.some(brand => brand.slug === slug)), linked.join())
           }
           else {
             for (const channel of network.channels) {

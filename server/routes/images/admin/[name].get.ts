@@ -10,6 +10,7 @@ export default defineEventHandler((event) => {
   const src = `/images/admin/${name}`
   const visible = Object.values(published.slots).some(image => image?.src === src)
     || Object.values(published.galleries).some(items => items.some(image => image.src === src))
+    || Object.values(published.logos ?? {}).some(logo => logo.src === src)
   if (!visible) requireSession(event)
   const row = db.prepare('SELECT data FROM media WHERE name=?').get(name) as { data: Uint8Array } | undefined
   if (!row) throw createError({ statusCode: 404 })

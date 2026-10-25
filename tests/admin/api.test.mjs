@@ -35,9 +35,10 @@ test('authenticated dashboard: authorization, drafts, publication, media, persis
   let workspace
   let original
   let image
+  let logo
   try {
     await t.test('every private endpoint rejects anonymous requests and dashboard SSR redirects', async () => {
-      for (const [path, method] of [['workspace', 'GET'], ['workspace', 'PUT'], ['publish', 'POST'], ['restore', 'POST'], ['preview', 'GET'], ['enquiries', 'GET'], ['enquiries', 'POST'], ['enquiries', 'PATCH'], ['media', 'POST'], ['logout', 'POST']]) {
+      for (const [path, method] of [['workspace', 'GET'], ['workspace', 'PUT'], ['publish', 'POST'], ['restore', 'POST'], ['preview', 'GET'], ['enquiries', 'GET'], ['enquiries', 'POST'], ['enquiries', 'PATCH'], ['media', 'GET'], ['media', 'POST'], ['logout', 'POST']]) {
         assert.equal((await request(`/api/admin/${path}`, method, method === 'GET' ? undefined : {})).status, 401, path)
       }
       for (const locale of ['en', 'ar']) {
@@ -97,6 +98,64 @@ test('authenticated dashboard: authorization, drafts, publication, media, persis
       workspace.draft.slots['home-hero'] = image
       workspace = await (await request('/api/admin/workspace', 'PUT', { revision: workspace.revision, draft: workspace.draft })).json()
     })
+    await t.test('logos accept uploads or approved logo files only; drafts saved before logos still load', async () => {
+      const connection = openDatabase(path)
+      connection.prepare(`UPDATE workspace SET draft=json_remove(draft, '$.logos')`).run()
+      connection.close()
+      const legacy = await (await request('/api/admin/workspace')).json()
+      assert.deepEqual(legacy.draft.logos, original.logos)
+      delete legacy.draft.logos
+      const saved = await request('/api/admin/workspace', 'PUT', { revision: legacy.revision, draft: legacy.draft })
+      assert.equal(saved.status, 200)
+      workspace = await saved.json()
+      assert.deepEqual(workspace.draft.logos, original.logos)
+
+      const input = await sharp({ create: { width: 320, height: 160, channels: 4, background: { r: 20, g: 60, b: 50, alpha: 0 } } }).png().toBuffer()
+      logo = await (await request('/api/admin/media', 'POST', input, { headers: { 'content-type': 'image/png' } })).json()
+      const library = await (await request('/api/admin/media')).json()
+      assert.deepEqual(library.map(item => item.src), [logo.src, image.src])
+      assert.ok(library.every(item => item.bytes > 0))
+
+      const zoa = '/logos/brands/zoa.png'
+      for (const src of ['/images/home/hero.png', '/images/admin/00000000-0000-0000-0000-000000000000.webp', '/logos/../secret.png']) {
+        const invalid = structuredClone(workspace.draft)
+        invalid.logos[zoa] = { src, width: 1, height: 1 }
+        assert.equal((await request('/api/admin/workspace', 'PUT', { revision: workspace.revision, draft: invalid })).status, 422, src)
+      }
+      workspace.draft.logos[zoa] = { src: logo.src, width: 9999, height: 9999 }
+      workspace.draft.logos['/logos/partners/nahdi.png'] = { src: '/logos/partners/al-dawaa.png', width: 1, height: 1 }
+      workspace = await (await request('/api/admin/workspace', 'PUT', { revision: workspace.revision, draft: workspace.draft })).json()
+      assert.deepEqual(workspace.draft.logos[zoa], { src: logo.src, width: 320, height: 160 })
+      assert.deepEqual(workspace.draft.logos['/logos/partners/nahdi.png'], original.logos['/logos/partners/al-dawaa.png'])
+      assert.equal((await fetch(server.base + logo.src)).status, 401)
+      assert.ok(!(await (await request('/api/content')).text()).includes(logo.src))
+    })
+    await t.test('drafts saved before a page field, image slot or brand file changed still load and save', async () => {
+      // As saved before the fourth home capability and its image slot
+      // existed, and while Embryolisse still used its earlier logo file.
+      const connection = openDatabase(path)
+      const stored = JSON.parse(connection.prepare('SELECT draft FROM workspace WHERE id=1').get().draft)
+      const isNew = row => row.path.startsWith('capabilities.items.3.')
+      stored.copy.home = stored.copy.home.filter(row => !isNew(row))
+      delete stored.slots['home-capabilities-4']
+      stored.brands[0].logo = { src: '/logos/brands/embryolisse.png', width: 630, height: 630 }
+      stored.brands[0].name = 'Embryolisse (edited)'
+      connection.prepare('UPDATE workspace SET draft=?, published=? WHERE id=1').run(JSON.stringify(stored), JSON.stringify(stored))
+      connection.close()
+      const legacy = await (await request('/api/admin/workspace')).json()
+      assert.deepEqual(legacy.draft.copy.home.map(row => row.path), original.copy.home.map(row => row.path))
+      assert.deepEqual(legacy.draft.copy.home.filter(row => !isNew(row)), stored.copy.home, 'saved values are kept')
+      assert.deepEqual(legacy.draft.copy.home.filter(isNew), original.copy.home.filter(isNew))
+      assert.equal(legacy.draft.slots['home-capabilities-4'], null)
+      assert.deepEqual(legacy.draft.brands[0].logo, original.brands[0].logo, 'the logo file reads from the code')
+      assert.equal(legacy.draft.brands[0].name, 'Embryolisse (edited)', 'the edited name is kept')
+      const published = await (await request('/api/content')).json()
+      assert.deepEqual(published.brands[0].logo, original.brands[0].logo)
+      legacy.draft.brands[0].name = original.brands[0].name
+      const saved = await request('/api/admin/workspace', 'PUT', { revision: legacy.revision, draft: legacy.draft })
+      assert.equal(saved.status, 200)
+      workspace = await saved.json()
+    })
     await t.test('publication changes SSR and public media, while draft claims remain private', async () => {
       const response = await request('/api/admin/publish', 'POST', { revision: workspace.revision })
       assert.equal(response.status, 200, await response.clone().text())
@@ -105,6 +164,10 @@ test('authenticated dashboard: authorization, drafts, publication, media, persis
       assert.match(html, /Persisted review heading/)
       assert.ok(!html.includes('PRIVATE-CLAIM'))
       assert.equal((await fetch(server.base + image.src)).status, 200)
+      // A published logo reaches every page that shows it and becomes public.
+      assert.ok(html.includes(logo.src))
+      assert.ok((await (await fetch(server.base + '/en/brands')).text()).includes(logo.src))
+      assert.equal((await fetch(server.base + logo.src)).status, 200)
     })
     await t.test('real inbox starts empty, persists records, and prevents stale status updates', async () => {
       assert.deepEqual(await (await request('/api/admin/enquiries')).json(), [])

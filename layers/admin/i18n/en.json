@@ -14,7 +14,8 @@
       "pages": "Page content",
       "viewSite": "View site",
       "signOut": "Sign out",
-      "contactInfo": "Contact details"
+      "contactInfo": "Contact details",
+      "media": "Media"
     },
     "status": {
       "approved": "Approved",
@@ -246,6 +247,7 @@
         "capabilities_section1": "Capabilities — section 1",
         "capabilities_section2": "Capabilities — section 2",
         "capabilities_section3": "Capabilities — section 3",
+        "capabilities_section4": "Capabilities — section 4",
         "about_hero": "About — hero",
         "about_overview": "About — overview",
         "about_location": "About — location",
@@ -254,7 +256,8 @@
         "about_team": "About — management team",
         "home_capabilities1": "Home — capabilities 1",
         "home_capabilities2": "Home — capabilities 2",
-        "home_capabilities3": "Home — capabilities 3"
+        "home_capabilities3": "Home — capabilities 3",
+        "home_capabilities4": "Home — capabilities 4"
       },
       "slotsHeading": "Section images",
       "slotsHint": "One image per place on this page. Each is independent — changing one never changes another.",
@@ -274,6 +277,45 @@
       "altMissing": "Add a description in both languages — gallery pictures have no text beside them.",
       "refused": "Not added: {name} — {reason}",
       "changes": "No image changes | 1 image change | {count} image changes"
+    },
+    "media": {
+      "heading": "Media",
+      "intro": "Every image the site can use, in one place: your uploads, the site’s photos and the logos. Upload once, then use it anywhere.",
+      "tabs": {
+        "library": "All images",
+        "logos": "Logos"
+      },
+      "libraryHint": "Uploads stay private until a published page uses them.",
+      "upload": "Upload images",
+      "uploadHint": "JPEG, PNG, WebP or AVIF, up to 10 MB each. Several at once.",
+      "uploadLogo": "Upload new",
+      "filter": "Show",
+      "kinds": {
+        "all": "All",
+        "upload": "Uploads",
+        "photo": "Site photos",
+        "logo": "Logos"
+      },
+      "usedIn": "Used in",
+      "unused": "Not used",
+      "inGallery": "{page} — gallery",
+      "logoOf": "Logo — {name}",
+      "empty": "No images here yet.",
+      "loadFailed": "The media library could not be loaded. Reload the page to try again.",
+      "fromLibrary": "Choose from library",
+      "chooseFor": "Choose an image for “{name}”",
+      "chooseForGallery": "Add a picture from the library",
+      "chooseForLogo": "Choose a logo for “{name}”",
+      "alreadyHere": "Already here",
+      "logosHint": "Change a logo here and every place it appears changes with it: brand cards, the home page and the network page. Save the draft, then publish.",
+      "brandLogos": "Brand logos",
+      "partnerLogos": "Client & partner logos",
+      "replaced": "Replaced",
+      "unsaved": "Changed, not saved",
+      "restoreOriginal": "Restore original",
+      "discard": "Discard change",
+      "size": "Size",
+      "kind": "Type"
     },
     "live": {
       "unsaved": "You have unsaved changes",

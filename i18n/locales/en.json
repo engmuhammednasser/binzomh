@@ -38,6 +38,8 @@
     "hoursLabel": "Working hours",
     "name": "Your name",
     "company": "Company",
+    "mobile": "Mobile number",
+    "mobileInvalid": "Enter a valid mobile number (8 to 15 digits).",
     "senderEmail": "Email address",
     "message": "How can we help?",
     "optional": "optional",

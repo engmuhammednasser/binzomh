@@ -190,7 +190,6 @@ async function submit() {
                   class="login__input login__input--password"
                   :placeholder="t('admin.login.passwordPlaceholder')"
                   required
-                  dir="ltr"
                   :aria-invalid="!!fieldErrors.password"
                   :aria-describedby="fieldErrors.password ? 'login-password-error' : undefined"
                   @input="fieldErrors.password = ''"
@@ -509,8 +508,11 @@ async function submit() {
   position: relative;
 }
 
+/* Keep the card's direction so the eye's space matches its side; plaintext
+   still shows a Latin password left to right in Arabic. */
 .login__input--password {
   padding-inline-end: 3.5rem;
+  unicode-bidi: plaintext;
 }
 
 .login__eye {

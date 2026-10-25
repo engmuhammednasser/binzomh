@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import type { BrandProfile } from '~~/types/brands'
-import type { ContentStatus } from '~~/types/content'
+import type { BrandLogo, ContentStatus } from '~~/types/content'
 
 defineProps<{ brands: BrandProfile[], editingSlug: string | null }>()
 const emit = defineEmits<{ edit: [brand: BrandProfile] }>()
 
 const { t } = useI18n()
 const assetUrl = useAssetUrl()
+const { draft } = useAdminWorkspace()
+// The draft's artwork for this logo (changed under Media), or the approved file.
+const logoOf = (logo: BrandLogo) => draft.value?.logos[logo.src] ?? logo
 
 const columns = ['introduction', 'relationship', 'image', 'ranges'] as const
 
@@ -48,9 +51,9 @@ const fieldStatus = (field?: { status: ContentStatus }): ContentStatus => field?
           <td>
             <img
               v-if="brand.logo"
-              :src="assetUrl(brand.logo.src)"
-              :width="brand.logo.width"
-              :height="brand.logo.height"
+              :src="assetUrl(logoOf(brand.logo).src)"
+              :width="logoOf(brand.logo).width"
+              :height="logoOf(brand.logo).height"
               alt=""
               class="logo"
             >

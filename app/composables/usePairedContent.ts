@@ -6,6 +6,7 @@
 import type { Workspace } from '~~/types/cms'
 import type { SiteImagePage } from '~~/types/images'
 import { applyCopy } from '~~/shared/utils/cms-copy'
+import { applyLogos } from '~~/shared/utils/cms-logos'
 
 export function usePairedContent<T>(en: T, ar: T, page?: SiteImagePage) {
   const { locale } = useI18n()
@@ -13,6 +14,6 @@ export function usePairedContent<T>(en: T, ar: T, page?: SiteImagePage) {
   return computed<T>(() => {
     const language = locale.value === 'ar' ? 'ar' : 'en'
     const source = language === 'ar' ? ar : en
-    return page && managed.value ? applyCopy(source, managed.value.copy[page], language) : source
+    return page && managed.value ? applyLogos(applyCopy(source, managed.value.copy[page], language), managed.value.logos) : source
   })
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ContactContent } from '~~/types/content'
+import { validatePhone } from '#shared/utils/contact-validation'
 
 const { brands: brandProfiles } = useManagedSite()
 const findBrand = (slug: string) => brandProfiles.value.find(brand => brand.slug === slug)
@@ -40,6 +41,14 @@ const telHref = computed(() => {
   const phone = props.content.phone
   return phone ? `tel:${phone.replace(/[^\d+]/g, '')}` : undefined
 })
+
+// `required` covers an empty field; this rejects anything that is not a
+// dialable number, with the same rule the dashboard applies to the
+// company's own phone (shared/utils/contact-validation.ts).
+function checkMobile(event: Event) {
+  const input = event.target as HTMLInputElement
+  input.setCustomValidity(input.value.trim() && validatePhone(input.value) ? t('contact.mobileInvalid') : '')
+}
 
 async function submit(event: Event) {
   event.preventDefault()
@@ -303,22 +312,41 @@ async function submit(event: Event) {
             </div>
           </div>
 
-          <div class="contact-form__field">
-            <label
-              class="contact-form__label"
-              for="contact-company"
-            >
-              {{ t('contact.company') }}
-              <span class="contact-form__optional">{{ t('contact.optional') }}</span>
-            </label>
-            <input
-              id="contact-company"
-              class="contact-form__input"
-              type="text"
-              name="company"
-              autocomplete="organization"
-              :readonly="status === 'sending'"
-            >
+          <!-- Company and mobile pair up the same way name and email do. -->
+          <div class="contact-form__row">
+            <div class="contact-form__field">
+              <label
+                class="contact-form__label"
+                for="contact-company"
+              >{{ t('contact.company') }}</label>
+              <input
+                id="contact-company"
+                class="contact-form__input"
+                type="text"
+                name="company"
+                autocomplete="organization"
+                :readonly="status === 'sending'"
+                required
+              >
+            </div>
+
+            <div class="contact-form__field">
+              <label
+                class="contact-form__label"
+                for="contact-mobile"
+              >{{ t('contact.mobile') }}</label>
+              <input
+                id="contact-mobile"
+                class="contact-form__input"
+                type="tel"
+                name="mobile"
+                autocomplete="tel"
+                :readonly="status === 'sending'"
+                dir="ltr"
+                required
+                @input="checkMobile"
+              >
+            </div>
           </div>
 
           <div class="contact-form__field">
@@ -350,14 +378,13 @@ async function submit(event: Event) {
             <label
               class="contact-form__label"
               for="contact-message"
-            >{{ t('contact.message') }}</label>
+            >{{ t('contact.message') }} <span class="contact-form__optional">{{ t('contact.optional') }}</span></label>
             <textarea
               id="contact-message"
               class="contact-form__input contact-form__textarea"
               name="message"
               rows="4"
               :readonly="status === 'sending'"
-              required
             />
           </div>
 

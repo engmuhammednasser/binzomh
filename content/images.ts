@@ -55,10 +55,16 @@ export const siteImageSlots = {
   'home-capabilities-1': slot('home-capabilities-1', 'home', 'home.capabilities1', files.capabilities1),
   'home-capabilities-2': slot('home-capabilities-2', 'home', 'home.capabilities2', files.capabilities2),
   'home-capabilities-3': slot('home-capabilities-3', 'home', 'home.capabilities3', files.capabilities3),
+  // Marketing & Branding has no approved photo yet: the placeholder fills
+  // the same 4:5 frame as its neighbours until one is chosen in the dashboard.
+  'home-capabilities-4': { id: 'home-capabilities-4', page: 'home', section: 'home.capabilities4', frame: { width: 1122, height: 1402 }, image: null },
   'capabilities-hero': slot('capabilities-hero', 'capabilities', 'capabilities.hero', files.capabilities1),
   'capabilities-section-1': slot('capabilities-section-1', 'capabilities', 'capabilities.section1', files.capabilities1),
   'capabilities-section-2': slot('capabilities-section-2', 'capabilities', 'capabilities.section2', files.capabilities2),
   'capabilities-section-3': slot('capabilities-section-3', 'capabilities', 'capabilities.section3', files.capabilities3),
+  // Marketing & Branding, as on the homepage: the placeholder until a photo
+  // is chosen in the dashboard.
+  'capabilities-section-4': { id: 'capabilities-section-4', page: 'capabilities', section: 'capabilities.section4', frame: { width: 1122, height: 1402 }, image: null },
   'about-hero': slot('about-hero', 'about', 'about.hero', files.aboutHero),
   'about-overview': slot('about-overview', 'about', 'about.overview', files.aboutOverview),
   'about-location': slot('about-location', 'about', 'about.location', files.aboutLocation),

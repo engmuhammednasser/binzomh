@@ -27,8 +27,34 @@ background, framed by the homepage teaser's logo tile rather than edited.
 direction: the same three files, unedited, now also identify each row of
 the brand list on that page. No new assets, and no change to the files.
 
-This approval still covers only those three files, in those two
-placements. It does not extend to the ~28 other partner/customer logos in
+**Embryolisse file replaced (2026-10-15)**, at the project team's request:
+the deck extract (`embryolisse.png`, 630x630 on a flattened peach
+background) gave way to the official SVG wordmark the team supplied
+(`LOGO_RVB_BLACK_BLOC_MARQUE_SIGLE.svg` — "RVB" is the French RGB colour
+mode, not the RVB LAB brand). It was copied byte-for-byte to
+`public/logos/brands/embryolisse.svg` and shows on a transparent
+background in both placements above. Zoā and RVB LAB are unchanged.
+
+**Ecowell and Forté Pharma logos added (2026-10-15)**, at the project
+team's request, as a second row under the three roster cards in **both
+placements above** — the homepage teaser and the `/brands` list — and
+nowhere else. They are not roster brands: no profile page, no sitemap
+entry, no contact-form option, so they render as images (on `/brands`,
+named cards) rather than links. Files are the ones the team supplied
+(`ecowell.png`, `fortepharam.png`), copied byte-for-byte to
+`public/logos/brands/ecowell.png` and `public/logos/brands/forte-pharma.png`;
+listed once, as `logoOnlyBrands` in `content/brands/index.ts`.
+
+**Ecowell file trimmed (2026-10-25)**, at the project team's request: the
+supplied file is a 1080x1080 white square with the wordmark in a band
+across its middle, so the card fitted it by height and drew the mark at
+about 40% of its neighbours' width. `public/logos/brands/ecowell.png` is
+now a 1000x454 crop of that file around the mark, with even white margins.
+Only blank margin was removed; the artwork is unchanged. Forté Pharma is
+still the supplied file, byte-for-byte.
+
+Beyond the dated changes above, this approval still covers only those
+three roster files, in those two placements. It does not extend to the ~28 other partner/customer logos in
 the reference library, nor to any further page, without a separate, scoped
 approval. Do not fabricate, redraw, or imitate any logo not covered by an
 approval like this one.

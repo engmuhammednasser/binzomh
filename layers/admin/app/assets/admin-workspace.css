@@ -27,6 +27,10 @@
   --admin-success-bg: #283c35;
   --admin-warning: #e3c38d;
   --admin-warning-bg: #3b3428;
+  /* Brand and partner artwork is drawn for light backgrounds. */
+  --admin-logo-surface: #f7f7f5;
+  --admin-dialog-shadow: 0 24px 64px rgb(0 0 0 / 0.5);
+  --admin-backdrop: rgb(8 10 12 / 0.7);
   --font-size-h2: clamp(1.5rem, 1.2rem + 1vw, 1.875rem);
   --radius-sm: 8px;
   --radius-md: 14px;
