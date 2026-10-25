@@ -100,8 +100,11 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run test:admin:browser
 
+  # Pages ships only the static public site, which the build job tests;
+  # the dashboard is excluded from it, so its checks report separately
+  # rather than holding back a site update.
   deploy:
-    needs: [build, dashboard-checks]
+    needs: [build]
     runs-on: ubuntu-latest
     environment:
       name: github-pages
